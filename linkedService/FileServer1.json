@@ -1,0 +1,17 @@
+{
+	"name": "FileServer1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "C:\\Users\\dqa99106\\OneDrive - GSK\\Documents\\",
+			"userId": "wmservice.corpnet1.com\\dqa99106",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIzNDY2OTRhNy04OTFkLTRlM2EtYTU5Mi01YjBiM2QxZjVmY2EiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "SRV-INTRUNTIME-MACHINE-GSK",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

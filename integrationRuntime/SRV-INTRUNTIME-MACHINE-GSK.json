@@ -1,0 +1,6 @@
+{
+	"name": "SRV-INTRUNTIME-MACHINE-GSK",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
