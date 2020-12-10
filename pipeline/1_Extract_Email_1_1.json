@@ -268,7 +268,7 @@
 				}
 			},
 			{
-				"name": "Delete1",
+				"name": "Deletar_Arquivos_TXT",
 				"type": "Delete",
 				"dependsOn": [
 					{
