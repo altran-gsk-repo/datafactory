@@ -1,9 +1,14 @@
 {
-	"name": "Arquivos_Em_TxT",
+	"name": "Arquivo_Em_TxT",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage",
 			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"nome_arquivo": {
+				"type": "string"
+			}
 		},
 		"folder": {
 			"name": "Email_1_1"
@@ -13,7 +18,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "teste.txt",
+				"fileName": {
+					"value": "@dataset().nome_arquivo",
+					"type": "Expression"
+				},
 				"folderPath": "teste",
 				"container": "altrangsk"
 			},

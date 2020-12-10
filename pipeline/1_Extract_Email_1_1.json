@@ -3,9 +3,16 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Extract_Database",
+				"name": "interacao_cliente_antigo",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "interacao_cliente_novo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -112,38 +119,20 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Arquivos_Em_TxT",
-						"type": "DatasetReference"
+						"referenceName": "Arquivo_Em_TxT",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "interacao_cliente_antigo"
+						}
 					}
 				]
-			},
-			{
-				"name": "Valida_Arquivo_Pasta",
-				"type": "Validation",
-				"dependsOn": [
-					{
-						"activity": "Extract_Database",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "Arquivos_Em_TxT",
-						"type": "DatasetReference"
-					},
-					"timeout": "7.00:00:00",
-					"sleep": 10
-				}
 			},
 			{
 				"name": "Lista_Arquivos",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
-						"activity": "Valida_Arquivo_Pasta",
+						"activity": "interacao_cliente_antigo",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -216,7 +205,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Tranforma_TXT_to_Parquet",
+							"name": "Transforma_TXT_to_Parquet",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -277,6 +266,156 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Delete1",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Para_Cada_TXT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "List_Files_Txt",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"wildcardFileName": "*.txt"
+					}
+				}
+			},
+			{
+				"name": "interacao_cliente_novo",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT * FROM interacao_cliente_novo",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "id_cliente",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "id_cliente",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "nome",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "nome",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "idade",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "idade",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "data_nascimento",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "data_nascimento",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "tipo",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "tipo",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "All_Tables",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Arquivo_Em_TxT",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "interacao_cliente_novo"
+						}
+					}
+				]
 			}
 		],
 		"variables": {
