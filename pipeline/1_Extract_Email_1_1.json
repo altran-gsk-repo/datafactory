@@ -118,7 +118,7 @@
 				]
 			},
 			{
-				"name": "Validation1",
+				"name": "Valida_Arquivo_Pasta",
 				"type": "Validation",
 				"dependsOn": [
 					{
@@ -139,11 +139,11 @@
 				}
 			},
 			{
-				"name": "Get Metadata1",
+				"name": "Lista_Arquivos",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
-						"activity": "Validation1",
+						"activity": "Valida_Arquivo_Pasta",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -174,11 +174,11 @@
 				}
 			},
 			{
-				"name": "Filter1",
+				"name": "Filtra_Arquivos_TXT",
 				"type": "Filter",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata1",
+						"activity": "Lista_Arquivos",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -187,7 +187,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get Metadata1').output.childitems",
+						"value": "@activity('Lista_Arquivos').output.childitems",
 						"type": "Expression"
 					},
 					"condition": {
@@ -197,11 +197,11 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "Para_Cada_TXT",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Filter1",
+						"activity": "Filtra_Arquivos_TXT",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -210,13 +210,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Filter1').output.Value",
+						"value": "@activity('Filtra_Arquivos_TXT').output.Value",
 						"type": "Expression"
 					},
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Copy data1",
+							"name": "Tranforma_TXT_to_Parquet",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -270,7 +270,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "Parquet1",
+									"referenceName": "Arquivos_Em_Parquet",
 									"type": "DatasetReference"
 								}
 							]
