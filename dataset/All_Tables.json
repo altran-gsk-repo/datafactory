@@ -1,0 +1,12 @@
+{
+	"name": "All_Tables",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerLocalDouglasDev",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}
