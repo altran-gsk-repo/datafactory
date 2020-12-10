@@ -1,0 +1,6 @@
+{
+	"name": "integrationRuntimeLocalDouglas",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
