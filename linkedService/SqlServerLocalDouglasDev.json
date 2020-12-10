@@ -1,0 +1,16 @@
+{
+	"name": "SqlServerLocalDouglasDev",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=DESKTOP-FVENMUR;initial catalog=BANCO_LOCAL;user id=sa",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJlMjkwYTUxYS05OTFmLTQ0MjktOWMwZS0zOGEwZTRkMjgyOGYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntimeLocalDouglas",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
