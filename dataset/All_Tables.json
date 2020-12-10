@@ -5,6 +5,9 @@
 			"referenceName": "SqlServerLocalDouglasDev",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Email_1_1"
+		},
 		"annotations": [],
 		"type": "SqlServerTable",
 		"schema": []

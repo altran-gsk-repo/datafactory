@@ -5,6 +5,9 @@
 			"referenceName": "AzureBlobStorage",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Email_1_1"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
