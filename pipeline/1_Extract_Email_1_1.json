@@ -113,7 +113,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "All_Tables",
+						"referenceName": "Select_Tabelas",
 						"type": "DatasetReference"
 					}
 				],
@@ -379,7 +379,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "All_Tables",
+						"referenceName": "Select_Tabelas",
 						"type": "DatasetReference"
 					}
 				],

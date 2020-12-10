@@ -1,5 +1,5 @@
 {
-	"name": "All_Tables",
+	"name": "Select_Tabelas",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SqlServerLocalDouglasDev",
