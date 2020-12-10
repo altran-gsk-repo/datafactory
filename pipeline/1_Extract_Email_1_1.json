@@ -148,7 +148,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "List_Files_Txt",
+						"referenceName": "Listar_Arquivos_Txt",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
@@ -253,7 +253,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "List_Files_Txt",
+									"referenceName": "Listar_Arquivos_Txt",
 									"type": "DatasetReference"
 								}
 							],
@@ -288,7 +288,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "List_Files_Txt",
+						"referenceName": "Listar_Arquivos_Txt",
 						"type": "DatasetReference"
 					},
 					"enableLogging": false,
