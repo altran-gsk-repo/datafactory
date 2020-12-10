@@ -122,7 +122,7 @@
 						"referenceName": "Arquivo_Em_TxT",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "interacao_cliente_antigo"
+							"nome_arquivo": "interacao_cliente_antigo.txt"
 						}
 					}
 				]
@@ -359,30 +359,6 @@
 							},
 							{
 								"source": {
-									"name": "idade",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "idade",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "data_nascimento",
-									"type": "DateTime",
-									"physicalType": "date"
-								},
-								"sink": {
-									"name": "data_nascimento",
-									"type": "DateTime",
-									"physicalType": "DateTime"
-								}
-							},
-							{
-								"source": {
 									"name": "tipo",
 									"type": "String",
 									"physicalType": "varchar"
@@ -412,7 +388,7 @@
 						"referenceName": "Arquivo_Em_TxT",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "interacao_cliente_novo"
+							"nome_arquivo": "interacao_cliente_novo.txt"
 						}
 					}
 				]
