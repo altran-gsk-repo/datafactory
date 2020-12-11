@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[SP_ACT_EMAIL1TO1_QUADRANTE_MEDICO]",
+						"sqlReaderQuery": "Select distinct  \n\tCASE \n\t\tWHEN RIGHT(A.CICLO,2) = '12' THEN CAST((CAST(LEFT(A.CICLO,4) AS INT)+1) AS VARCHAR(4))+'01'\n\tELSE A.CICLO+1 END AS CICLO_QUAD,\n\tA.CRM AS CRM_QUAD,\n    A.MERCADO AS MERCADO_QUAD,\n    A.CATEGORIA AS CATEGORIA_QUAD,\n    A.MKT_SHARE_MEDICO AS MKT_SHARE_QUAD,\n    A.CLASSIFICACAO AS QUADRANTE_QUAD,\n    A.JORNADA AS JORNADA_QUAD\nFrom\n\t\"GSK_Intelligence\".dbo.\"Dim_Quadrante_Medico\" A\nWhere \n\tLEFT(CAST(A.CICLO AS VARCHAR(10)),4) IN (YEAR(GETDATE()),YEAR(GETDATE())-1) AND\n    EXISTS (SELECT B.* FROM \"GSK_Intelligence\".dbo.\"DIM_AUDIT_END\" B WHERE A.CRM = B.CRM)\nOPTION(FAST 10000)",
 						"queryTimeout": "07:00:00",
 						"isolationLevel": "Serializable",
 						"partitionOption": "None"
@@ -160,7 +160,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[SP_ACT_EMAIL1TO1_INTERACAO_EMAIL]",
+						"sqlReaderQuery": "SELECT    \n\tLEFT(A.DATA,6) AS CICLO\n\t,A.ID_ENVIO AS ID_ENVIO_EMAIL\n\t,A.ID_ATIVIDADE AS ID_ATIV_EMAIL\n\t,A.TIPO_EVENTO AS TIPO_ATIV_EMAIL\n\t,A.DATA AS DATA_ATIV_EMAIL\n\t,B.PRODUCT_NAME AS PRODUTO\n    ,A.ROW_ID_CONTATO\n    ,A.ROW_ID_TERRITORIO\n    ,A.NOME_DOCUMENTO_APROVADO AS DOCUMENTO_EMAIL\n    ,A.DESCRICAO_DOCUMENTO AS DESC_DOCUMENTO_EMAIL\n    ,A.ASSUNTO_EMAIL\n\t,'E-Mail 1:1'\t\t\t\t\t\t\t\t\t\tas TIPO_INTERACAO\nFROM\n\t[GSK_Intelligence].[dbo].[Fato_Email_1_1] A LEFT OUTER JOIN [GSK_Intelligence].[dbo].[STG_Cad_Promo_Items_Veeva] B\n    ON\tA.ROW_ID_PRODUTO = B.PRODUCT_CATALOG_ID\nWHERE \n\tLEFT(CAST(LEFT(A.DATA,6)  AS VARCHAR(10)),4) IN (YEAR(GETDATE()),YEAR(GETDATE())-1) AND\n    EXISTS (SELECT B.* FROM [GSK_Intelligence].[dbo].[DIM_CAD_FORCA_VENDAS] B WHERE LEFT(A.DATA,6)  = B.CICLO AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO AND B.FLAG_BI IS NULL)\nOPTION(FAST 10000)",
 						"queryTimeout": "07:00:00",
 						"isolationLevel": "Serializable",
 						"partitionOption": "None"
@@ -363,7 +363,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[SP_ACT_EMAIL1TO1_PAINEL_MEDICO]",
+						"sqlReaderQuery": "Select\n\t A.CICLO + A.CRM AS CRM_CICLO\n\t,RIGHT(A.CICLO,2) AS MÊS\t  \n\t,A.CICLO\n    ,A.CRM\n    ,A.MEDICO\n    ,A.TIPO\n    ,A.TIPOCONTATO\n    ,A.GRUPOPROMOCIONAL\n    ,A.ESPECIALIDADE\n    ,A.LOGRADOURO\n    ,A.COMPLEMENTO\n    ,A.BAIRRO\n    ,A.CIDADE\n    ,A.UF\n    ,A.CEP\n    ,A.BRICK\n    ,A.TELEFONEMEDICO\n    ,A.CELULARMEDICO\n    ,A.EMAIL AS EMAIL_1_1\n    ,A.ROW_ID_FUNCIONARIO\n    ,A.ROW_ID_TERRITORIO\n    ,A.ROW_ID_CONTATO\n    ,A.STATUS\n    ,A.QTD_VISITA_PLANEJADA AS QTD_VISITA_PLANEJADA_PAINEL\n\t,A.QTD_VISITA_REALIZADA AS QTD_VISITA_REALIZADA_PAINEL\n    ,A.ESPECIALIDADE_02\n    ,A.ESPECIALIDADE_03\n    ,A.VP_PROX\n    ,A.STATUS_MEDICO\n    ,A.EMAIL_CONSENT AS EMAIL_1_1_CONSENT\n    ,B.NETWORK_ID\n    ,B.RX_GIGYA_ID\n    ,D.VEEVA_ID\n    ,B.ROW_ID_CONTATO_EXT\n    ,A.OUTRO_EMAIL AS EMAIL_MASS\n    ,A.OUTRO_EMAIL_CONSENT  AS EMAIL_MASS_CONSENT  \n    ,CASE \n\t\tWHEN C.CYCLE_PLAN = 'S' THEN 'S'\n\t ELSE 'N' END \t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAS CYCLE_PLAN,\n\t GP.MERCADO,\n\t GP.GRUPOPROMOCIONAL as 'PRODUTO_PAINEL'\nFROM\n\t\"GSK_Intelligence\".dbo.\"DIM_PAINEL_CORRENTE\" A LEFT OUTER JOIN \"GSK_Intelligence\".dbo.\"STG_CAD_CONTAS_VEEVA\" B\n    ON\tA.ROW_ID_CONTATO = B.ROW_ID_CONTATO\n\n\tLeft join \"GSK_Intelligence\".dbo.Dim_Cad_Grade_Promocional_Aberta_Qlikview as GP\n\ton A.CRM = GP.CRM AND A.ROW_ID_TERRITORIO = GP.ROW_ID_TERRITORIO\n    \n    LEFT JOIN \"GSK_Intelligence\".dbo.\"Dim_Sense_Universo_Medico\" D\n      ON D.CRM = B.DOCUMENTO\n\t  AND D.NETWORK_ID = B.NETWORK_ID\n    \n    LEFT OUTER JOIN \"GSK_Intelligence\".dbo.\"View_Sense_Cycle_Plan\" C\n\tON\tA.CICLO = C.CICLO AND\n\t\tA.ROW_ID_CONTATO = C.ROW_ID_CONTATO AND\n\t\tA.ROW_ID_TERRITORIO = C.ROW_ID_TERRITORIO\n    \nWHERE\n\tLEFT(CAST(A.CICLO AS VARCHAR(10)),4) IN (YEAR(GETDATE()),YEAR(GETDATE())-1) AND\n    EXISTS (SELECT B.* FROM \"GSK_Intelligence\".dbo.\"DIM_CAD_FORCA_VENDAS\" B WHERE A.CICLO = B.CICLO AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO \n            AND B.FLAG_BI IS NULL)\nOPTION(FAST 10000)",
 						"queryTimeout": "07:00:00",
 						"isolationLevel": "Serializable",
 						"partitionOption": "None"
