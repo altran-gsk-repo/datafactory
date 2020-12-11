@@ -1,0 +1,9 @@
+{
+	"name": "1_Extract_Email_1_1_Raw",
+	"properties": {
+		"folder": {
+			"name": "Extract"
+		},
+		"annotations": []
+	}
+}
