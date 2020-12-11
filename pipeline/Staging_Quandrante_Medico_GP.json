@@ -1,0 +1,77 @@
+{
+	"name": "Staging_Quandrante_Medico_GP",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_ap4",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "."
+					},
+					{
+						"name": "Destination",
+						"value": "altrangsk/dash.email1to1/dim_quadrante_medico_gp.txt"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "Select distinct\n\tA.CRM as CRM_GP,\n    A.MERCADO as MERCADO_GP,\n    A.CATEGORIA as CATEGORIA_GP,\n    JORNADA as JORNADA_GP,\n    A.CLASSIFICACAO AS QUADRANTE_GP,\n    A.ROW_ID_TERRITORIO as ROW_ID_TERRITORIO_GP,\n    A.ROW_ID_CONTATO as ROW_ID_CONTATO_GP,\n    A.CICLO\nFrom\n\t\"GSK_Intelligence\".dbo.\"Dim_Quadrante_Medico_GP\" A\nWhere \n\tLEFT(CAST(A.CICLO AS VARCHAR(10)),4) IN (YEAR(GETDATE()),YEAR(GETDATE())-1) AND\n    EXISTS (SELECT B.* FROM \"GSK_Intelligence\".dbo.\"DIM_CAD_FORCA_VENDAS\" B WHERE A.CICLO = B.CICLO AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO \n            AND B.FLAG_BI IS NULL);",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "AzureBlobStorage",
+							"type": "LinkedServiceReference"
+						},
+						"path": "altrangsk/staging_area",
+						"enableCompression": false
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_ap4",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_ap4",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"parameters": {
+			"windowStart": {
+				"type": "String"
+			},
+			"windowEnd": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}

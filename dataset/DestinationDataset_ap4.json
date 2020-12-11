@@ -1,0 +1,23 @@
+{
+	"name": "DestinationDataset_ap4",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "dim_quadrante_medico_gp.txt",
+				"folderPath": "dash.email1to1",
+				"container": "altrangsk"
+			},
+			"columnDelimiter": "~",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
