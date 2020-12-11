@@ -1,0 +1,35 @@
+{
+	"name": "SourceDataset_6ni",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerLocalDouglasDev",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "id_cliente",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "nome",
+				"type": "varchar"
+			},
+			{
+				"name": "idade",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "tipo",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "interacao_cliente_comum"
+		}
+	}
+}
