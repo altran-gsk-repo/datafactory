@@ -22,10 +22,10 @@
 					"value": "@dataset().nome_arquivo",
 					"type": "Expression"
 				},
-				"folderPath": "teste",
+				"folderPath": "dash.email1to1",
 				"container": "altrangsk"
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": "~",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""

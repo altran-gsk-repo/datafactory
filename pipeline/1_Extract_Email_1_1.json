@@ -7,7 +7,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "interacao_cliente_novo",
+						"activity": "dim_quandrante_medico_gp",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -24,7 +24,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT * FROM interacao_cliente_antigo",
+						"sqlReaderQuery": "SELECT DISTINCT  \n\t\n\tCRM AS CRM_UNIV\t          \n\t,NOME_MEDICO AS MEDICO_UNIV\t\n\t,ESPECIALIDADE\tAS ESPECIALIDADE_UNIV\n\t,ENDERECO\tAS LOGRADOURO_UNIV\n\t,BAIRRO\tAS BAIRRO_UNIV\n\t,CIDADE\tAS CIDADE_UNIV\n\t,CEP\tAS CEP_UNIV\n\t,ORIGEM_END\tAS ORIGEM_UNIV\n\t,UF\tAS UF_UNIV\n\t,BRICK\tAS BRICK_UNIV\n\t,TELEFONE AS TELEFONE_UNIV\nFROM \n\t\"GSK_Intelligence\".dbo.\"DIM_AUDIT_END\";",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -45,60 +45,132 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "id_cliente",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "id_cliente",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "nome",
+									"name": "CRM_UNIV",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "nome",
+									"name": "CRM_UNIV",
 									"type": "String",
 									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "idade",
+									"name": "MEDICO_UNIV",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "MEDICO_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ESPECIALIDADE_UNIV",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ESPECIALIDADE_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LOGRADOURO_UNIV",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "LOGRADOURO_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "BAIRRO_UNIV",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "BAIRRO_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CIDADE_UNIV",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CIDADE_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CEP_UNIV",
 									"type": "Int32",
 									"physicalType": "int"
 								},
 								"sink": {
-									"name": "idade",
+									"name": "CEP_UNIV",
 									"type": "Int32",
 									"physicalType": "Int32"
 								}
 							},
 							{
 								"source": {
-									"name": "data_nascimento",
-									"type": "DateTime",
-									"physicalType": "date"
-								},
-								"sink": {
-									"name": "data_nascimento",
-									"type": "DateTime",
-									"physicalType": "DateTime"
-								}
-							},
-							{
-								"source": {
-									"name": "tipo",
+									"name": "ORIGEM_UNIV",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "tipo",
+									"name": "ORIGEM_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "UF_UNIV",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "UF_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "BRICK_UNIV",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "BRICK_UNIV",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "TELEFONE_UNIV",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "TELEFONE_UNIV",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -113,7 +185,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Select_Tabelas",
+						"referenceName": "SqlServerGSK",
 						"type": "DatasetReference"
 					}
 				],
@@ -122,7 +194,7 @@
 						"referenceName": "Arquivo_Em_TxT",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "interacao_cliente_antigo.txt"
+							"nome_arquivo": "dim_audit_end.txt"
 						}
 					}
 				]
@@ -155,7 +227,8 @@
 						"childItems"
 					],
 					"storeSettings": {
-						"type": "AzureBlobStorageReadSettings"
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true
 					},
 					"formatSettings": {
 						"type": "DelimitedTextReadSettings"
@@ -300,7 +373,7 @@
 				}
 			},
 			{
-				"name": "interacao_cliente_novo",
+				"name": "dim_quandrante_medico_gp",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -314,7 +387,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT * FROM interacao_cliente_novo",
+						"sqlReaderQuery": "Select distinct\n\tA.CRM as CRM_GP,\n    A.MERCADO as MERCADO_GP,\n    A.CATEGORIA as CATEGORIA_GP,\n    JORNADA as JORNADA_GP,\n    A.CLASSIFICACAO AS QUADRANTE_GP,\n    A.ROW_ID_TERRITORIO as ROW_ID_TERRITORIO_GP,\n    A.ROW_ID_CONTATO as ROW_ID_CONTATO_GP,\n    A.CICLO\nFrom\n\t\"GSK_Intelligence\".dbo.\"Dim_Quadrante_Medico_GP\" A\nWhere \n\tLEFT(CAST(A.CICLO AS VARCHAR(10)),4) IN (YEAR(GETDATE()),YEAR(GETDATE())-1) AND\n    EXISTS (SELECT B.* FROM \"GSK_Intelligence\".dbo.\"DIM_CAD_FORCA_VENDAS\" B WHERE A.CICLO = B.CICLO AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO \n            AND B.FLAG_BI IS NULL);",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -335,36 +408,96 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "id_cliente",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "id_cliente",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "nome",
+									"name": "CRM_GP",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "nome",
+									"name": "CRM_GP",
 									"type": "String",
 									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "tipo",
+									"name": "MERCADO_GP",
 									"type": "String",
 									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "tipo",
+									"name": "MERCADO_GP",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CATEGORIA_GP",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CATEGORIA_GP",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "JORNADA_GP",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "JORNADA_GP",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "QUADRANTE_GP",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "QUADRANTE_GP",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_TERRITORIO_GP",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ROW_ID_TERRITORIO_GP",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_CONTATO_GP",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ROW_ID_CONTATO_GP",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CICLO",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -379,7 +512,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Select_Tabelas",
+						"referenceName": "SqlServerGSK",
 						"type": "DatasetReference"
 					}
 				],
@@ -388,7 +521,7 @@
 						"referenceName": "Arquivo_Em_TxT",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "interacao_cliente_novo.txt"
+							"nome_arquivo": "dim_quadrante_medico_gp.txt"
 						}
 					}
 				]

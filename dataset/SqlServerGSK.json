@@ -1,0 +1,12 @@
+{
+	"name": "SqlServerGSK",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerGSK",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}
