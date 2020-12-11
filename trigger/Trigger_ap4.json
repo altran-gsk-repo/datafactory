@@ -1,0 +1,35 @@
+{
+	"name": "Trigger_ap4",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipeline": {
+			"pipelineReference": {
+				"referenceName": "Staging_Quandrante_Medico_GP",
+				"type": "PipelineReference"
+			},
+			"parameters": {
+				"windowStart": {
+					"type": "Expression",
+					"value": "@trigger().outputs.windowStartTime"
+				},
+				"windowEnd": {
+					"type": "Expression",
+					"value": "@trigger().outputs.windowEndTime"
+				}
+			}
+		},
+		"type": "TumblingWindowTrigger",
+		"typeProperties": {
+			"frequency": "Hour",
+			"interval": 240,
+			"startTime": "2020-12-11T01:11:00.000Z",
+			"delay": "00:00:00",
+			"maxConcurrency": 50,
+			"retryPolicy": {
+				"intervalInSeconds": 30
+			},
+			"dependsOn": []
+		}
+	}
+}
