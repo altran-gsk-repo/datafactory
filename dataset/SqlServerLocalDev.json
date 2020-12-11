@@ -1,0 +1,18 @@
+{
+	"name": "SqlServerLocalDev",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerLocalDouglasDev",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Table_Source_Name": {
+				"type": "string",
+				"defaultValue": "SRC_Table_Name"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}

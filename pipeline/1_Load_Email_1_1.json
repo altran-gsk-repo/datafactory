@@ -94,6 +94,16 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
+											"source": {
+												"type": "SqlServerSource",
+												"sqlReaderQuery": "SELECT Max_LastUpdatedDate from cfg\nwhere Table_Name Like\n'@{item().Table_Name}'",
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"dataset": {
+												"referenceName": "config_carga",
+												"type": "DatasetReference"
+											},
 											"firstRowOnly": false
 										}
 									},
@@ -119,6 +129,43 @@
 												"type": "Expression"
 											}
 										}
+									},
+									{
+										"name": "Copy data1",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "Filter2",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SqlServerSource",
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"enableStaging": false
+										},
+										"inputs": [
+											{
+												"referenceName": "SqlServerLocalDev",
+												"type": "DatasetReference",
+												"parameters": {
+													"Table_Source_Name": "@{item().Table_Name}"
+												}
+											}
+										]
 									}
 								]
 							}
