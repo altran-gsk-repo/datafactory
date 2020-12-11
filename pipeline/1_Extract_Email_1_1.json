@@ -375,7 +375,14 @@
 			{
 				"name": "dim_quandrante_medico_gp",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_interacao_visitas_realizadas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -522,6 +529,232 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"nome_arquivo": "dim_quadrante_medico_gp.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "dim_interacao_visitas_realizadas",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\tA.ACTIVITY_UID AS ID_VISITA,\n    A.TARGET_OU_ID AS TIPO_VISITA,\n\tCASE\n\tWHEN (A.TARGET_OU_ID = 'F2F') OR\n\t\t (A.TARGET_OU_ID = '') OR\n\t\t (A.TARGET_OU_ID = 'F2F Short call') THEN 'F2F'\n\tWHEN A.TARGET_OU_ID = 'F2F Accompanied' THEN 'F2F Acompanhada'\n\tWHEN (A.TARGET_OU_ID = 'Web call') OR \n         (A.TARGET_OU_ID = 'Virtual') THEN 'Virtual'\n\tWHEN A.TARGET_OU_ID = 'Virtual Accompanied' THEN 'Virtual Acompanhada'      \n    WHEN A.TARGET_OU_ID = 'Phone call' THEN 'Telefonica'\n    WHEN A.TARGET_OU_ID = 'Sample drop only'THEN 'Entrega Amostras'\n    WHEN A.TARGET_OU_ID = 'Item drop only' THEN 'Tentativa de Contato'\n\tWHEN (A.TARGET_OU_ID = 'Email') OR \n\t\t (A.TARGET_OU_ID = 'MSL Email') THEN 'Email'\n\t\t ELSE A.TARGET_OU_ID END AS TIPO_VISITA_PTBR,\n\n\tCASE\n\tWHEN A.TARGET_OU_ID = 'F2F' THEN 2\n    WHEN A.TARGET_OU_ID = 'F2F Accompanied' THEN 1\n    WHEN A.TARGET_OU_ID = 'F2F Short call' THEN 2\n\tWHEN (A.TARGET_OU_ID = 'Web call') OR \n         (A.TARGET_OU_ID = 'Virtual') THEN 4\n\tWHEN A.TARGET_OU_ID = 'Phone call' THEN 6\n    WHEN A.TARGET_OU_ID = 'Virtual Accompanied' THEN 5\n    WHEN A.TARGET_OU_ID = 'Sample drop only' THEN 7\n    WHEN A.TARGET_OU_ID = 'Item drop only'THEN 3\n\tWHEN (A.TARGET_OU_ID = 'Email') OR \n\t\t (A.TARGET_OU_ID = 'MSL Email') THEN 9\n\tWHEN A.TARGET_OU_ID = 'MSL On Demand' THEN 8\n\tELSE A.TARGET_OU_ID END AS TIPO_VISITA_ORDER,\n\tA.CLM_IND,\n\tA.RECORD_TYPE_ID,\n\tA.RECORD_TYPE_NAME,\n\tA.DATA,\n\tA.CICLO,\n    A.TARGET_PER_ID,\n    A.ROW_ID_TERRITORIO,\n\tCASE\n\t WHEN (DATEPART(weekday,A.DATA) - DATEPART(weekday,DATEADD(month, DATEDIFF(month,0,A.DATA),0)) + 1) < 1 THEN 'S1'\n     ELSE\t'S' + CAST(((DATEPART(weekday,A.DATA) - DATEPART(weekday,DATEADD(month, DATEDIFF(month,0,A.DATA),0)) + 1)) AS varchar) END AS SEMANA,\n    LEFT(FLAG_VISITA,2) as FLAG_VISITA,\n\t'VR' AS TIPO_INTERACAO\nFROM \n\t\"GSK_Intelligence\".dbo.\"Fato_visitas_Realizadas\" A\nWHERE \n\tLEFT(CAST(A.CICLO AS VARCHAR(10)),4) IN (YEAR(GETDATE()),YEAR(GETDATE())-1) AND\n    EXISTS (SELECT B.* FROM \"GSK_Intelligence\".dbo.\"DIM_CAD_FORCA_VENDAS\" B WHERE A.CICLO = B.CICLO AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO \n            AND B.FLAG_BI IS NULL);",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ID_VISITA",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ID_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_VISITA",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "TIPO_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_VISITA_PTBR",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "TIPO_VISITA_PTBR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_VISITA_ORDER",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "TIPO_VISITA_ORDER",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "CLM_IND",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CLM_IND",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RECORD_TYPE_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "RECORD_TYPE_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RECORD_TYPE_NAME",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "RECORD_TYPE_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DATA",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "DATA",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TARGET_PER_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "TARGET_PER_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SEMANA",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "SEMANA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FLAG_VISITA",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "FLAG_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_INTERACAO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "TIPO_INTERACAO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SqlServerGSK",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Arquivo_Em_TxT",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_interacao_visitas_realizadas.txt"
 						}
 					}
 				]
