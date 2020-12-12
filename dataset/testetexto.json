@@ -1,0 +1,45 @@
+{
+	"name": "testetexto",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "dim_q_teste.txt",
+				"folderPath": "dash.email1to1",
+				"container": "altrangsk"
+			},
+			"columnDelimiter": "~",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "id_cliente",
+				"type": "String"
+			},
+			{
+				"name": "nome",
+				"type": "String"
+			},
+			{
+				"name": "idade",
+				"type": "String"
+			},
+			{
+				"name": "data_nascimento",
+				"type": "String"
+			},
+			{
+				"name": "tipo",
+				"type": "String"
+			}
+		]
+	}
+}
