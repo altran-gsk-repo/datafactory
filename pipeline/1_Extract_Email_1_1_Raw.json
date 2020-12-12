@@ -1403,6 +1403,208 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "dim_interacao_email_1_1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT    \n\tLEFT(A.DATA,6) AS CICLO\n\t,A.ID_ENVIO AS ID_ENVIO_EMAIL\n\t,A.ID_ATIVIDADE AS ID_ATIV_EMAIL\n\t,A.TIPO_EVENTO AS TIPO_ATIV_EMAIL\n\t,A.DATA AS DATA_ATIV_EMAIL\n\t,B.PRODUCT_NAME AS PRODUTO\n    ,A.ROW_ID_CONTATO\n    ,A.ROW_ID_TERRITORIO\n    ,A.NOME_DOCUMENTO_APROVADO AS DOCUMENTO_EMAIL\n    ,A.DESCRICAO_DOCUMENTO AS DESC_DOCUMENTO_EMAIL\n    ,A.ASSUNTO_EMAIL\n\t,'E-Mail 1:1'\t\t\t\t\t\t\t\t\t\tas TIPO_INTERACAO\nFROM\n\t[GSK_Intelligence].[dbo].[Fato_Email_1_1] A LEFT OUTER JOIN [GSK_Intelligence].[dbo].[STG_Cad_Promo_Items_Veeva] B\n    ON\tA.ROW_ID_PRODUTO = B.PRODUCT_CATALOG_ID\nWHERE \n\tLEFT(CAST(LEFT(A.DATA,6)  AS VARCHAR(10)),4) IN (YEAR(GETDATE()),YEAR(GETDATE())-1) AND\n    EXISTS (SELECT B.* FROM [GSK_Intelligence].[dbo].[DIM_CAD_FORCA_VENDAS] B WHERE LEFT(A.DATA,6)  = B.CICLO AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO AND B.FLAG_BI IS NULL)\nOPTION(FAST 10000)",
+						"queryTimeout": "07:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_ENVIO_EMAIL",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ID_ENVIO_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_ATIV_EMAIL",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ID_ATIV_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_ATIV_EMAIL",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "TIPO_ATIV_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DATA_ATIV_EMAIL",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "DATA_ATIV_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PRODUTO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "PRODUTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_CONTATO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ROW_ID_CONTATO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DOCUMENTO_EMAIL",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "DOCUMENTO_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DESC_DOCUMENTO_EMAIL",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "DESC_DOCUMENTO_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ASSUNTO_EMAIL",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ASSUNTO_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_INTERACAO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "TIPO_INTERACAO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SqlServerGSK",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Arquivo_Em_TxT",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_interacao_email_1_1.txt"
+						}
+					}
+				]
 			}
 		],
 		"folder": {
