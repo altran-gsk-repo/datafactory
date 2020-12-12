@@ -16,10 +16,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT DISTINCT  \n\t\n\tCRM AS CRM_UNIV\t          \n\t,NOME_MEDICO AS MEDICO_UNIV\t\n\t,ESPECIALIDADE\tAS ESPECIALIDADE_UNIV\n\t,ENDERECO\tAS LOGRADOURO_UNIV\n\t,BAIRRO\tAS BAIRRO_UNIV\n\t,CIDADE\tAS CIDADE_UNIV\n\t,CEP\tAS CEP_UNIV\n\t,ORIGEM_END\tAS ORIGEM_UNIV\n\t,UF\tAS UF_UNIV\n\t,BRICK\tAS BRICK_UNIV\n\t,TELEFONE AS TELEFONE_UNIV\nFROM \n\t\"GSK_Intelligence\".dbo.\"DIM_AUDIT_END\";",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -178,8 +183,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SqlServerGSK",
-						"type": "DatasetReference"
+						"referenceName": "FileSystemGSK",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_audit_end.txt"
+						}
 					}
 				],
 				"outputs": [
@@ -206,10 +214,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\tA.ACTIVITY_UID AS ID_VISITA,\n    A.TARGET_OU_ID AS TIPO_VISITA,\n\tCASE\n\tWHEN (A.TARGET_OU_ID = 'F2F') OR\n\t\t (A.TARGET_OU_ID = '') OR\n\t\t (A.TARGET_OU_ID = 'F2F Short call') THEN 'F2F'\n\tWHEN A.TARGET_OU_ID = 'F2F Accompanied' THEN 'F2F Acompanhada'\n\tWHEN (A.TARGET_OU_ID = 'Web call') OR \n         (A.TARGET_OU_ID = 'Virtual') THEN 'Virtual'\n\tWHEN A.TARGET_OU_ID = 'Virtual Accompanied' THEN 'Virtual Acompanhada'      \n    WHEN A.TARGET_OU_ID = 'Phone call' THEN 'Telefonica'\n    WHEN A.TARGET_OU_ID = 'Sample drop only'THEN 'Entrega Amostras'\n    WHEN A.TARGET_OU_ID = 'Item drop only' THEN 'Tentativa de Contato'\n\tWHEN (A.TARGET_OU_ID = 'Email') OR \n\t\t (A.TARGET_OU_ID = 'MSL Email') THEN 'Email'\n\t\t ELSE A.TARGET_OU_ID END AS TIPO_VISITA_PTBR,\n\n\tCASE\n\tWHEN A.TARGET_OU_ID = 'F2F' THEN 2\n    WHEN A.TARGET_OU_ID = 'F2F Accompanied' THEN 1\n    WHEN A.TARGET_OU_ID = 'F2F Short call' THEN 2\n\tWHEN (A.TARGET_OU_ID = 'Web call') OR \n         (A.TARGET_OU_ID = 'Virtual') THEN 4\n\tWHEN A.TARGET_OU_ID = 'Phone call' THEN 6\n    WHEN A.TARGET_OU_ID = 'Virtual Accompanied' THEN 5\n    WHEN A.TARGET_OU_ID = 'Sample drop only' THEN 7\n    WHEN A.TARGET_OU_ID = 'Item drop only'THEN 3\n\tWHEN (A.TARGET_OU_ID = 'Email') OR \n\t\t (A.TARGET_OU_ID = 'MSL Email') THEN 9\n\tWHEN A.TARGET_OU_ID = 'MSL On Demand' THEN 8\n\tELSE A.TARGET_OU_ID END AS TIPO_VISITA_ORDER,\n\tA.CLM_IND,\n\tA.RECORD_TYPE_ID,\n\tA.RECORD_TYPE_NAME,\n\tA.DATA,\n\tA.CICLO,\n    A.TARGET_PER_ID,\n    A.ROW_ID_TERRITORIO,\n\tCASE\n\t WHEN (DATEPART(weekday,A.DATA) - DATEPART(weekday,DATEADD(month, DATEDIFF(month,0,A.DATA),0)) + 1) < 1 THEN 'S1'\n     ELSE\t'S' + CAST(((DATEPART(weekday,A.DATA) - DATEPART(weekday,DATEADD(month, DATEDIFF(month,0,A.DATA),0)) + 1)) AS varchar) END AS SEMANA,\n    LEFT(FLAG_VISITA,2) as FLAG_VISITA,\n\t'VR' AS TIPO_INTERACAO\nFROM \n\t\"GSK_Intelligence\".dbo.\"Fato_visitas_Realizadas\" A\nWHERE \n\tLEFT(CAST(A.CICLO AS VARCHAR(10)),4) IN (YEAR(GETDATE()),YEAR(GETDATE())-1) AND\n    EXISTS (SELECT B.* FROM \"GSK_Intelligence\".dbo.\"DIM_CAD_FORCA_VENDAS\" B WHERE A.CICLO = B.CICLO AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO \n            AND B.FLAG_BI IS NULL);",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -404,8 +417,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SqlServerGSK",
-						"type": "DatasetReference"
+						"referenceName": "FileSystemGSK",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_interacao_visitas_realizadas.txt"
+						}
 					}
 				],
 				"outputs": [
@@ -432,10 +448,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderQuery": "Select  \n  A.CICLO\t\n  ,A.ROW_ID_TERRITORIO\t\n  ,A.ROW_ID_CONTATO\t\n  ,A.VP\t\n  ,A.VR\t\n  ,A.VRE\t\n  ,A.VRT\n  ,A.PLANEJUN\n  ,A.REALUN\n  ,A.EFFECTIVE_CALLS\t\n  ,A.UNDER_CALLS\t\n  ,A.OVER_CALLS\t\n  ,A.OFF_TARGET_CALLS\n  ,A.TARGET_CUST\n  ,A.UNDER_TARGET\n  ,A.ON_TARGET\n  ,A.OVER_TARGET\n  ,A.EMAIL_CONSENT_KPI\n  ,CASE WHEN A.VRT = A.VP THEN 'S' ELSE'N'END AS AT_DESIRED_FREQUENCY\n  ,CASE WHEN A.VRT > A.VP THEN 'S' ELSE'N'END AS OVER_DESIRED_FREQUENCY\n  ,'VM'\t\t\t\t\t\t\t\t\t\tas TIPO_INTERACAO\nFROM\n\tView_Fato_Visita_Medico A \nWHERE\n    EXISTS (SELECT B.* FROM \"GSK_Intelligence\".dbo.\"DIM_CAD_FORCA_VENDAS\" B WHERE A.CICLO = B.CICLO AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO \n            AND B.FLAG_BI IS NULL);",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -714,8 +735,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SqlServerGSK",
-						"type": "DatasetReference"
+						"referenceName": "FileSystemGSK",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_interacao_visitas_medicos.txt"
+						}
 					}
 				],
 				"outputs": [

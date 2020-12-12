@@ -1,0 +1,37 @@
+{
+	"name": "FileSystemGSK",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FileServerGSK",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"nome_arquivo": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"fileName": {
+					"value": "@dataset().nome_arquivo",
+					"type": "Expression"
+				},
+				"folderPath": "EMAIL 1-1/FILES"
+			},
+			"columnDelimiter": "",
+			"encodingName": "ISO-8859-1",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ID~CRM_UNIV~MEDICO_UNIV~ESPECIALIDADE_UNIV~LOGRADOURO_UNIV~BAIRRO_UNIV~CIDADE_UNIV~CEP_UNIV~ORIGEM_UNIV~UF_UNIV~BRICK_UNIV~TELEFONE_UNIV",
+				"type": "String"
+			}
+		]
+	}
+}
