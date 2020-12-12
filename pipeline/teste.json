@@ -86,14 +86,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": true
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "Select\n\t\t*\n\tFrom\n\t\tinteracao_cliente_antigo\n\twhere cast(id_cliente as int) > '@{activity('testeLookupContador').output.firstRow.contador}'",
+							"type": "Expression"
 						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -118,20 +117,14 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "staging",
-						"type": "DatasetReference",
-						"parameters": {
-							"nome_arquivo": "incremental.txt"
-						}
+						"referenceName": "SqlServerLocalDev",
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "staging",
-						"type": "DatasetReference",
-						"parameters": {
-							"nome_arquivo": "incremental.txt"
-						}
+						"type": "DatasetReference"
 					}
 				]
 			}
