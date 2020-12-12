@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "dim_q_teste.txt",
+				"fileName": "dim_q_merge.txt",
 				"folderPath": "dash.email1to1",
 				"container": "altrangsk"
 			},
