@@ -1,0 +1,23 @@
+{
+	"name": "DestinationDataset_lyn",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "dim_q_teste.txt",
+				"folderPath": "dash.email1to1",
+				"container": "altrangsk"
+			},
+			"columnDelimiter": "~",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
