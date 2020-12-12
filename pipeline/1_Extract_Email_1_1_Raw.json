@@ -43,12 +43,144 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "ID~CRM_UNIV~MEDICO_UNIV~ESPECIALIDADE_UNIV~LOGRADOURO_UNIV~BAIRRO_UNIV~CIDADE_UNIV~CEP_UNIV~ORIGEM_UNIV~UF_UNIV~BRICK_UNIV~TELEFONE_UNIV",
+									"name": "ID",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "ID~CRM_UNIV~MEDICO_UNIV~ESPECIALIDADE_UNIV~LOGRADOURO_UNIV~BAIRRO_UNIV~CIDADE_UNIV~CEP_UNIV~ORIGEM_UNIV~UF_UNIV~BRICK_UNIV~TELEFONE_UNIV",
+									"name": "ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CRM_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CRM_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MEDICO_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "MEDICO_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ESPECIALIDADE_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ESPECIALIDADE_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LOGRADOURO_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "LOGRADOURO_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "BAIRRO_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "BAIRRO_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CIDADE_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CIDADE_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CEP_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CEP_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ORIGEM_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ORIGEM_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "UF_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "UF_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "BRICK_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "BRICK_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TELEFONE_UNIV",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TELEFONE_UNIV",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -121,12 +253,180 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "ID~ID_VISITA~TIPO_VISITA~TIPO_VISITA_PTBR~TIPO_VISITA_ORDER~CLM_IND~RECORD_TYPE_ID~RECORD_TYPE_NAME~DATA~CICLO~TARGET_PER_ID~ROW_ID_TERRITORIO~SEMANA~FLAG_VISITA~TIPO_INTERACAO",
+									"name": "ID",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "ID~ID_VISITA~TIPO_VISITA~TIPO_VISITA_PTBR~TIPO_VISITA_ORDER~CLM_IND~RECORD_TYPE_ID~RECORD_TYPE_NAME~DATA~CICLO~TARGET_PER_ID~ROW_ID_TERRITORIO~SEMANA~FLAG_VISITA~TIPO_INTERACAO",
+									"name": "ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ID_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TIPO_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_VISITA_PTBR",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TIPO_VISITA_PTBR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_VISITA_ORDER",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TIPO_VISITA_ORDER",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CLM_IND",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CLM_IND",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RECORD_TYPE_ID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "RECORD_TYPE_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RECORD_TYPE_NAME",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "RECORD_TYPE_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DATA",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DATA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TARGET_PER_ID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TARGET_PER_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SEMANA",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "SEMANA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FLAG_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "FLAG_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_INTERACAO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TIPO_INTERACAO",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -199,12 +499,264 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "ID~CICLO~ROW_ID_TERRITORIO~ROW_ID_CONTATO~VP~VR~VRE~VRT~PLANEJUN~REALUN~EFFECTIVE_CALLS~UNDER_CALLS~OVER_CALLS~OFF_TARGET_CALLS~TARGET_CUST~UNDER_TARGET~ON_TARGET~OVER_TARGET~EMAIL_CONSENT_KPI~AT_DESIRED_FREQUENCY~OVER_DESIRED_FREQUENCY~TIPO_INTERACAO",
+									"name": "ID",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "ID~CICLO~ROW_ID_TERRITORIO~ROW_ID_CONTATO~VP~VR~VRE~VRT~PLANEJUN~REALUN~EFFECTIVE_CALLS~UNDER_CALLS~OVER_CALLS~OFF_TARGET_CALLS~TARGET_CUST~UNDER_TARGET~ON_TARGET~OVER_TARGET~EMAIL_CONSENT_KPI~AT_DESIRED_FREQUENCY~OVER_DESIRED_FREQUENCY~TIPO_INTERACAO",
+									"name": "ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_CONTATO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_CONTATO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "VP",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "VP",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "VR",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "VR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "VRE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "VRE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "VRT",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "VRT",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PLANEJUN",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PLANEJUN",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "REALUN",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "REALUN",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EFFECTIVE_CALLS",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EFFECTIVE_CALLS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "UNDER_CALLS",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "UNDER_CALLS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "OVER_CALLS",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "OVER_CALLS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "OFF_TARGET_CALLS",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "OFF_TARGET_CALLS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TARGET_CUST",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TARGET_CUST",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "UNDER_TARGET",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "UNDER_TARGET",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ON_TARGET",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ON_TARGET",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "OVER_TARGET",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "OVER_TARGET",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EMAIL_CONSENT_KPI",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EMAIL_CONSENT_KPI",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AT_DESIRED_FREQUENCY",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "AT_DESIRED_FREQUENCY",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "OVER_DESIRED_FREQUENCY",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "OVER_DESIRED_FREQUENCY",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_INTERACAO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TIPO_INTERACAO",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -277,12 +829,180 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "ID~BU~DIVISAO~NOME_GD~NOME_GR~NOME_REPRESENTANTE~MUDID~ROW_ID_TERRITORIO~TERRITORIO~TERRITORIO_GD~TERRITORIO_GR~CICLO_FV~ROW_ID_FUNCIONARIO~FLAG_PROJETO~FLAG_TARGET",
+									"name": "ID",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "ID~BU~DIVISAO~NOME_GD~NOME_GR~NOME_REPRESENTANTE~MUDID~ROW_ID_TERRITORIO~TERRITORIO~TERRITORIO_GD~TERRITORIO_GR~CICLO_FV~ROW_ID_FUNCIONARIO~FLAG_PROJETO~FLAG_TARGET",
+									"name": "ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "BU",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "BU",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DIVISAO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DIVISAO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME_GD",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NOME_GD",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME_GR",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NOME_GR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME_REPRESENTANTE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NOME_REPRESENTANTE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MUDID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "MUDID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TERRITORIO_GD",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TERRITORIO_GD",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TERRITORIO_GR",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TERRITORIO_GR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CICLO_FV",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CICLO_FV",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_FUNCIONARIO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_FUNCIONARIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FLAG_PROJETO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "FLAG_PROJETO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FLAG_TARGET",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "FLAG_TARGET",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -355,12 +1075,96 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "ID~CICLO~DIVISAO~TARGET_SRO_CRM~TARGET_SRO_VISITA~TARGET_SRO_MEDIA_DIA~TARGET_SRO_COACHING~TARGET_SRO_COB",
+									"name": "ID",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "ID~CICLO~DIVISAO~TARGET_SRO_CRM~TARGET_SRO_VISITA~TARGET_SRO_MEDIA_DIA~TARGET_SRO_COACHING~TARGET_SRO_COB",
+									"name": "ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DIVISAO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DIVISAO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TARGET_SRO_CRM",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TARGET_SRO_CRM",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TARGET_SRO_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TARGET_SRO_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TARGET_SRO_MEDIA_DIA",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TARGET_SRO_MEDIA_DIA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TARGET_SRO_COACHING",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TARGET_SRO_COACHING",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TARGET_SRO_COB",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TARGET_SRO_COB",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -433,12 +1237,156 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "ID~CICLO~ID_ENVIO_EMAIL~ID_ATIV_EMAIL~TIPO_ATIV_EMAIL~DATA_ATIV_EMAIL~PRODUTO~ROW_ID_CONTATO~ROW_ID_TERRITORIO~DOCUMENTO_EMAIL~DESC_DOCUMENTO_EMAIL~ASSUNTO_EMAIL~TIPO_INTERACAO",
+									"name": "ID",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "ID~CICLO~ID_ENVIO_EMAIL~ID_ATIV_EMAIL~TIPO_ATIV_EMAIL~DATA_ATIV_EMAIL~PRODUTO~ROW_ID_CONTATO~ROW_ID_TERRITORIO~DOCUMENTO_EMAIL~DESC_DOCUMENTO_EMAIL~ASSUNTO_EMAIL~TIPO_INTERACAO",
+									"name": "ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_ENVIO_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ID_ENVIO_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_ATIV_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ID_ATIV_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_ATIV_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TIPO_ATIV_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DATA_ATIV_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DATA_ATIV_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PRODUTO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PRODUTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_CONTATO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_CONTATO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DOCUMENTO_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DOCUMENTO_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DESC_DOCUMENTO_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DESC_DOCUMENTO_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ASSUNTO_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ASSUNTO_EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_INTERACAO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TIPO_INTERACAO",
 									"type": "String",
 									"physicalType": "String"
 								}
