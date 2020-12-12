@@ -21,7 +21,7 @@
 				},
 				"folderPath": "EMAIL 1-1/FILES"
 			},
-			"columnDelimiter": "",
+			"columnDelimiter": "~",
 			"encodingName": "ISO-8859-1",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
