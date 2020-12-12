@@ -43,132 +43,12 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "CRM_UNIV",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "CRM_UNIV",
+									"name": "ID~CRM_UNIV~MEDICO_UNIV~ESPECIALIDADE_UNIV~LOGRADOURO_UNIV~BAIRRO_UNIV~CIDADE_UNIV~CEP_UNIV~ORIGEM_UNIV~UF_UNIV~BRICK_UNIV~TELEFONE_UNIV",
 									"type": "String",
 									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "MEDICO_UNIV",
-									"type": "String",
-									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "MEDICO_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ESPECIALIDADE_UNIV",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ESPECIALIDADE_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "LOGRADOURO_UNIV",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "LOGRADOURO_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "BAIRRO_UNIV",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "BAIRRO_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "CIDADE_UNIV",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "CIDADE_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "CEP_UNIV",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "CEP_UNIV",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "ORIGEM_UNIV",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ORIGEM_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "UF_UNIV",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "UF_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "BRICK_UNIV",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "BRICK_UNIV",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "TELEFONE_UNIV",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TELEFONE_UNIV",
+									"name": "ID~CRM_UNIV~MEDICO_UNIV~ESPECIALIDADE_UNIV~LOGRADOURO_UNIV~BAIRRO_UNIV~CIDADE_UNIV~CEP_UNIV~ORIGEM_UNIV~UF_UNIV~BRICK_UNIV~TELEFONE_UNIV",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -241,168 +121,12 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "ID_VISITA",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ID_VISITA",
+									"name": "ID~ID_VISITA~TIPO_VISITA~TIPO_VISITA_PTBR~TIPO_VISITA_ORDER~CLM_IND~RECORD_TYPE_ID~RECORD_TYPE_NAME~DATA~CICLO~TARGET_PER_ID~ROW_ID_TERRITORIO~SEMANA~FLAG_VISITA~TIPO_INTERACAO",
 									"type": "String",
 									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TIPO_VISITA",
-									"type": "String",
-									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "TIPO_VISITA",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TIPO_VISITA_PTBR",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TIPO_VISITA_PTBR",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TIPO_VISITA_ORDER",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "TIPO_VISITA_ORDER",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "CLM_IND",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "CLM_IND",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "RECORD_TYPE_ID",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "RECORD_TYPE_ID",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "RECORD_TYPE_NAME",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "RECORD_TYPE_NAME",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "DATA",
-									"type": "DateTime",
-									"physicalType": "date"
-								},
-								"sink": {
-									"name": "DATA",
-									"type": "DateTime",
-									"physicalType": "DateTime"
-								}
-							},
-							{
-								"source": {
-									"name": "CICLO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "CICLO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TARGET_PER_ID",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TARGET_PER_ID",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ROW_ID_TERRITORIO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ROW_ID_TERRITORIO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "SEMANA",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "SEMANA",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "FLAG_VISITA",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "FLAG_VISITA",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TIPO_INTERACAO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TIPO_INTERACAO",
+									"name": "ID~ID_VISITA~TIPO_VISITA~TIPO_VISITA_PTBR~TIPO_VISITA_ORDER~CLM_IND~RECORD_TYPE_ID~RECORD_TYPE_NAME~DATA~CICLO~TARGET_PER_ID~ROW_ID_TERRITORIO~SEMANA~FLAG_VISITA~TIPO_INTERACAO",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -475,252 +199,12 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "CICLO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "CICLO",
+									"name": "ID~CICLO~ROW_ID_TERRITORIO~ROW_ID_CONTATO~VP~VR~VRE~VRT~PLANEJUN~REALUN~EFFECTIVE_CALLS~UNDER_CALLS~OVER_CALLS~OFF_TARGET_CALLS~TARGET_CUST~UNDER_TARGET~ON_TARGET~OVER_TARGET~EMAIL_CONSENT_KPI~AT_DESIRED_FREQUENCY~OVER_DESIRED_FREQUENCY~TIPO_INTERACAO",
 									"type": "String",
 									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ROW_ID_TERRITORIO",
-									"type": "String",
-									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "ROW_ID_TERRITORIO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ROW_ID_CONTATO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ROW_ID_CONTATO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "VP",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "VP",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "VR",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "VR",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "VRE",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "VRE",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "VRT",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "VRT",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "PLANEJUN",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "PLANEJUN",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "REALUN",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "REALUN",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "EFFECTIVE_CALLS",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "EFFECTIVE_CALLS",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "UNDER_CALLS",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "UNDER_CALLS",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "OVER_CALLS",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "OVER_CALLS",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "OFF_TARGET_CALLS",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "OFF_TARGET_CALLS",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "TARGET_CUST",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "TARGET_CUST",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "UNDER_TARGET",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "UNDER_TARGET",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "ON_TARGET",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "ON_TARGET",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "OVER_TARGET",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "OVER_TARGET",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "EMAIL_CONSENT_KPI",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "EMAIL_CONSENT_KPI",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "AT_DESIRED_FREQUENCY",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "AT_DESIRED_FREQUENCY",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "OVER_DESIRED_FREQUENCY",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "OVER_DESIRED_FREQUENCY",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TIPO_INTERACAO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TIPO_INTERACAO",
+									"name": "ID~CICLO~ROW_ID_TERRITORIO~ROW_ID_CONTATO~VP~VR~VRE~VRT~PLANEJUN~REALUN~EFFECTIVE_CALLS~UNDER_CALLS~OVER_CALLS~OFF_TARGET_CALLS~TARGET_CUST~UNDER_TARGET~ON_TARGET~OVER_TARGET~EMAIL_CONSENT_KPI~AT_DESIRED_FREQUENCY~OVER_DESIRED_FREQUENCY~TIPO_INTERACAO",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -920,10 +404,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT    \n\tA.BU,\n    CASE \n    \tWHEN RIGHT(A.TERRITORIO,6) ='022010' THEN 'MSL LUPUS'\n        WHEN RIGHT(A.TERRITORIO,6) ='037000' THEN 'MSL HEALTHECO'\n        WHEN RIGHT(A.TERRITORIO,6) ='022001' THEN 'MSL VIIV'\n        WHEN RIGHT(A.TERRITORIO,6) ='022011' THEN 'MSL VIIV'\n        WHEN RIGHT(A.TERRITORIO,6) ='022012' THEN 'MSL VIIV'\n        WHEN RIGHT(A.TERRITORIO,6) ='022007' THEN 'MSL RESP'\n        WHEN RIGHT(A.TERRITORIO,6) ='022009' THEN 'MSL RESP'\n        WHEN RIGHT(A.TERRITORIO,6) ='036000' THEN 'MSL DPOC'\n        WHEN RIGHT(A.TERRITORIO,6) ='055001' THEN 'MSL VACINAS'\n        WHEN RIGHT(A.TERRITORIO,6) ='055002' THEN 'MSL VACINAS'\n        WHEN RIGHT(A.TERRITORIO,6) ='055003' THEN 'MSL VACINAS'\n        WHEN RIGHT(A.TERRITORIO,6) ='055004' THEN 'MSL VACINAS'\n        WHEN RIGHT(A.TERRITORIO,6) ='055005' THEN 'MSL VACINAS'\n        WHEN RIGHT(A.TERRITORIO,6) ='055006' THEN 'MSL VACINAS'\n\tELSE A.DIVISÃO END AS DIVISÃO,\n    A.NOME_GD,\n    A.NOME_GR,\n    A.NOME_REPRESENTANTE,\n    A.ROW_ID_FUNCIONARIO AS MUDID,\n\tA.ROW_ID_TERRITORIO,\n    A.TERRITORIO,\n    A.TERRITORIO_GD,\n    A.TERRITORIO_GR,\n    A.CICLO AS CICLO_FV,\n    A.ROW_ID_FUNCIONARIO,\n    A.FLAG_PROJETO,\n\tCASE WHEN B.ROW_ID_TERRITORIO IS NULL THEN 'N' ELSE 'S' END AS FLAG_TARGET\nFROM \n\t(SELECT * FROM GSK_Intelligence.dbo.Dim_Cad_Forca_Vendas WHERE FLAG_BI IS NULL) A LEFT OUTER JOIN GSK_Intelligence.dbo.Dim_Rep_Target B\n    ON\tA.CICLO = B.CICLO AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO\n\n\tLEFT OUTER JOIN (\tSELECT DISTINCT \n\t\t\t\t\t\t\tRIGHT(A.CYCLE_PLAN_NAME,6) AS CICLO,\n\t\t\t\t\t\t\tB.TERRITORY_ID \n\t\t\t\t\t\tFROM \n\t\t\t\t\t\t\tSTG_Cad_MCCP_Veeva A LEFT OUTER JOIN STG_CAD_HIERARQUIA_VEEVA B\n\t\t\t\t\t\t\tON A.TERRITORY = B.TERRITORIO\n\t\t\t\t\t\tWHERE\n\t\t\t\t\t\t\tLEFT(RIGHT(CYCLE_PLAN_NAME,6),4) IN (CAST(YEAR(GETDATE()) AS VARCHAR(6)),CAST(YEAR(GETDATE())-1 AS VARCHAR(6)))) C\n\tON A.CICLO = C.CICLO AND A.ROW_ID_TERRITORIO = C.TERRITORY_ID\nWHERE \n\tLEFT(CAST(A.CICLO AS VARCHAR(10)),4) IN (YEAR(GETDATE()),YEAR(GETDATE())-1) AND\n    EXISTS (SELECT B.* FROM GSK_Intelligence.dbo.DIM_CAD_FORCA_VENDAS B WHERE A.CICLO = B.CICLO AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO \n            AND B.FLAG_BI IS NULL);",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -942,168 +431,12 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "BU",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "BU",
+									"name": "ID~BU~DIVISAO~NOME_GD~NOME_GR~NOME_REPRESENTANTE~MUDID~ROW_ID_TERRITORIO~TERRITORIO~TERRITORIO_GD~TERRITORIO_GR~CICLO_FV~ROW_ID_FUNCIONARIO~FLAG_PROJETO~FLAG_TARGET",
 									"type": "String",
 									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "DIVISÃO",
-									"type": "String",
-									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "DIVISÃO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "NOME_GD",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "NOME_GD",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "NOME_GR",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "NOME_GR",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "NOME_REPRESENTANTE",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "NOME_REPRESENTANTE",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "MUDID",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "MUDID",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ROW_ID_TERRITORIO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ROW_ID_TERRITORIO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TERRITORIO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TERRITORIO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TERRITORIO_GD",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TERRITORIO_GD",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TERRITORIO_GR",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TERRITORIO_GR",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "CICLO_FV",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "CICLO_FV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ROW_ID_FUNCIONARIO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ROW_ID_FUNCIONARIO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "FLAG_PROJETO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "FLAG_PROJETO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "FLAG_TARGET",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "FLAG_TARGET",
+									"name": "ID~BU~DIVISAO~NOME_GD~NOME_GR~NOME_REPRESENTANTE~MUDID~ROW_ID_TERRITORIO~TERRITORIO~TERRITORIO_GD~TERRITORIO_GR~CICLO_FV~ROW_ID_FUNCIONARIO~FLAG_PROJETO~FLAG_TARGET",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -1118,8 +451,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SqlServerGSK",
-						"type": "DatasetReference"
+						"referenceName": "FileSystemGSK",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_forca_vendas.txt"
+						}
 					}
 				],
 				"outputs": [
@@ -1146,10 +482,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT    \n   CICLO\n  ,DIVISAO\t\n  ,TARGET_CRM\tAS TARGET_SRO_CRM\n  ,TARGET_VISITA\tAS TARGET_SRO_VISITA\n  ,TARGET_MEDIA_DIA\t AS TARGET_SRO_MEDIA_DIA\n  ,TARGET_COACHING\tAS TARGET_SRO_COACHING\n  ,TARGET_COBERTURA AS TARGET_SRO_COB\nFROM\n\t\"GSK_Intelligence\".dbo.\"Dim_Cad_Target_SRO\";\n",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -1168,84 +509,12 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "CICLO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "CICLO",
+									"name": "ID~CICLO~DIVISAO~TARGET_SRO_CRM~TARGET_SRO_VISITA~TARGET_SRO_MEDIA_DIA~TARGET_SRO_COACHING~TARGET_SRO_COB",
 									"type": "String",
 									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "DIVISAO",
-									"type": "String",
-									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "DIVISAO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TARGET_SRO_CRM",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TARGET_SRO_CRM",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TARGET_SRO_VISITA",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TARGET_SRO_VISITA",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TARGET_SRO_MEDIA_DIA",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TARGET_SRO_MEDIA_DIA",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TARGET_SRO_COACHING",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TARGET_SRO_COACHING",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TARGET_SRO_COB",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TARGET_SRO_COB",
+									"name": "ID~CICLO~DIVISAO~TARGET_SRO_CRM~TARGET_SRO_VISITA~TARGET_SRO_MEDIA_DIA~TARGET_SRO_COACHING~TARGET_SRO_COB",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -1260,8 +529,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SqlServerGSK",
-						"type": "DatasetReference"
+						"referenceName": "FileSystemGSK",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_cad_target_sro.txt"
+						}
 					}
 				],
 				"outputs": [
@@ -1429,7 +701,7 @@
 				]
 			},
 			{
-				"name": "dim_interacao_email_1_1",
+				"name": "dim_interacao_email",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -1442,10 +714,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT    \n\tLEFT(A.DATA,6) AS CICLO\n\t,A.ID_ENVIO AS ID_ENVIO_EMAIL\n\t,A.ID_ATIVIDADE AS ID_ATIV_EMAIL\n\t,A.TIPO_EVENTO AS TIPO_ATIV_EMAIL\n\t,A.DATA AS DATA_ATIV_EMAIL\n\t,B.PRODUCT_NAME AS PRODUTO\n    ,A.ROW_ID_CONTATO\n    ,A.ROW_ID_TERRITORIO\n    ,A.NOME_DOCUMENTO_APROVADO AS DOCUMENTO_EMAIL\n    ,A.DESCRICAO_DOCUMENTO AS DESC_DOCUMENTO_EMAIL\n    ,A.ASSUNTO_EMAIL\n\t,'E-Mail 1:1'\t\t\t\t\t\t\t\t\t\tas TIPO_INTERACAO\nFROM\n\t[GSK_Intelligence].[dbo].[Fato_Email_1_1] A LEFT OUTER JOIN [GSK_Intelligence].[dbo].[STG_Cad_Promo_Items_Veeva] B\n    ON\tA.ROW_ID_PRODUTO = B.PRODUCT_CATALOG_ID\nWHERE \n\tLEFT(CAST(LEFT(A.DATA,6)  AS VARCHAR(10)),4) IN (YEAR(GETDATE()),YEAR(GETDATE())-1) AND\n    EXISTS (SELECT B.* FROM [GSK_Intelligence].[dbo].[DIM_CAD_FORCA_VENDAS] B WHERE LEFT(A.DATA,6)  = B.CICLO AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO AND B.FLAG_BI IS NULL)\nOPTION(FAST 10000)",
-						"queryTimeout": "07:00:00",
-						"partitionOption": "None"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -1464,144 +741,12 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "CICLO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "CICLO",
+									"name": "ID~CICLO~ID_ENVIO_EMAIL~ID_ATIV_EMAIL~TIPO_ATIV_EMAIL~DATA_ATIV_EMAIL~PRODUTO~ROW_ID_CONTATO~ROW_ID_TERRITORIO~DOCUMENTO_EMAIL~DESC_DOCUMENTO_EMAIL~ASSUNTO_EMAIL~TIPO_INTERACAO",
 									"type": "String",
 									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ID_ENVIO_EMAIL",
-									"type": "String",
-									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "ID_ENVIO_EMAIL",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ID_ATIV_EMAIL",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ID_ATIV_EMAIL",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TIPO_ATIV_EMAIL",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TIPO_ATIV_EMAIL",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "DATA_ATIV_EMAIL",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "DATA_ATIV_EMAIL",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "PRODUTO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "PRODUTO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ROW_ID_CONTATO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ROW_ID_CONTATO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ROW_ID_TERRITORIO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ROW_ID_TERRITORIO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "DOCUMENTO_EMAIL",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "DOCUMENTO_EMAIL",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "DESC_DOCUMENTO_EMAIL",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "DESC_DOCUMENTO_EMAIL",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ASSUNTO_EMAIL",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "ASSUNTO_EMAIL",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TIPO_INTERACAO",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "TIPO_INTERACAO",
+									"name": "ID~CICLO~ID_ENVIO_EMAIL~ID_ATIV_EMAIL~TIPO_ATIV_EMAIL~DATA_ATIV_EMAIL~PRODUTO~ROW_ID_CONTATO~ROW_ID_TERRITORIO~DOCUMENTO_EMAIL~DESC_DOCUMENTO_EMAIL~ASSUNTO_EMAIL~TIPO_INTERACAO",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -1616,8 +761,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SqlServerGSK",
-						"type": "DatasetReference"
+						"referenceName": "FileSystemGSK",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_interacao_email.txt"
+						}
 					}
 				],
 				"outputs": [
@@ -1625,7 +773,7 @@
 						"referenceName": "Arquivo_Em_TxT",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "dim_interacao_email_1_1.txt"
+							"nome_arquivo": "dim_interacao_email.txt"
 						}
 					}
 				]
