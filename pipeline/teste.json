@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
-				"type": "Copy",
+				"name": "dataflow1",
+				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
@@ -15,12 +15,85 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow1",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "None"
+				}
+			},
+			{
+				"name": "testeLookupContador",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "dataflow1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderStoredProcedureName": "[dbo].[SP_ACT_TESTE_TABELA]",
-						"queryTimeout": "02:00:00",
-						"isolationLevel": "Serializable",
-						"partitionOption": "None"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "teste",
+							"wildcardFileName": "contador-00001"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "contador",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "testeLookupContador",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -36,68 +109,6 @@
 					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"name": "id_cliente",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "id_cliente",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "nome",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "nome",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "idade",
-									"type": "Int32",
-									"physicalType": "int"
-								},
-								"sink": {
-									"name": "idade",
-									"type": "Int32",
-									"physicalType": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "data_nascimento",
-									"type": "DateTime",
-									"physicalType": "date"
-								},
-								"sink": {
-									"name": "data_nascimento",
-									"type": "DateTime",
-									"physicalType": "DateTime"
-								}
-							},
-							{
-								"source": {
-									"name": "tipo",
-									"type": "String",
-									"physicalType": "varchar"
-								},
-								"sink": {
-									"name": "tipo",
-									"type": "String",
-									"physicalType": "String"
-								}
-							}
-						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
@@ -107,18 +118,32 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SqlServerLocalDev",
-						"type": "DatasetReference"
+						"referenceName": "staging",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "incremental.txt"
+						}
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "Listar_Arquivos_Txt",
-						"type": "DatasetReference"
+						"referenceName": "staging",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "incremental.txt"
+						}
 					}
 				]
 			}
 		],
+		"variables": {
+			"contador": {
+				"type": "Array"
+			},
+			"staging": {
+				"type": "Array"
+			}
+		},
 		"annotations": []
 	}
 }

@@ -1,0 +1,32 @@
+{
+	"name": "staging",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"nome_arquivo": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().nome_arquivo",
+					"type": "Expression"
+				},
+				"folderPath": "staging_area",
+				"container": "altrangsk"
+			},
+			"columnDelimiter": "~",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

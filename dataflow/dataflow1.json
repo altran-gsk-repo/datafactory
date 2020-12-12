@@ -29,7 +29,7 @@
 					"name": "ValorMaxId"
 				}
 			],
-			"script": "source(output(\n\t\tid_cliente as integer,\n\t\tnome as string,\n\t\tidade as string,\n\t\tdata_nascimento as string,\n\t\ttipo as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> aruqivoBase\naruqivoBase select(mapColumn(\n\t\tcontador = id_cliente\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecionarId\nSelecionarId aggregate(id_cliente = max(contador)) ~> ValorMaxId\nValorMaxId sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\ttruncate: true,\n\tmapColumn(\n\t\tcontador = id_cliente\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ArmazenarCont"
+			"script": "source(output(\n\t\tid_cliente as integer,\n\t\tnome as string,\n\t\tidade as string,\n\t\tdata_nascimento as string,\n\t\ttipo as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> aruqivoBase\naruqivoBase select(mapColumn(\n\t\tcontador = id_cliente\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecionarId\nSelecionarId aggregate(id_cliente = max(contador)) ~> ValorMaxId\nValorMaxId sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tfilePattern:'contador',\n\ttruncate: true,\n\tmapColumn(\n\t\tcontador = id_cliente\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ArmazenarCont"
 		}
 	}
 }
