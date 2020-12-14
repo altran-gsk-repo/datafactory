@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "inc_dim_quadrante_medico_gp.txt",
+				"fileName": "inc_dim_quandrante_medico_gp.txt",
 				"folderPath": "staging_area",
 				"container": "altrangsk"
 			},

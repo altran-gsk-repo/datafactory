@@ -9,38 +9,38 @@
 						"referenceName": "dim_quadrante_medico_gp_DF",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "DimQuadranteMedicoGp"
 				},
 				{
 					"dataset": {
 						"referenceName": "staging",
 						"type": "DatasetReference"
 					},
-					"name": "source2"
+					"name": "Incremento"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "dim_final_teste",
+						"referenceName": "dim_quadrante_medico_gp_pqt",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "DestinoParquet"
 				},
 				{
 					"dataset": {
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference"
 					},
-					"name": "sink2"
+					"name": "DestinoTXT"
 				}
 			],
 			"transformations": [
 				{
-					"name": "Union1"
+					"name": "UnirIncremento"
 				}
 			],
-			"script": "source(output(\n\t\tid_cliente as integer,\n\t\tnome as string,\n\t\tidade as integer,\n\t\tdata_nascimento as date,\n\t\ttipo as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tid_cliente as integer,\n\t\tnome as string,\n\t\tidade as integer,\n\t\tdata_nascimento as date,\n\t\ttipo as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source2\nsource1, source2 union(byName: true,\n\tpartitionBy('roundRobin', 2))~> Union1\nUnion1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dim_q_teste_final'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1\nUnion1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['dim_q_teste.txt'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
+			"script": "source(output(\n\t\tid_cliente as integer,\n\t\tnome as string,\n\t\tidade as integer,\n\t\tdata_nascimento as date,\n\t\ttipo as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DimQuadranteMedicoGp\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> Incremento\nDimQuadranteMedicoGp, Incremento union(byName: true,\n\tpartitionBy('roundRobin', 2))~> UnirIncremento\nUnirIncremento sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dim_quadrante_medico_gp'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DestinoParquet\nUnirIncremento sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['dim_quadrante_medico.txt'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DestinoTXT"
 		}
 	}
 }
