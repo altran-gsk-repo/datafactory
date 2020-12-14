@@ -5,7 +5,14 @@
 			{
 				"name": "Lista_Arquivos",
 				"type": "GetMetadata",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Extract",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -166,6 +173,19 @@
 						"recursive": true,
 						"wildcardFileName": "*.txt"
 					}
+				}
+			},
+			{
+				"name": "Extract",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "2 - Extract - KPI Visitacao",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
 				}
 			}
 		],
