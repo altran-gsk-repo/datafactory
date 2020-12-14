@@ -1,5 +1,5 @@
 {
-	"name": "1_Arquivos_Em_Parquet",
+	"name": "Arquivos_Em_Parquet_1",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage",

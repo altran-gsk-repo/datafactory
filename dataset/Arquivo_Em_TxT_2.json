@@ -1,5 +1,5 @@
 {
-	"name": "2_Arquivo_Em_TxT",
+	"name": "Arquivo_Em_TxT_2",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage",

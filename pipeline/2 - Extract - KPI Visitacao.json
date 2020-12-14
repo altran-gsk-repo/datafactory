@@ -50,7 +50,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "2_Arquivo_Em_TxT",
+						"referenceName": "Arquivo_Em_TxT_2",
 						"type": "DatasetReference",
 						"parameters": {
 							"nome_arquivo": "dim_eventos"
@@ -106,7 +106,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "2_Arquivo_Em_TxT",
+						"referenceName": "Arquivo_Em_TxT_2",
 						"type": "DatasetReference",
 						"parameters": {
 							"nome_arquivo": "dim_eventos_expandida"
@@ -169,7 +169,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "2_Arquivo_Em_TxT",
+						"referenceName": "Arquivo_Em_TxT_2",
 						"type": "DatasetReference",
 						"parameters": {
 							"nome_arquivo": "dim_eventos_produtos"
@@ -232,7 +232,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "2_Arquivo_Em_TxT",
+						"referenceName": "Arquivo_Em_TxT_2",
 						"type": "DatasetReference",
 						"parameters": {
 							"nome_arquivo": "dim_msl_division"
@@ -288,7 +288,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "2_Arquivo_Em_TxT",
+						"referenceName": "Arquivo_Em_TxT_2",
 						"type": "DatasetReference",
 						"parameters": {
 							"nome_arquivo": "dim_coaching"
@@ -351,7 +351,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "2_Arquivo_Em_TxT",
+						"referenceName": "Arquivo_Em_TxT_2",
 						"type": "DatasetReference",
 						"parameters": {
 							"nome_arquivo": "dim_kpi_territorio"

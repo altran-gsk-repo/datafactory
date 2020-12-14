@@ -1,5 +1,5 @@
 {
-	"name": "1_Listar_Arquivos_Txt",
+	"name": "Listar_Arquivos_TxT_1",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage",
