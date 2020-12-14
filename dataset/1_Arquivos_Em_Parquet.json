@@ -5,6 +5,11 @@
 			"referenceName": "AzureBlobStorage",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"pasta": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "1 - Email 1-1"
 		},
@@ -13,7 +18,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "teste",
+				"folderPath": {
+					"value": "@dataset().pasta",
+					"type": "Expression"
+				},
 				"container": "altrangsk"
 			},
 			"compressionCodec": "snappy"

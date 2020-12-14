@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "1_Listar_Arquivos_Txt",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"pasta": "dash.email1to1"
+						}
 					},
 					"fieldList": [
 						"childItems"
@@ -91,7 +94,7 @@
 									"storeSettings": {
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
-										"wildcardFolderPath": "teste",
+										"wildcardFolderPath": "dash.email1to1",
 										"wildcardFileName": {
 											"value": "@{item().name}",
 											"type": "Expression"
@@ -123,13 +126,19 @@
 							"inputs": [
 								{
 									"referenceName": "1_Listar_Arquivos_Txt",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"pasta": "dash.email1to1"
+									}
 								}
 							],
 							"outputs": [
 								{
 									"referenceName": "1_Arquivos_Em_Parquet",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"pasta": "dash.email1to1"
+									}
 								}
 							]
 						}
@@ -158,7 +167,10 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "1_Listar_Arquivos_Txt",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"pasta": "dash.email1to1"
+						}
 					},
 					"enableLogging": false,
 					"storeSettings": {
