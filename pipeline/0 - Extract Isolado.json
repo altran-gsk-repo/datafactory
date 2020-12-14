@@ -17,15 +17,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "FileServerReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SET NOCOUNT ON\n\nSelect\n\tROW_NUMBER() OVER(ORDER BY (GETDATE())) as ID\n\t,A.CICLO + A.CRM AS CRM_CICLO\n\t,RIGHT(A.CICLO,2) AS MES\t  \n\t,A.CICLO\n    ,A.CRM\n    ,A.MEDICO\n    ,A.TIPO\n    ,A.TIPOCONTATO\n    ,A.GRUPOPROMOCIONAL\n    ,A.ESPECIALIDADE\n    ,A.LOGRADOURO\n    ,A.COMPLEMENTO\n    ,A.BAIRRO\n    ,A.CIDADE\n    ,A.UF\n    ,A.CEP\n    ,A.BRICK\n    ,A.TELEFONEMEDICO\n    ,A.CELULARMEDICO\n    ,A.EMAIL AS EMAIL_1_1\n    ,A.ROW_ID_FUNCIONARIO\n    ,A.ROW_ID_TERRITORIO\n    ,A.ROW_ID_CONTATO\n    ,A.STATUS\n    ,A.QTD_VISITA_PLANEJADA AS QTD_VISITA_PLANEJADA_PAINEL\n\t,A.QTD_VISITA_REALIZADA AS QTD_VISITA_REALIZADA_PAINEL\n    ,A.ESPECIALIDADE_02\n    ,A.ESPECIALIDADE_03\n    ,A.VP_PROX\n    ,A.STATUS_MEDICO\n    ,A.EMAIL_CONSENT AS EMAIL_1_1_CONSENT\n    ,B.NETWORK_ID\n    ,B.RX_GIGYA_ID\n    ,D.VEEVA_ID\n    ,B.ROW_ID_CONTATO_EXT\n    ,A.OUTRO_EMAIL AS EMAIL_MASS\n    ,A.OUTRO_EMAIL_CONSENT  AS EMAIL_MASS_CONSENT  \n    ,CASE \n\t\tWHEN C.CYCLE_PLAN = 'S' THEN 'S'\n\t ELSE 'N' END \t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAS CYCLE_PLAN,\n\t GP.MERCADO,\n\t GP.GRUPOPROMOCIONAL as 'PRODUTO_PAINEL'\nFROM\n\tDIM_PAINEL_CORRENTE A LEFT OUTER JOIN STG_CAD_CONTAS_VEEVA B\n    ON\tA.ROW_ID_CONTATO = B.ROW_ID_CONTATO\n\n\tLeft join Dim_Cad_Grade_Promocional_Aberta_Qlikview as GP\n\ton A.CRM = GP.CRM AND A.ROW_ID_TERRITORIO = GP.ROW_ID_TERRITORIO\n    \n    LEFT JOIN Dim_Sense_Universo_Medico D\n      ON D.CRM = B.DOCUMENTO\n\t  AND D.NETWORK_ID = B.NETWORK_ID\n    \n    LEFT OUTER JOIN View_Sense_Cycle_Plan C\n\tON\tA.CICLO = C.CICLO AND\n\t\tA.ROW_ID_CONTATO = C.ROW_ID_CONTATO AND\n\t\tA.ROW_ID_TERRITORIO = C.ROW_ID_TERRITORIO\n    \nWHERE\n\tLEFT(CAST(A.CICLO AS VARCHAR(10)),4) IN (YEAR(GETDATE()),YEAR(GETDATE())-1) AND\n    EXISTS (SELECT B.* FROM DIM_CAD_FORCA_VENDAS B WHERE A.CICLO = B.CICLO AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO \n            AND B.FLAG_BI IS NULL)\nOPTION(FAST 10000)",
+						"queryTimeout": "08:20:00",
+						"partitionOption": "None"
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -39,8 +34,9 @@
 						}
 					},
 					"enableStaging": false,
+					"parallelCopies": 5,
 					"enableSkipIncompatibleRow": false,
-					"validateDataConsistency": true,
+					"validateDataConsistency": false,
 					"logSettings": {
 						"enableCopyActivityLog": true,
 						"copyActivityLogSettings": {
@@ -61,20 +57,20 @@
 							{
 								"source": {
 									"name": "ID",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int64",
+									"physicalType": "bigint"
 								},
 								"sink": {
 									"name": "ID",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int64",
+									"physicalType": "Int64"
 								}
 							},
 							{
 								"source": {
 									"name": "CRM_CICLO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "CRM_CICLO",
@@ -86,7 +82,7 @@
 								"source": {
 									"name": "MES",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "MES",
@@ -98,7 +94,7 @@
 								"source": {
 									"name": "CICLO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "CICLO",
@@ -110,7 +106,7 @@
 								"source": {
 									"name": "CRM",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "CRM",
@@ -122,7 +118,7 @@
 								"source": {
 									"name": "MEDICO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "MEDICO",
@@ -134,7 +130,7 @@
 								"source": {
 									"name": "TIPO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "TIPO",
@@ -146,7 +142,7 @@
 								"source": {
 									"name": "TIPOCONTATO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "TIPOCONTATO",
@@ -158,7 +154,7 @@
 								"source": {
 									"name": "GRUPOPROMOCIONAL",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "GRUPOPROMOCIONAL",
@@ -170,7 +166,7 @@
 								"source": {
 									"name": "ESPECIALIDADE",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "ESPECIALIDADE",
@@ -182,7 +178,7 @@
 								"source": {
 									"name": "LOGRADOURO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "LOGRADOURO",
@@ -194,7 +190,7 @@
 								"source": {
 									"name": "COMPLEMENTO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "COMPLEMENTO",
@@ -206,7 +202,7 @@
 								"source": {
 									"name": "BAIRRO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "BAIRRO",
@@ -218,7 +214,7 @@
 								"source": {
 									"name": "CIDADE",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "CIDADE",
@@ -230,7 +226,7 @@
 								"source": {
 									"name": "UF",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "UF",
@@ -241,32 +237,32 @@
 							{
 								"source": {
 									"name": "CEP",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int64",
+									"physicalType": "bigint"
 								},
 								"sink": {
 									"name": "CEP",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int64",
+									"physicalType": "Int64"
 								}
 							},
 							{
 								"source": {
 									"name": "BRICK",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int32",
+									"physicalType": "int"
 								},
 								"sink": {
 									"name": "BRICK",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int32",
+									"physicalType": "Int32"
 								}
 							},
 							{
 								"source": {
 									"name": "TELEFONEMEDICO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "TELEFONEMEDICO",
@@ -278,7 +274,7 @@
 								"source": {
 									"name": "CELULARMEDICO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "CELULARMEDICO",
@@ -290,7 +286,7 @@
 								"source": {
 									"name": "EMAIL_1_1",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "EMAIL_1_1",
@@ -302,7 +298,7 @@
 								"source": {
 									"name": "ROW_ID_FUNCIONARIO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "ROW_ID_FUNCIONARIO",
@@ -314,7 +310,7 @@
 								"source": {
 									"name": "ROW_ID_TERRITORIO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "ROW_ID_TERRITORIO",
@@ -326,7 +322,7 @@
 								"source": {
 									"name": "ROW_ID_CONTATO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "ROW_ID_CONTATO",
@@ -338,7 +334,7 @@
 								"source": {
 									"name": "STATUS",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "STATUS",
@@ -349,32 +345,32 @@
 							{
 								"source": {
 									"name": "QTD_VISITA_PLANEJADA_PAINEL",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int32",
+									"physicalType": "int"
 								},
 								"sink": {
 									"name": "QTD_VISITA_PLANEJADA_PAINEL",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int32",
+									"physicalType": "Int32"
 								}
 							},
 							{
 								"source": {
 									"name": "QTD_VISITA_REALIZADA_PAINEL",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int32",
+									"physicalType": "int"
 								},
 								"sink": {
 									"name": "QTD_VISITA_REALIZADA_PAINEL",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int32",
+									"physicalType": "Int32"
 								}
 							},
 							{
 								"source": {
 									"name": "ESPECIALIDADE_02",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "ESPECIALIDADE_02",
@@ -386,7 +382,7 @@
 								"source": {
 									"name": "ESPECIALIDADE_03",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "ESPECIALIDADE_03",
@@ -397,20 +393,20 @@
 							{
 								"source": {
 									"name": "VP_PROX",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int32",
+									"physicalType": "int"
 								},
 								"sink": {
 									"name": "VP_PROX",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int32",
+									"physicalType": "Int32"
 								}
 							},
 							{
 								"source": {
 									"name": "STATUS_MEDICO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "STATUS_MEDICO",
@@ -422,7 +418,7 @@
 								"source": {
 									"name": "EMAIL_1_1_CONSENT",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "EMAIL_1_1_CONSENT",
@@ -434,7 +430,7 @@
 								"source": {
 									"name": "NETWORK_ID",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "NETWORK_ID",
@@ -446,7 +442,7 @@
 								"source": {
 									"name": "RX_GIGYA_ID",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "RX_GIGYA_ID",
@@ -458,7 +454,7 @@
 								"source": {
 									"name": "VEEVA_ID",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "VEEVA_ID",
@@ -470,7 +466,7 @@
 								"source": {
 									"name": "ROW_ID_CONTATO_EXT",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "ROW_ID_CONTATO_EXT",
@@ -482,7 +478,7 @@
 								"source": {
 									"name": "EMAIL_MASS",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "EMAIL_MASS",
@@ -494,7 +490,7 @@
 								"source": {
 									"name": "EMAIL_MASS_CONSENT",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "EMAIL_MASS_CONSENT",
@@ -506,7 +502,7 @@
 								"source": {
 									"name": "CYCLE_PLAN",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "CYCLE_PLAN",
@@ -518,7 +514,7 @@
 								"source": {
 									"name": "MERCADO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "MERCADO",
@@ -530,7 +526,7 @@
 								"source": {
 									"name": "PRODUTO_PAINEL",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "PRODUTO_PAINEL",
@@ -548,11 +544,8 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "FileSystemGSK",
-						"type": "DatasetReference",
-						"parameters": {
-							"nome_arquivo": "dim_painel_medico.txt"
-						}
+						"referenceName": "SqlServerGSK",
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [

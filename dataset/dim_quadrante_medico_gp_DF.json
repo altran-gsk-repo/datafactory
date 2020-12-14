@@ -1,5 +1,5 @@
 {
-	"name": "testetexto",
+	"name": "dim_quadrante_medico_gp_DF",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage",
@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "dim_q_teste.txt",
+				"fileName": "dim_quadrante_medico_gp.txt",
 				"folderPath": "dash.email1to1",
 				"container": "altrangsk"
 			},
@@ -21,23 +21,39 @@
 		},
 		"schema": [
 			{
-				"name": "id_cliente",
+				"name": "ID",
 				"type": "String"
 			},
 			{
-				"name": "nome",
+				"name": "CRM_GP",
 				"type": "String"
 			},
 			{
-				"name": "idade",
+				"name": "MERCADO_GP",
 				"type": "String"
 			},
 			{
-				"name": "data_nascimento",
+				"name": "CATEGORIA_GP",
 				"type": "String"
 			},
 			{
-				"name": "tipo",
+				"name": "JORNADA_GP",
+				"type": "String"
+			},
+			{
+				"name": "QUADRANTE_GP",
+				"type": "String"
+			},
+			{
+				"name": "ROW_ID_TERRITORIO_GP",
+				"type": "String"
+			},
+			{
+				"name": "ROW_ID_CONTATO_GP",
+				"type": "String"
+			},
+			{
+				"name": "CICLO",
 				"type": "String"
 			}
 		]

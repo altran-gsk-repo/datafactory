@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "testetexto",
+						"referenceName": "dim_quadrante_medico_gp_DF",
 						"type": "DatasetReference"
 					},
 					"name": "source1"

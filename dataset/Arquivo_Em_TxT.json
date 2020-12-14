@@ -25,7 +25,7 @@
 				"folderPath": "dash.email1to1",
 				"container": "altrangsk"
 			},
-			"columnDelimiter": "~",
+			"columnDelimiter": "\t",
 			"encodingName": "ISO-8859-1",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
