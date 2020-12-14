@@ -29,7 +29,7 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "SalvarEmTXT_DF",
 						"type": "DatasetReference"
 					},
 					"name": "DestinoTXT"
@@ -40,7 +40,7 @@
 					"name": "UnirIncremento"
 				}
 			],
-			"script": "source(output(\n\t\tid_cliente as integer,\n\t\tnome as string,\n\t\tidade as integer,\n\t\tdata_nascimento as date,\n\t\ttipo as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DimQuadranteMedicoGp\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> Incremento\nDimQuadranteMedicoGp, Incremento union(byName: true,\n\tpartitionBy('roundRobin', 2))~> UnirIncremento\nUnirIncremento sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dim_quadrante_medico_gp'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DestinoParquet\nUnirIncremento sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['dim_quadrante_medico.txt'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DestinoTXT"
+			"script": "source(output(\n\t\tID as integer,\n\t\tCRM_GP as string,\n\t\tMERCADO_GP as string,\n\t\tCATEGORIA_GP as string,\n\t\tJORNADA_GP as string,\n\t\tQUADRANTE_GP as string,\n\t\tROW_ID_TERRITORIO_GP as string,\n\t\tROW_ID_CONTATO_GP as string,\n\t\tCICLO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DimQuadranteMedicoGp\nsource(output(\n\t\tID as integer,\n\t\tCRM_GP as string,\n\t\tMERCADO_GP as string,\n\t\tCATEGORIA_GP as string,\n\t\tJORNADA_GP as string,\n\t\tQUADRANTE_GP as string,\n\t\tROW_ID_TERRITORIO_GP as string,\n\t\tROW_ID_CONTATO_GP as string,\n\t\tCICLO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> Incremento\nDimQuadranteMedicoGp, Incremento union(byName: true,\n\tpartitionBy('roundRobin', 2))~> UnirIncremento\nUnirIncremento sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dim_quadrante_medico_gp'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DestinoParquet\nUnirIncremento sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['dim_quadrante_medico.txt'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DestinoTXT"
 		}
 	}
 }

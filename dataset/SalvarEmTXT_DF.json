@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedText1",
+	"name": "SalvarEmTXT_DF",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage",
