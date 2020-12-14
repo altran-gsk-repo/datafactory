@@ -1,18 +1,11 @@
 {
-	"name": "1 - FAIL - Extract Email 1-1",
+	"name": "1 - Extract Email 1-1",
 	"properties": {
 		"activities": [
 			{
 				"name": "Lista_Arquivos",
 				"type": "GetMetadata",
-				"dependsOn": [
-					{
-						"activity": "Execute Pipeline Isolation",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -173,19 +166,6 @@
 						"recursive": true,
 						"wildcardFileName": "*.txt"
 					}
-				}
-			},
-			{
-				"name": "Execute Pipeline Isolation",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "0 - Extract Isolado",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
 				}
 			}
 		],
