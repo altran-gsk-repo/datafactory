@@ -1,6 +1,9 @@
 {
 	"name": "Carga",
 	"properties": {
+		"folder": {
+			"name": "0_Desabilitado"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

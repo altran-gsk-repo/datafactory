@@ -1,6 +1,9 @@
 {
 	"name": "dim_quadrante_medico_gp",
 	"properties": {
+		"folder": {
+			"name": "0_Desabilitado"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
