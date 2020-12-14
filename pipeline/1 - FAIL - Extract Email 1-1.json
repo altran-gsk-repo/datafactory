@@ -1,5 +1,5 @@
 {
-	"name": "1_Extract_Email_1_1",
+	"name": "1 - FAIL - Extract Email 1-1",
 	"properties": {
 		"activities": [
 			{
@@ -182,7 +182,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "1_Isolation",
+						"referenceName": "0 - Extract Isolado",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
