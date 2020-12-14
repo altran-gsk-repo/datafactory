@@ -59,7 +59,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "contador",
+						"referenceName": "desativado_contador",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": true
@@ -233,7 +233,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "staging",
+						"referenceName": "desativado_staging",
 						"type": "DatasetReference"
 					}
 				]

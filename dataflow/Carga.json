@@ -6,14 +6,14 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "dim_quadrante_medico_gp_DF",
+						"referenceName": "desativado_dim_quadrante_medico_gp_DF",
 						"type": "DatasetReference"
 					},
 					"name": "DimQuadranteMedicoGp"
 				},
 				{
 					"dataset": {
-						"referenceName": "staging",
+						"referenceName": "desativado_staging",
 						"type": "DatasetReference"
 					},
 					"name": "Incremento"
@@ -22,14 +22,14 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "dim_quadrante_medico_gp_pqt",
+						"referenceName": "desativado_dim_quadrante_medico_gp_pqt",
 						"type": "DatasetReference"
 					},
 					"name": "DestinoParquet"
 				},
 				{
 					"dataset": {
-						"referenceName": "SalvarEmTXT_DF",
+						"referenceName": "desativado_SalvarEmTXT_DF",
 						"type": "DatasetReference"
 					},
 					"name": "DestinoTXT"

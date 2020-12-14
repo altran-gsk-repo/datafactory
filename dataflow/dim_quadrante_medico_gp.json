@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "dim_quadrante_medico_gp_DF",
+						"referenceName": "desativado_dim_quadrante_medico_gp_DF",
 						"type": "DatasetReference"
 					},
 					"name": "DimQuandranteMedicoGpSource"
@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "contador",
+						"referenceName": "desativado_contador",
 						"type": "DatasetReference"
 					},
 					"name": "ArmazenarCont"
