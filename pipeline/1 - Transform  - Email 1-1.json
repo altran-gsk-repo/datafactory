@@ -259,7 +259,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "1_Listar_Arquivos_Txt",
+									"referenceName": "1_Listar_Arquivos_Txt_Painel",
 									"type": "DatasetReference"
 								}
 							],
