@@ -1,5 +1,5 @@
 {
-	"name": "Arquivo_Em_TxT",
+	"name": "1_Arquivo_Em_TxT",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage",
@@ -11,7 +11,7 @@
 			}
 		},
 		"folder": {
-			"name": "Email_1_1"
+			"name": "1 - Email 1-1"
 		},
 		"annotations": [],
 		"type": "DelimitedText",

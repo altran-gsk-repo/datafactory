@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "Listar_Arquivos_Txt",
+						"referenceName": "1_Listar_Arquivos_Txt",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
@@ -122,13 +122,13 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "Listar_Arquivos_Txt",
+									"referenceName": "1_Listar_Arquivos_Txt",
 									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
 								{
-									"referenceName": "Arquivos_Em_Parquet",
+									"referenceName": "1_Arquivos_Em_Parquet",
 									"type": "DatasetReference"
 								}
 							]
@@ -157,7 +157,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "Listar_Arquivos_Txt",
+						"referenceName": "1_Listar_Arquivos_Txt",
 						"type": "DatasetReference"
 					},
 					"enableLogging": false,

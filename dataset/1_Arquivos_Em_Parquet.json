@@ -1,12 +1,12 @@
 {
-	"name": "Arquivos_Em_Parquet",
+	"name": "1_Arquivos_Em_Parquet",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "Email_1_1"
+			"name": "1 - Email 1-1"
 		},
 		"annotations": [],
 		"type": "Parquet",
