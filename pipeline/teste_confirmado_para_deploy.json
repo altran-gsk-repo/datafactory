@@ -259,7 +259,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflow2",
+						"referenceName": "Carga",
 						"type": "DataFlowReference"
 					},
 					"compute": {
