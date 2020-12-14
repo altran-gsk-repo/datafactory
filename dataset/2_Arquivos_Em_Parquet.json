@@ -1,0 +1,23 @@
+{
+	"name": "2_Arquivos_Em_Parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 - KPI Visitacao"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "dash.kpi_visitacao",
+				"container": "altrangsk"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
