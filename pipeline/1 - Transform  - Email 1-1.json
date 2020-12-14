@@ -1,5 +1,5 @@
 {
-	"name": "1 - Extract Email 1-1",
+	"name": "1 - Transform  - Email 1-1",
 	"properties": {
 		"activities": [
 			{
@@ -178,7 +178,7 @@
 			}
 		},
 		"folder": {
-			"name": "Extract"
+			"name": "Transform"
 		},
 		"annotations": []
 	}
