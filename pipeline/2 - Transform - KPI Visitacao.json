@@ -128,7 +128,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "1_Arquivos_Em_Parquet",
+									"referenceName": "2_Arquivos_Em_Parquet",
 									"type": "DatasetReference"
 								}
 							]
@@ -164,7 +164,7 @@
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
 						"recursive": true,
-						"wildcardFileName": "*til.txt"
+						"wildcardFileName": "*.txt"
 					}
 				}
 			}
