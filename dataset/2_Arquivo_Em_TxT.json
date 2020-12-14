@@ -10,6 +10,9 @@
 				"type": "string"
 			}
 		},
+		"folder": {
+			"name": "2 - KPI Visitacao"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
