@@ -24,7 +24,7 @@
 				},
 				"container": "altrangsk"
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": "~",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
