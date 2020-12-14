@@ -123,19 +123,13 @@
 							"inputs": [
 								{
 									"referenceName": "1_Listar_Arquivos_Txt",
-									"type": "DatasetReference",
-									"parameters": {
-										"pasta": "dash.email1to1"
-									}
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
 								{
 									"referenceName": "1_Arquivos_Em_Parquet",
-									"type": "DatasetReference",
-									"parameters": {
-										"pasta": "dash.email1to1"
-									}
+									"type": "DatasetReference"
 								}
 							]
 						}
