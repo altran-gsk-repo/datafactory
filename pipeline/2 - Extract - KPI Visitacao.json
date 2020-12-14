@@ -1101,6 +1101,185 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "dim_kpi_territorio",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "dim_coaching",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SET NOCOUNT ON\n\nSELECT  \n\t\tROW_NUMBER() OVER(ORDER BY (GETDATE())) as ID, \n\tA.CICLO,\n    A.ROW_ID_TERRITORIO,\n    A.TOTAL_TFT AS TFT,\n    A.[DIAS UTEIS] \t\tAS DIAS_UTEIS,\n    A.[VISITAS ABATER] AS VISITAS_ABATER,\n    A.OBJETIVO_VISITA_DIA,\n    A.[DIAS VISITACAO] AS DIAS_VISITACAO,\n    A.VR_CLM\nFROM\n\tFato_Parcelas_Calculo_KPI A \nWHERE \n\tLEFT(CAST(A.CICLO AS VARCHAR(10)),4) IN (YEAR(GETDATE()),YEAR(GETDATE())-1) AND\n    EXISTS (SELECT B.* \n    \t\t  FROM DIM_CAD_FORCA_VENDAS B \n   \t\t\t WHERE A.CICLO = B.CICLO \n               AND A.ROW_ID_TERRITORIO = B.ROW_ID_TERRITORIO \n               AND B.FLAG_BI IS NULL)\nOPTION(FAST 10000)",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ID",
+									"type": "Int64",
+									"physicalType": "bigint"
+								},
+								"sink": {
+									"name": "ID",
+									"type": "Int64",
+									"physicalType": "Int64"
+								}
+							},
+							{
+								"source": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TFT",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 10
+								},
+								"sink": {
+									"name": "TFT",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "DIAS_UTEIS",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "DIAS_UTEIS",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "VISITAS_ABATER",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 10
+								},
+								"sink": {
+									"name": "VISITAS_ABATER",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "OBJETIVO_VISITA_DIA",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 8
+								},
+								"sink": {
+									"name": "OBJETIVO_VISITA_DIA",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "DIAS_VISITACAO",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "DIAS_VISITACAO",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "VR_CLM",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "VR_CLM",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SqlServerGSK",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "2_Arquivo_Em_TxT",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_do_arquivo": "dim_kpi_territorio.txt"
+						}
+					}
+				]
 			}
 		],
 		"folder": {
