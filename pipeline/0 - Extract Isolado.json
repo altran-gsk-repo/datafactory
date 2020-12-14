@@ -1,7 +1,7 @@
 {
 	"name": "0 - Extract Isolado",
 	"properties": {
-		"description": "Serve para excluir e incluir caixas e fluxos isolados para testes",
+		"description": "Serve para excluir e incluir atividades e fluxos isolados para testes",
 		"activities": [
 			{
 				"name": "dim_painel_medico",
@@ -39,6 +39,22 @@
 						}
 					},
 					"enableStaging": false,
+					"enableSkipIncompatibleRow": false,
+					"validateDataConsistency": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "AzureBlobStorage",
+								"type": "LinkedServiceReference"
+							},
+							"path": "altrangsk/log_banco"
+						}
+					},
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
