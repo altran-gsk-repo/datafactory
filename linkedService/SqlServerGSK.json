@@ -5,8 +5,8 @@
 		"annotations": [],
 		"type": "SqlServer",
 		"typeProperties": {
-			"connectionString": "integrated security=False;data source=US1SXWNSQL0029;initial catalog=GSK_Intelligence;user id=GSK_Intelligence_O",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJjYzM0YzdhMi1lNDE1LTQ5YjItYjFkOC1hNzM2YTc1YzgwYjgiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"connectionString": "integrated security=False;data source=US1SXWNSQL0029;initial catalog=GSK_Intelligence;user id=GSK_Intelligence_O;packet size=32767",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJhM2FkYTQyYi0yNTgwLTRjYjAtOTkxZC0yZjhhMjM2OGQ4MzkiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "IntegrationRuntimeHomolog",
