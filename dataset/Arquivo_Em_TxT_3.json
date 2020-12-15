@@ -1,0 +1,32 @@
+{
+	"name": "Arquivo_Em_TxT_3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"nome_arquivo": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "3 - GSO"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "dash.gso",
+				"container": "altrangsk"
+			},
+			"columnDelimiter": "\t",
+			"encodingName": "ISO-8859-1",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
