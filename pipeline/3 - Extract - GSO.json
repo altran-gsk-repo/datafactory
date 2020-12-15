@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "TeradataSource",
-						"query": "SELECT DISTINCT\n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n\t\"ST\".\"DATE\",\n\tCOALESCE(\"PRD\".SURVEY_KEY,'NOT INFORMED') AS \"PRODUCT\",\n\tSUM(\"P\".RESPONSE_NUMBER)\n    \n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n \n LEFT JOIN (SELECT DISTINCT\n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n    \"P\".RESPONSE\n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n WHERE \"P\".QUESTION_ORDER = 0  AND \"P\".RESPONSE IS NOT NULL) AS \"PRD\" ON \"P\".SURVEY_TARGET_ID = \"PRD\".SURVEY_KEY\n \n INNER JOIN (SELECT \n\t  \"ST\".SURVEY_TARGET_ID as \"SURVEY_KEY\",\n\t  CAST(TRIM(CAST(LEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),4)||'-'||\n\t  SUBSTRING(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)) FROM 5 FOR 2) ||'-'||\n\t  RIGHT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),2) AS VARCHAR(10))) AS DATE FORMAT 'yyyy-mm-dd') AS \"DATE\",\n\t  \"ST\".SOURCE_LAST_MODIFIED_TS as \"TARGET_LAST_MODIFIED_TS\",\n\t  CAST(\"ST\".SOURCE_LAST_MODIFIED_TS AS DATE FORMAT 'YYYYMMDD') AS \"MODIFIED_DATE\",\n\t  \"ST\".START_DATE_ID,\n\t  \"ST\".END_DATE_ID,\n\t  \"ST\".REVIEW_DATE_ID,\n\t  \"ST\".REVIEW_STATUS,\n\t  \"ST\".MANAGER_TERRITORY_ID,\n\t  \"ST\".EMPLOYEE_TERRITORY_ID,\n\t  \"ST\".TERRITORY_ID\nFROM LATAMCRMFBICNTRYBRVW.F_SURVEY_TARGETS AS \"ST\"\nWHERE \"ST\".COUNTRY_CODE = 'BR'  AND \n\t\"ST\".SURVEY_TARGET_NAME LIKE '%GSO U%' AND\n\tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6) > '201901') AS \"ST\" ON \"P\".SURVEY_TARGET_ID = \"ST\".SURVEY_KEY\n\nWHERE \"P\".QUESTION_ID = '12215'\nGROUP BY \"P\".SURVEY_TARGET_ID,\n\t\t\t\"ST\".\"DATE\",\n\t\tCOALESCE(\"PRD\".SURVEY_KEY,'NOT INFORMED');",
+						"query": "SELECT DISTINCT\n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n\t\"ST\".\"DATE\" AS \"VISIT_DATE\",\n\tCOALESCE(\"PRD\".SURVEY_KEY,'NOT INFORMED') AS \"VISIT_PRODUCT\",\n\tSUM(\"P\".RESPONSE_NUMBER) AS \"TOTAL_VISITS\"\n    \n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n \n LEFT JOIN (SELECT DISTINCT\n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n    \"P\".RESPONSE\n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n WHERE \"P\".QUESTION_ORDER = 0  AND \"P\".RESPONSE IS NOT NULL) AS \"PRD\" ON \"P\".SURVEY_TARGET_ID = \"PRD\".SURVEY_KEY\n \n INNER JOIN (SELECT \n\t  \"ST\".SURVEY_TARGET_ID as \"SURVEY_KEY\",\n\t  CAST(TRIM(CAST(LEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),4)||'-'||\n\t  SUBSTRING(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)) FROM 5 FOR 2) ||'-'||\n\t  RIGHT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),2) AS VARCHAR(10))) AS DATE FORMAT 'yyyy-mm-dd') AS \"DATE\",\n\t  \"ST\".SOURCE_LAST_MODIFIED_TS as \"TARGET_LAST_MODIFIED_TS\",\n\t  CAST(\"ST\".SOURCE_LAST_MODIFIED_TS AS DATE FORMAT 'YYYYMMDD') AS \"MODIFIED_DATE\",\n\t  \"ST\".START_DATE_ID,\n\t  \"ST\".END_DATE_ID,\n\t  \"ST\".REVIEW_DATE_ID,\n\t  \"ST\".REVIEW_STATUS,\n\t  \"ST\".MANAGER_TERRITORY_ID,\n\t  \"ST\".EMPLOYEE_TERRITORY_ID,\n\t  \"ST\".TERRITORY_ID\nFROM LATAMCRMFBICNTRYBRVW.F_SURVEY_TARGETS AS \"ST\"\nWHERE \"ST\".COUNTRY_CODE = 'BR'  AND \n\t\"ST\".SURVEY_TARGET_NAME LIKE '%GSO U%' AND\n\tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6) > '201901') AS \"ST\" ON \"P\".SURVEY_TARGET_ID = \"ST\".SURVEY_KEY\n\nWHERE \"P\".QUESTION_ID = '12215'\nGROUP BY \"P\".SURVEY_TARGET_ID,\n\t\t\t\"ST\".\"DATE\",\n\t\tCOALESCE(\"PRD\".SURVEY_KEY,'NOT INFORMED');",
 						"partitionOption": "None"
 					},
 					"sink": {
@@ -48,33 +48,33 @@
 							},
 							{
 								"source": {
-									"name": "DATE",
+									"name": "VISIT_DATE",
 									"type": "DateTime"
 								},
 								"sink": {
-									"name": "DATE",
+									"name": "VISIT_DATE",
 									"type": "DateTime",
 									"physicalType": "DateTime"
 								}
 							},
 							{
 								"source": {
-									"name": "PRODUCT",
+									"name": "VISIT_PRODUCT",
 									"type": "String"
 								},
 								"sink": {
-									"name": "PRODUCT",
+									"name": "VISIT_PRODUCT",
 									"type": "String",
 									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "Sum(RESPONSE_NUMBER)",
+									"name": "TOTAL_VISITS",
 									"type": "Int32"
 								},
 								"sink": {
-									"name": "Sum(RESPONSE_NUMBER)",
+									"name": "TOTAL_VISITS",
 									"type": "Int32",
 									"physicalType": "Int32"
 								}
