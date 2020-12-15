@@ -1,0 +1,16 @@
+{
+	"name": "TeradataVeevaGSK",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "Teradata",
+		"typeProperties": {
+			"connectionString": "dbcname=gskintlkrp1cop1.corpnet2.com;uid=LATAM_BR_EXT",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiZTkxZjk4Mi04NWZhLTQzMDYtYjMyNC1kYmQ4MTYzOWE0NGEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "IntegrationRuntimeHomolog",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
