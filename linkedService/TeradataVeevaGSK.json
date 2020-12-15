@@ -5,8 +5,8 @@
 		"annotations": [],
 		"type": "Teradata",
 		"typeProperties": {
-			"connectionString": "dbcname=gskintlkrp1cop1.corpnet2.com;uid=LATAM_BR_EXT",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiZTkxZjk4Mi04NWZhLTQzMDYtYjMyNC1kYmQ4MTYzOWE0NGEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"connectionString": "dbcname=gskintlkrp1cop1.corpnet2.com;uid=LATAM_BR_EXT;packet size=32767",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI0YzQ5MGU2MC05Yjg1LTQ0OTMtOTIwMy1hNWI1ZWVhMGQwODciLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "IntegrationRuntimeHomolog",
