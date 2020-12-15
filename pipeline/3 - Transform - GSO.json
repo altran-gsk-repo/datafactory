@@ -1,18 +1,11 @@
 {
-	"name": "2 - Transform - KPI Visitacao",
+	"name": "3 - Transform - GSO",
 	"properties": {
 		"activities": [
 			{
 				"name": "Lista_Arquivos",
 				"type": "GetMetadata",
-				"dependsOn": [
-					{
-						"activity": "Extract",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -23,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "Listar_Arquivos_Txt_2",
+						"referenceName": "Listar_Arquivos_Txt_3",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
@@ -98,7 +91,7 @@
 									"storeSettings": {
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
-										"wildcardFolderPath": "dash.kpi_visitacao",
+										"wildcardFolderPath": "dash.gso",
 										"wildcardFileName": {
 											"value": "@{item().name}",
 											"type": "Expression"
@@ -129,13 +122,13 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "Listar_Arquivos_Txt_2",
+									"referenceName": "Listar_Arquivos_Txt_3",
 									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
 								{
-									"referenceName": "Arquivos_Em_Parquet_2",
+									"referenceName": "Arquivos_Em_Parquet_3",
 									"type": "DatasetReference"
 								}
 							]
@@ -164,7 +157,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "Listar_Arquivos_Txt_2",
+						"referenceName": "Listar_Arquivos_Txt_3",
 						"type": "DatasetReference"
 					},
 					"enableLogging": false,
@@ -173,19 +166,6 @@
 						"recursive": true,
 						"wildcardFileName": "*.txt"
 					}
-				}
-			},
-			{
-				"name": "Extract",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "2 - Extract - KPI Visitacao",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
 				}
 			}
 		],
