@@ -20,12 +20,1183 @@
 						"query": "SELECT DISTINCT\n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n\t\"ST\".\"DATE\",\n\tCOALESCE(\"PRD\".SURVEY_KEY,'NOT INFORMED') AS \"PRODUCT\",\n\tSUM(\"P\".RESPONSE_NUMBER)\n    \n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n \n LEFT JOIN (SELECT DISTINCT\n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n    \"P\".RESPONSE\n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n WHERE \"P\".QUESTION_ORDER = 0  AND \"P\".RESPONSE IS NOT NULL) AS \"PRD\" ON \"P\".SURVEY_TARGET_ID = \"PRD\".SURVEY_KEY\n \n INNER JOIN (SELECT \n\t  \"ST\".SURVEY_TARGET_ID as \"SURVEY_KEY\",\n\t  CAST(TRIM(CAST(LEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),4)||'-'||\n\t  SUBSTRING(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)) FROM 5 FOR 2) ||'-'||\n\t  RIGHT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),2) AS VARCHAR(10))) AS DATE FORMAT 'yyyy-mm-dd') AS \"DATE\",\n\t  \"ST\".SOURCE_LAST_MODIFIED_TS as \"TARGET_LAST_MODIFIED_TS\",\n\t  CAST(\"ST\".SOURCE_LAST_MODIFIED_TS AS DATE FORMAT 'YYYYMMDD') AS \"MODIFIED_DATE\",\n\t  \"ST\".START_DATE_ID,\n\t  \"ST\".END_DATE_ID,\n\t  \"ST\".REVIEW_DATE_ID,\n\t  \"ST\".REVIEW_STATUS,\n\t  \"ST\".MANAGER_TERRITORY_ID,\n\t  \"ST\".EMPLOYEE_TERRITORY_ID,\n\t  \"ST\".TERRITORY_ID\nFROM LATAMCRMFBICNTRYBRVW.F_SURVEY_TARGETS AS \"ST\"\nWHERE \"ST\".COUNTRY_CODE = 'BR'  AND \n\t\"ST\".SURVEY_TARGET_NAME LIKE '%GSO U%' AND\n\tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6) > '201901') AS \"ST\" ON \"P\".SURVEY_TARGET_ID = \"ST\".SURVEY_KEY\n\nWHERE \"P\".QUESTION_ID = '12215'\nGROUP BY \"P\".SURVEY_TARGET_ID,\n\t\t\t\"ST\".\"DATE\",\n\t\tCOALESCE(\"PRD\".SURVEY_KEY,'NOT INFORMED');",
 						"partitionOption": "None"
 					},
-					"enableStaging": false
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "SURVEY_KEY",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "SURVEY_KEY",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "DATE",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "PRODUCT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PRODUCT",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Sum(RESPONSE_NUMBER)",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "Sum(RESPONSE_NUMBER)",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
 				},
 				"inputs": [
 					{
 						"referenceName": "TeradataTable1",
 						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Arquivo_Em_TxT_3",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_visits.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "dim_survey_question",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "TeradataSource",
+						"query": "SELECT \n\t  QUESTION_ID,\n      CREATED_DATE AS \"QUESTION_CREATED_DATE\",\n      QUESTION_NAME,     \n      SOURCE_LAST_MODIFIED_TS\tAS \"QUESTION_LAST_MODIFIED_TS\",\n      QUESTION_TEXT,\n      QUESTION_ORDER \t\tAS \"QUESTION_ORDER\",\n      CASE\n      WHEN QUESTION_ORDER = 0 THEN 'PRODUCT'\n      WHEN QUESTION_ORDER = 1 THEN 'COCO'\n      WHEN QUESTION_ORDER = 2 THEN 'SOB'\n      WHEN QUESTION_ORDER = 3 THEN 'QTC'\n      WHEN QUESTION_ORDER = 4 THEN 'GSO'\n      WHEN QUESTION_ORDER = 5 THEN 'VISITS'\n      ELSE\t'' END \tAS \"QUESTION_TYPE\",\n      CASE\n      WHEN QUESTION_ORDER = 0 THEN 'PRODUCT' \n      WHEN QUESTION_ORDER = 1 THEN 'OCV'\n      WHEN QUESTION_ORDER = 2 THEN 'Foco da Discussão'\n      WHEN QUESTION_ORDER = 3 THEN 'Fechamento'\n      WHEN QUESTION_ORDER = 4 THEN 'GSO'\n      WHEN QUESTION_ORDER = 5 THEN 'Visitas'\n      ELSE '' END\tAS \"TIPO_QUESTAO\"\nFROM LATAMCRMFBICNTRYBRVW.D_SURVEY_QUESTION\nWHERE COUNTRY_CODE = 'BR' AND\nQUESTION_ORDER < 6 AND \nDELETED_IND = 0",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "QUESTION_ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "QUESTION_ID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "QUESTION_CREATED_DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "QUESTION_CREATED_DATE",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "QUESTION_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "QUESTION_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "QUESTION_LAST_MODIFIED_TS",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "QUESTION_LAST_MODIFIED_TS",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "QUESTION_TEXT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "QUESTION_TEXT",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "QUESTION_ORDER",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "QUESTION_ORDER",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "QUESTION_TYPE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "QUESTION_TYPE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_QUESTAO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TIPO_QUESTAO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TeradataTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Arquivo_Em_TxT_3",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_survey_question.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "dim_sales_force_teradata",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "TeradataSource",
+						"query": "SELECT RX_EXTERNAL_ID,\n      USER_ID,\n \t  SOURCE_USER_AID\t\t\t\t\t\t\t\t\t\tAS \"SF_SOURCE_USER_AID\",\n      USER_NAME,\n      FIRST_NAME,\n      NAME,\n      LAST_NAME,      \n      COUNTRY,\n      STATE_PROVINCE,\n      UPPER(CITY) \t\t\t\t\t\t\t\t\t\t\tAS \"CITY\",\n      POSTAL_CODE,\n      ACTIVE_IND,\n      EMAIL,\n      EMPLOYEE_NUMBER_AID,\n      USER_IDENTIFIER_AID,\n      CORE_GSK_FUNCTIONAL_PROFILE,\n      PROFILE_NAME\n FROM  LATAMCRMFBICNTRYBRVW.D_USER\nWHERE ACTIVE_IND = 1;\n ;",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "RX_EXTERNAL_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "RX_EXTERNAL_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "USER_ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "USER_ID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "SF_SOURCE_USER_AID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SF_SOURCE_USER_AID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "USER_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "USER_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FIRST_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FIRST_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LAST_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "COUNTRY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "COUNTRY",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "STATE_PROVINCE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "STATE_PROVINCE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CITY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CITY",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "POSTAL_CODE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "POSTAL_CODE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ACTIVE_IND",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ACTIVE_IND",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EMAIL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EMPLOYEE_NUMBER_AID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "EMPLOYEE_NUMBER_AID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "USER_IDENTIFIER_AID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "USER_IDENTIFIER_AID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_FUNCTIONAL_PROFILE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_FUNCTIONAL_PROFILE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PROFILE_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PROFILE_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TeradataTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Arquivo_Em_TxT_3",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_sales_force_teradata.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "dim_sales_force_funcionario",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "select DISTINCT MUDID\tAS 'RX_EXTERNAL_ID',\n \t  UF\nfrom Dim_Cad_Funcionarios",
+						"queryTimeout": "07:30:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "RX_EXTERNAL_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "RX_EXTERNAL_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "UF",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "UF",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SqlServerGSK",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Arquivo_Em_TxT_3",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_sales_force_funcionario.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "dim_sales_force_sqlserver",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT \n     ROW_ID_FUNCIONARIO\t\t\t\t\t\t\t\t\t\tAS RX_EXTERNAL_ID,\n\t CICLO,\n     CICLO + '-' + ROW_ID_TERRITORIO\t\t\t\t\t\tAS SALES_FORCE_KEY,\n     CICLO + '-' + ROW_ID_TERRITORIO\t\t\t\t\t\tAS SF_KEY,\n\t ROW_ID_TERRITORIO,\n     ROW_ID_GD,\n     NOME_GD,\n     NOME_GR,\n\t CASE\n     WHEN Len(COALESCE(TERRITORIO_GD,'0123456789')) = 0 THEN TERRITORIO_GD\n     ELSE Right(TERRITORIO_GD, 6) END AS TERRITORIO_GD,\n\t CASE\n\t WHEN Len(COALESCE(TERRITORIO_GR,'0123456789')) = 0 THEN TERRITORIO_GR\n     ELSE Right(TERRITORIO_GR, 6)END AS TERRITORIO_GR,\n     BU,\n     CASE\n\t WHEN DIVISÃO = 'REDES' THEN 'REDES DIRETAS'\n     ELSE DIVISÃO END  AS DIVISÃO,\n     CASE\n\t WHEN Len(COALESCE(TERRITORIO,'0123456789')) = 0 THEN TERRITORIO\n     ELSE Right(TERRITORIO, 6) END AS TERRITORIO,\n\t NOME_REPRESENTANTE\t\t\t\t\t\t\t\t\t\tAS NOME_REP        \nFROM Dim_Cad_Forca_Vendas\nWHERE STATUS = 'A'\n  AND CICLO >= '201901'\n  AND (BU = 'FARMA' OR BU = 'BIOTECH');",
+						"queryTimeout": "07:30:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "RX_EXTERNAL_ID",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "RX_EXTERNAL_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CICLO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SALES_FORCE_KEY",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "SALES_FORCE_KEY",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SF_KEY",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "SF_KEY",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_GD",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "ROW_ID_GD",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME_GD",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "NOME_GD",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME_GR",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "NOME_GR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TERRITORIO_GD",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "TERRITORIO_GD",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TERRITORIO_GR",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "TERRITORIO_GR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "BU",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "BU",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DIVISÃO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "DIVISÃO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TERRITORIO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME_REP",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "NOME_REP",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SqlServerGSK",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Arquivo_Em_TxT_3",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_sales_force_sqlserver.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "dim_fato_gso_call_summary",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "TeradataSource",
+						"query": "SELECT \"CM\".CALL_SUMMARY_ID,\n\t \"CM\".PARENT_CALL_AID,\n\t \"CM\".LOCAL_CALL_DATE_ID,\n\t \"CM\".CALL_DATE_ID,\n     \"CM\".TERRITORY_ID,\n     LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6) \t\tAS \"CYCLE\",\n     ((LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6)||'-')||\"CM\".TERRITORY_ID)\tAS \"SALES_FORCE_KEY\",\n     LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6)\tAS \"DATE\",\n\t \"CM\".LOCAL_CALL_TIME_ID,\n\t \"CM\".ACCOUNT_ID,\n\t \"CM\".CALL_NAME,\n\t \"CM\".RX_CALL_TYPE,\n\t \"CM\".CALL_STATUS,\n\t \"CM\".ATTENDEE_TYPE,\n\t \"CM\".CLM_IND,\n\t \"CM\".SAMPLE_CALL_IND,\n\t \"CM\".CALL_TYPE,\n\t \"CM\".DETAILED_PRODUCTS,\n\t \"CM\".DURATION,\n\t \"CM\".CREATED_DATE_ID,\n\t \"CM\".CREATED_DATE_TIME_ID,\n\t \"CM\".LAST_MODIFIED_DATE_ID,\n\t \"CM\".LAST_MODIFIED_DATE_TIME_ID,\n\t \"CM\".PRE_CALL_NOTES,\n\t \"CM\".NEXT_CALL_NOTES,\n     'Completed_vod'\t\t\t\t\t\t\t\t\t\tAS \"REVIEW_STATUS\",\n     \"AC\".ACCOUNT_NAME,\n     \"AC\".RX_LEGAL_ID,\n     \"KEY\".KEY_MESSAGE_NAME,\n     \"KEY\".QUESTION_ID,\n     COALESCE(\"KEY\".PRODUCT_NAME,'NOT INFORMED') AS \"PRODUCT\",\n     \"KEY\".CALL_DATE,\n     \"KEY\".TERRITORY_ID,\n     'CALLS'\t\t\t\tAS \"ORIGEM\"\nFROM  LATAMCRMFBICNTRYBRVW.F_CALL_SUMMARY \"CM\"\nLEFT JOIN (\n\tSELECT ACCOUNT_ID,\n\t NAME AS \"ACCOUNT_NAME\",\n     RX_LEGAL_ID\nFROM LATAMCRMFBICNTRYBRVW.D_ACCOUNT\nWHERE  COUNTRY_CODE = 'BR'\n  AND DELETED_IND = 0) as \"AC\" ON \"CM\".ACCOUNT_ID = \"AC\".ACCOUNT_ID\n\nLEFT JOIN (\n\t\t\tSELECT\n\t\"CM\".CALL_SUMMARY_ID,\n\t\"KM\".KEY_MESSAGE_NAME,\n\tCASE\n\tWHEN \"KM\".KEY_MESSAGE_NAME = 'Tentativa de GSO - Expositiva' THEN '12209'\n    WHEN \"KM\".KEY_MESSAGE_NAME = 'Tentativa de GSO - Interativa' THEN '12213'\n    WHEN \"KM\".KEY_MESSAGE_NAME = 'Lembrança da marca' THEN '12210'\n    WHEN \"KM\".KEY_MESSAGE_NAME = 'Good Sell Outcome (GSO)' THEN '12212'\n    ELSE \"KM\".KEY_MESSAGE_NAME END AS \"QUESTION_ID\",\n    \"PC\".PRODUCT_NAME,\n    \"CM\".CALL_DATE_ID as \"CALL_DATE\",\n    \"CM\".TERRITORY_ID  \nFROM LATAMCRMFBICNTRYBRVW.F_CALL_MESSAGE as \"CM\"\n\nLEFT JOIN (SELECT DISTINCT\n    KEY_MESSAGE_ID \t\t\t\t\t\tas \"MESSAGE_ID\",\n    KEY_MESSAGE_ID,\n    KEY_MESSAGE_NAME\nFROM LATAMCRMFBICNTRYBRVW.D_KEY_MESSAGE\nWHERE \t(KEY_MESSAGE_NAME = 'Visita não promocional' OR\n\t\tKEY_MESSAGE_NAME = 'Lembrança da marca' OR\n        KEY_MESSAGE_NAME LIKE '*GSO*')) AS \"KM\" ON \"CM\".KEY_MESSAGE_ID = \"KM\".KEY_MESSAGE_ID\n        \nLEFT JOIN (SELECT PRODUCT_CATALOG_ID,\n\t PRODUCT_NAME\nFROM LATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG) AS \"PC\" ON \"CM\".PRODUCT_CATALOG_ID = \"PC\".PRODUCT_CATALOG_ID\n\t\t\t\n\nWHERE (EXISTS (\n\t\t\tSELECT DISTINCT\n    KEY_MESSAGE_ID \t\t\t\t\t\tas \"MESSAGE_ID\",\n    KEY_MESSAGE_ID,\n    KEY_MESSAGE_NAME\nFROM LATAMCRMFBICNTRYBRVW.D_KEY_MESSAGE\nWHERE \t(KEY_MESSAGE_NAME = 'Visita não promocional' OR\n\t\tKEY_MESSAGE_NAME = 'Lembrança da marca' OR\n        KEY_MESSAGE_NAME LIKE '*GSO*')\n        AND KEY_MESSAGE_ID = \"CM\".KEY_MESSAGE_ID)) \n        AND\n      (EXISTS (SELECT PRODUCT_CATALOG_ID,\n\t \t\t\t\t\tPRODUCT_NAME\n\t\t\tFROM LATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG\n      \t\tWHERE PRODUCT_CATALOG_ID =\t\"CM\".PRODUCT_CATALOG_ID))\n      \tAND\n      \tLEFT(CAST(CALL_DATE_ID as CHAR(8)),6) > '201901') AS \"KEY\" ON \"CM\".CALL_SUMMARY_ID = \"KEY\".CALL_SUMMARY_ID\n  \nWHERE LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6)>= '201901' AND\n\"CM\".COUNTRY_CODE = 'BR'\n  AND \"CM\".CALL_STATUS = 'Submitted_vod'\n  AND \"CM\".DELETED_IND = 0;",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"dataIntegrationUnits": 16,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TeradataTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Arquivo_Em_TxT_3",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_fato_gso_call_summary.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "dim_fato_gso_response",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "TeradataSource",
+						"query": "SELECT \n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n    \"P\".QUESTION_ID,\t\t\t\t\t\n    \"P\".SOURCE_CREATED_TS,\n    \"P\".SOURCE_LAST_MODIFIED_TS\t\t\tAS \"RESPONSE_LAST_MODIFIED_TS\",\n    \"P\".SOURCE_CREATED_BY_AID AS \"SOURCE_USER_AID\",\n    \"P\".QUESTION_RESPONSE_ID,          \n    \"P\".RESPONSE_NAME,\n    \"P\".RESPONSE_NUMBER,\n    \"P\".RESPONSE,\n    COALESCE(\"PRD\".SURVEY_KEY,'NOT INFORMED') AS \"PRODUCT\",\n    \"P\".QUESTION_ORDER\t\t\t\tAS \"RESPONSE_QUESTION_ORDER\",\n\t\"ST\".\"DATE\",\n\t\"ST\".TARGET_LAST_MODIFIED_TS,\n\t\"ST\".MODIFIED_DATE,\n\t\"ST\".START_DATE_ID,\n\t\"ST\".END_DATE_ID,\n\t\"ST\".REVIEW_DATE_ID,\n\t\"ST\".REVIEW_STATUS,\n\t\"ST\".MANAGER_TERRITORY_ID,\n\t\"ST\".EMPLOYEE_TERRITORY_ID,\n\t\"ST\".TERRITORY_ID,\n \t(\"ST\".MODIFIED_DATE - \"ST\".\"DATE\" ) AS \"DATE_DIFF\",\n \tCASE\n \tWHEN (\"ST\".MODIFIED_DATE - ADD_MONTHS(\"ST\".\"DATE\" - EXTRACT(DAY FROM \"ST\".\"DATE\")+1,6)) > 7 THEN 'N'\n \tELSE 'S' END AS \"FLAG_PREMIO\",\n \tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6)||'-'||TRIM(\"ST\".EMPLOYEE_TERRITORY_ID) AS \"SALES_FORCE_KEY\",\n \tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6)||'-'||TRIM(\"ST\".EMPLOYEE_TERRITORY_ID) AS \"RESPONSES_KEY\",\n\t'SURVEYS'\t\t\t\tAS \"ORIGEM\"\n    \n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n \n LEFT JOIN (SELECT DISTINCT\n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n    \"P\".RESPONSE\n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n WHERE \"P\".QUESTION_ORDER = 0  AND \"P\".RESPONSE IS NOT NULL) AS \"PRD\" ON \"P\".SURVEY_TARGET_ID = \"PRD\".SURVEY_KEY\n \n INNER JOIN (SELECT \n\t  \"ST\".SURVEY_TARGET_ID as \"SURVEY_KEY\",\n\t  CAST(TRIM(CAST(LEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),4)||'-'||\n\t  SUBSTRING(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)) FROM 5 FOR 2) ||'-'||\n\t  RIGHT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),2) AS VARCHAR(10))) AS DATE FORMAT 'yyyy-mm-dd') AS \"DATE\",\n\t  \"ST\".SOURCE_LAST_MODIFIED_TS as \"TARGET_LAST_MODIFIED_TS\",\n\t  CAST(\"ST\".SOURCE_LAST_MODIFIED_TS AS DATE FORMAT 'YYYYMMDD') AS \"MODIFIED_DATE\",\n\t  \"ST\".START_DATE_ID,\n\t  \"ST\".END_DATE_ID,\n\t  \"ST\".REVIEW_DATE_ID,\n\t  \"ST\".REVIEW_STATUS,\n\t  \"ST\".MANAGER_TERRITORY_ID,\n\t  \"ST\".EMPLOYEE_TERRITORY_ID,\n\t  \"ST\".TERRITORY_ID\nFROM LATAMCRMFBICNTRYBRVW.F_SURVEY_TARGETS AS \"ST\"\nWHERE \"ST\".COUNTRY_CODE = 'BR'  AND \n\t\"ST\".SURVEY_TARGET_NAME LIKE '%GSO U%' AND\n\tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6) > '201901') AS \"ST\" ON \"P\".SURVEY_TARGET_ID = \"ST\".SURVEY_KEY;",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"dataIntegrationUnits": 16,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "SURVEY_KEY",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "SURVEY_KEY",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "QUESTION_ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "QUESTION_ID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "SOURCE_CREATED_TS",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "SOURCE_CREATED_TS",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "RESPONSE_LAST_MODIFIED_TS",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "RESPONSE_LAST_MODIFIED_TS",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "SOURCE_USER_AID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SOURCE_USER_AID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "QUESTION_RESPONSE_ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "QUESTION_RESPONSE_ID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "RESPONSE_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "RESPONSE_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RESPONSE_NUMBER",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "RESPONSE_NUMBER",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "RESPONSE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "RESPONSE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PRODUCT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PRODUCT",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RESPONSE_QUESTION_ORDER",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "RESPONSE_QUESTION_ORDER",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "DATE",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "TARGET_LAST_MODIFIED_TS",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "TARGET_LAST_MODIFIED_TS",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "MODIFIED_DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "MODIFIED_DATE",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "START_DATE_ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "START_DATE_ID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "END_DATE_ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "END_DATE_ID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "REVIEW_DATE_ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "REVIEW_DATE_ID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "REVIEW_STATUS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "REVIEW_STATUS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MANAGER_TERRITORY_ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "MANAGER_TERRITORY_ID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "EMPLOYEE_TERRITORY_ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "EMPLOYEE_TERRITORY_ID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "TERRITORY_ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "TERRITORY_ID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "DATE_DIFF",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "DATE_DIFF",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "FLAG_PREMIO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FLAG_PREMIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SALES_FORCE_KEY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SALES_FORCE_KEY",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RESPONSES_KEY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "RESPONSES_KEY",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ORIGEM",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ORIGEM",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TeradataTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Arquivo_Em_TxT_3",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_fato_gso_response.txt"
+						}
 					}
 				]
 			}
