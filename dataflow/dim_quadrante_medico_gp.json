@@ -1,0 +1,38 @@
+{
+	"name": "dim_quadrante_medico_gp",
+	"properties": {
+		"folder": {
+			"name": "0_Desabilitado"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "desativado_dim_quadrante_medico_gp_DF",
+						"type": "DatasetReference"
+					},
+					"name": "DimQuandranteMedicoGpSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "desativado_contador",
+						"type": "DatasetReference"
+					},
+					"name": "ArmazenarCont"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SelecionarId"
+				},
+				{
+					"name": "ValorMaxId"
+				}
+			],
+			"script": "source(output(\n\t\tID as integer,\n\t\tCRM_GP as string,\n\t\tMERCADO_GP as string,\n\t\tCATEGORIA_GP as string,\n\t\tJORNADA_GP as string,\n\t\tQUADRANTE_GP as string,\n\t\tROW_ID_TERRITORIO_GP as short,\n\t\tROW_ID_CONTATO_GP as string,\n\t\tCICLO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DimQuandranteMedicoGpSource\nDimQuandranteMedicoGpSource select(mapColumn(\n\t\tcontador = ID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecionarId\nSelecionarId aggregate(contador = max(contador)) ~> ValorMaxId\nValorMaxId sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tfilePattern:'contador',\n\ttruncate: true,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ArmazenarCont"
+		}
+	}
+}

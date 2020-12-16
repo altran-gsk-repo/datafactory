@@ -1,0 +1,22 @@
+{
+	"name": "desativado_SalvarEmTXT_DF",
+	"properties": {
+		"folder": {
+			"name": "0_Desabilitado"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "dash.email1to1",
+				"container": "altrangsk"
+			},
+			"columnDelimiter": "~",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

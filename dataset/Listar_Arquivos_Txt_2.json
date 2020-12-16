@@ -1,0 +1,23 @@
+{
+	"name": "Listar_Arquivos_Txt_2",
+	"properties": {
+		"folder": {
+			"name": "2 - KPI Visitacao"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "dash.kpi_visitacao",
+				"container": "altrangsk"
+			},
+			"columnDelimiter": "\t",
+			"encodingName": "ISO-8859-1",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

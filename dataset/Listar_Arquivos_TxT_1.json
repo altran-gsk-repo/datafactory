@@ -1,0 +1,22 @@
+{
+	"name": "Listar_Arquivos_TxT_1",
+	"properties": {
+		"folder": {
+			"name": "1 - Email 1-1"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "dash.email1to1",
+				"container": "altrangsk"
+			},
+			"columnDelimiter": "~",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

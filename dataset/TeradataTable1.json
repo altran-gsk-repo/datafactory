@@ -1,0 +1,12 @@
+{
+	"name": "TeradataTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TeradataVeevaGSK",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "TeradataTable",
+		"schema": []
+	}
+}

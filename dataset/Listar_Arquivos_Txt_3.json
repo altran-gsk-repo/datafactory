@@ -1,0 +1,23 @@
+{
+	"name": "Listar_Arquivos_Txt_3",
+	"properties": {
+		"folder": {
+			"name": "3 - GSO"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "dash.gso",
+				"container": "altrangsk"
+			},
+			"columnDelimiter": "\t",
+			"encodingName": "ISO-8859-1",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

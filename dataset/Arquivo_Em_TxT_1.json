@@ -1,0 +1,32 @@
+{
+	"name": "Arquivo_Em_TxT_1",
+	"properties": {
+		"parameters": {
+			"nome_arquivo": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "1 - Email 1-1"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().nome_arquivo",
+					"type": "Expression"
+				},
+				"folderPath": "dash.email1to1",
+				"container": "altrangsk"
+			},
+			"columnDelimiter": "\t",
+			"encodingName": "ISO-8859-1",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"name": "desativado_dim_quadrante_medico_gp_pqt",
+	"properties": {
+		"folder": {
+			"name": "0_Desabilitado"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "dash.email1to1",
+				"container": "altrangsk"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

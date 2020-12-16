@@ -1,0 +1,19 @@
+{
+	"name": "Arquivos_Em_Parquet_3",
+	"properties": {
+		"folder": {
+			"name": "3 - GSO"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "dash.gso",
+				"container": "altrangsk"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

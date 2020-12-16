@@ -1,0 +1,19 @@
+{
+	"name": "Arquivos_Em_Parquet_1",
+	"properties": {
+		"folder": {
+			"name": "1 - Email 1-1"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "dash.email1to1",
+				"container": "altrangsk"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
