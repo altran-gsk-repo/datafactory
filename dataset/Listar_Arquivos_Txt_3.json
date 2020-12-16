@@ -1,6 +1,10 @@
 {
 	"name": "Listar_Arquivos_Txt_3",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Listar_Arquivos_Txt_3",
+			"type": "LinkedServiceReference"
+		},
 		"folder": {
 			"name": "3 - GSO"
 		},
@@ -9,8 +13,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "dash.gso",
-				"container": "altrangsk"
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+				"container": "gsksynapsestorage"
 			},
 			"columnDelimiter": "\t",
 			"encodingName": "ISO-8859-1",
