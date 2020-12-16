@@ -1,0 +1,6 @@
+{
+	"name": "IntegrationRuntimeGSK",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
