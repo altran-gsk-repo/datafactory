@@ -5,7 +5,14 @@
 			{
 				"name": "dim_eventos",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_eventos_expandida",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -17,7 +24,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "SET NOCOUNT ON\n\nSELECT  \n\t\tROW_NUMBER() OVER(ORDER BY (GETDATE())) as ID,\n\t\tf.[% EVENTO],\n\t\tf.[% ID_EVENTO],\n\t\tf.[% EM_ID_EVENTO],\n\t\tf.[% EM_ID_EVENTO] + [NOME_PARTICIPANTE]\tas '% XLS',\n\t\tf.[CICLO],\n\t\tf.[FATO_DATA],\n\t\tf.[ID_PARTICIPANTE],\n\t\tf.[EV ROW_ID_TERRITORIO],\n\t\tf.[EV ROW_ID_CONTATO],\n\t\tf.[TIPO_CONTA],\n\t\tCASE\n\t\twhen f.TIPO_CONTA = 'Usuário' then\n\t\t\tCase\n\t\t\t\twhen Len(f.TERRITORIO) > 0 then f.TERRITORIO\n\t\t\t\telse \n\t\t\t\t\tCase\n\t\t\t\t\t\tWHEN Len(f.TERRITORIO_GD) > 0 THEN f.TERRITORIO_GD\n\t\t\t\t\t\tELSE 'N/D'\n\t\t\t\t\t\tEND\n\t\t\t\tEND\n\t\tELSE f.DOCUMENTO \n\t\tEND AS 'DOCUMENTO',\n\t\tf.[EV ESPECIALIDADE],\n\t\tf.NOME_PARTICIPANTE,\n\t\tf.NOME_REPRESENTANTE,\n\t\tf.NOME_GD,\n\t\tf.STATUS_CONVIDADO \tas 'STATUS_CONVIDADO_ENG',\n\t\tCASE\n\t\tWHEN (f.STATUS_CONVIDADO = 'Invited' or \n\t\t\t  f.STATUS_CONVIDADO = 'Approved' or \n\t\t\t  f.STATUS_CONVIDADO = 'Nominated')THEN 'Convidado'\n\t\tWHEN f.STATUS_CONVIDADO = 'Attended' THEN 'Participou'\n\t\tWHEN f.STATUS_CONVIDADO = 'Signed' THEN 'Assinado'\n\t\tWHEN f.STATUS_CONVIDADO = 'Accepted' THEN 'Aceitou'\n\t\tWHEN f.STATUS_CONVIDADO = 'Canceled' THEN 'Cancelado'\n\t\tWHEN f.STATUS_CONVIDADO = 'Cleared Signature' THEN 'Assinatura apagada'\n\t\tWHEN f.STATUS_CONVIDADO = 'No Show' THEN 'Não compareceu'\n\t\tWHEN (f.STATUS_CONVIDADO = 'Rejected' or f.STATUS_CONVIDADO = 'No Response') THEN 'Rejeitou'\n\t\tELSE f.STATUS_CONVIDADO\n\t\tEND AS 'STATUS_CONVIDADO',\n\n\t\tCASE\n\t\tWHEN (f.STATUS_CONVIDADO = 'Invited' OR \n\t\t\t  f.STATUS_CONVIDADO = 'Accepted' OR \n\t\t\t  f.STATUS_CONVIDADO = 'Approved' OR \n\t\t\t  f.STATUS_CONVIDADO = 'Canceled' OR\n\t\t\t  f.STATUS_CONVIDADO = 'Cleared Signature' OR\n\t\t\t  f.STATUS_CONVIDADO = 'No Show' OR\n\t\t\t  f.STATUS_CONVIDADO = 'Nominated' OR\n\t\t\t  f.STATUS_CONVIDADO = 'Rejected' OR\n\t\t\t  f.STATUS_CONVIDADO = 'No Response') THEN 'Convidado'\n\t\tWHEN (f.STATUS_CONVIDADO = 'Attended' OR f.STATUS_CONVIDADO = 'Signed') THEN 'Participou'\n\t\tELSE f.STATUS_CONVIDADO\n\t\tEND AS 'STATUS_CONVIDADO_GR',\n\n\t\tTIPO_PARTICIPACAO\tas 'TIPO_PARTICIPACAO_ENG',\n\t\tCASE\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'F2F Participant' THEN 'F2F'\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'Chairman / Moderator' THEN 'Moderador'\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'Facilitator' THEN 'FV GSK'\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'Hybrid Participant' THEN 'Híbrido'\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'Primary Contact' THEN 'Staff GSK'\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'Speaker' THEN 'Palestrante'\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'Subject Matter Expert' THEN 'Especialista Convidado'\n\t\tELSE f.TIPO_PARTICIPACAO \n\t\tEND as 'TIPO_PARTICIPACAO'\nfrom FATO_EVENTOS_TEMP f\nWHERE (f.[% EVENTO] <> 'N/D' OR f.[% EVENTO] is not null OR f.[% EVENTO] <> '')\nOPTION(FAST 10000)",
+						"sqlReaderQuery": "SET NOCOUNT ON\n\nSELECT  \n\t\tf.[% EVENTO],\n\t\tf.[% ID_EVENTO],\n\t\tf.[% EM_ID_EVENTO],\n\t\tf.[% EM_ID_EVENTO] + [NOME_PARTICIPANTE]\tas '% XLS',\n\t\tf.[CICLO],\n\t\tf.[FATO_DATA],\n\t\tf.[ID_PARTICIPANTE],\n\t\tf.[EV ROW_ID_TERRITORIO],\n\t\tf.[EV ROW_ID_CONTATO],\n\t\tf.[TIPO_CONTA],\n\t\tCASE\n\t\twhen f.TIPO_CONTA = 'Usuário' then\n\t\t\tCase\n\t\t\t\twhen Len(f.TERRITORIO) > 0 then f.TERRITORIO\n\t\t\t\telse \n\t\t\t\t\tCase\n\t\t\t\t\t\tWHEN Len(f.TERRITORIO_GD) > 0 THEN f.TERRITORIO_GD\n\t\t\t\t\t\tELSE 'N/D'\n\t\t\t\t\t\tEND\n\t\t\t\tEND\n\t\tELSE f.DOCUMENTO \n\t\tEND AS 'DOCUMENTO',\n\t\tf.[EV ESPECIALIDADE],\n\t\tf.NOME_PARTICIPANTE,\n\t\tf.NOME_REPRESENTANTE,\n\t\tf.NOME_GD,\n\t\tf.STATUS_CONVIDADO \tas 'STATUS_CONVIDADO_ENG',\n\t\tCASE\n\t\tWHEN (f.STATUS_CONVIDADO = 'Invited' or \n\t\t\t  f.STATUS_CONVIDADO = 'Approved' or \n\t\t\t  f.STATUS_CONVIDADO = 'Nominated')THEN 'Convidado'\n\t\tWHEN f.STATUS_CONVIDADO = 'Attended' THEN 'Participou'\n\t\tWHEN f.STATUS_CONVIDADO = 'Signed' THEN 'Assinado'\n\t\tWHEN f.STATUS_CONVIDADO = 'Accepted' THEN 'Aceitou'\n\t\tWHEN f.STATUS_CONVIDADO = 'Canceled' THEN 'Cancelado'\n\t\tWHEN f.STATUS_CONVIDADO = 'Cleared Signature' THEN 'Assinatura apagada'\n\t\tWHEN f.STATUS_CONVIDADO = 'No Show' THEN 'Não compareceu'\n\t\tWHEN (f.STATUS_CONVIDADO = 'Rejected' or f.STATUS_CONVIDADO = 'No Response') THEN 'Rejeitou'\n\t\tELSE f.STATUS_CONVIDADO\n\t\tEND AS 'STATUS_CONVIDADO',\n\n\t\tCASE\n\t\tWHEN (f.STATUS_CONVIDADO = 'Invited' OR \n\t\t\t  f.STATUS_CONVIDADO = 'Accepted' OR \n\t\t\t  f.STATUS_CONVIDADO = 'Approved' OR \n\t\t\t  f.STATUS_CONVIDADO = 'Canceled' OR\n\t\t\t  f.STATUS_CONVIDADO = 'Cleared Signature' OR\n\t\t\t  f.STATUS_CONVIDADO = 'No Show' OR\n\t\t\t  f.STATUS_CONVIDADO = 'Nominated' OR\n\t\t\t  f.STATUS_CONVIDADO = 'Rejected' OR\n\t\t\t  f.STATUS_CONVIDADO = 'No Response') THEN 'Convidado'\n\t\tWHEN (f.STATUS_CONVIDADO = 'Attended' OR f.STATUS_CONVIDADO = 'Signed') THEN 'Participou'\n\t\tELSE f.STATUS_CONVIDADO\n\t\tEND AS 'STATUS_CONVIDADO_GR',\n\n\t\tTIPO_PARTICIPACAO\tas 'TIPO_PARTICIPACAO_ENG',\n\t\tCASE\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'F2F Participant' THEN 'F2F'\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'Chairman / Moderator' THEN 'Moderador'\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'Facilitator' THEN 'FV GSK'\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'Hybrid Participant' THEN 'Híbrido'\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'Primary Contact' THEN 'Staff GSK'\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'Speaker' THEN 'Palestrante'\n\t\tWHEN f.TIPO_PARTICIPACAO  = 'Subject Matter Expert' THEN 'Especialista Convidado'\n\t\tELSE f.TIPO_PARTICIPACAO \n\t\tEND as 'TIPO_PARTICIPACAO'\nfrom FATO_EVENTOS_TEMP f\nWHERE (f.[% EVENTO] <> 'N/D' OR f.[% EVENTO] is not null OR f.[% EVENTO] <> '')\noption(maxdop 8,recompile)",
 						"queryTimeout": "24:00:00",
 						"partitionOption": "None"
 					},
@@ -117,7 +124,14 @@
 			{
 				"name": "dim_eventos_produtos",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_eventos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -129,7 +143,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "SET NOCOUNT ON\n\nSELECT  distinct\n\t\tROW_NUMBER() OVER(ORDER BY (GETDATE())) as ID,\nCASE\nWHEN xls.[Event: Event ID] is null then sp.[Event: Event ID]\nelse xls.[Event: Event ID] end as 'EM_ID_EVENTO',\nCASE\nWHEN UPPER(xls.[Event: Product]) is null then UPPER(sp.[Event: Product])\nelse UPPER(xls.[Event: Product]) end as 'PRODUTO_PRIMARIO_XLS',\nCASE\nWHEN UPPER(xls.[Event: Secondary Product]) is null then UPPER(sp.[Event: Secondary Product])\nelse UPPER(xls.[Event: Secondary Product]) end as 'PRODUTO_SECUNDARIO_XLS',\nCASE\nWHEN xls.[Event: Topic] is null then sp.[Event: Topic]\nelse xls.[Event: Topic] end as 'TOPICO',\nCASE\nWHEN xls.[Event: Additional Therapy Area] is null then sp.[Event: Additional Therapy Area]\nelse xls.[Event: Additional Therapy Area] end as 'AREA TERAPEUTICA',\nCASE\nWHEN xls.[Event: Therapy Area - Others]is null then sp.[Event: Therapy Area - Others]\nelse xls.[Event: Therapy Area - Others] end as 'AREA TERAPEUTICA 2',\nCASE\nWHEN xls.[Event: Parent Event] is null then sp.[Parent Event]\nelse xls.[Event: Parent Event] end as 'NOME_EVENTO_PAI',\nCASE\nWHEN xls.[Event: Record Type] is null then sp.[Event: Record Type]\nelse xls.[Event: Record Type] end as 'TIPO_REGISTRO',\nCASE\nWHEN xls.[Event: Created Alias] is null then sp.[Event: Created Alias]\nelse xls.[Event: Created Alias] end as 'MUDID_CRADOR',\nCASE\nWHEN xls.[Event: Created By] is null then sp.[Event: Created By]\nelse xls.[Event: Created By] end as 'CRIADO_POR'\nfrom [USPRD1967].[dbo].[br_veeva_evento_evento] as xls\nfull outer join [USPRD1967].[dbo].[br_veeva_evento_sem_participantes]\nas sp on xls.[Event: Event ID] = sp.[Event: Event ID]\nOPTION(FAST 10000)",
+						"sqlReaderQuery": "select distinct\nCASE\nWHEN xls.[Event: Event ID] is null then sp.[Event: Event ID]\nelse xls.[Event: Event ID] end as 'EM_ID_EVENTO',\nCASE\nWHEN UPPER(xls.[Event: Product]) is null then UPPER(sp.[Event: Product])\nelse UPPER(xls.[Event: Product]) end as 'PRODUTO_PRIMARIO_XLS',\nCASE\nWHEN UPPER(xls.[Event: Secondary Product]) is null then UPPER(sp.[Event: Secondary Product])\nelse UPPER(xls.[Event: Secondary Product]) end as 'PRODUTO_SECUNDARIO_XLS',\nCASE\nWHEN xls.[Event: Topic] is null then sp.[Event: Topic]\nelse xls.[Event: Topic] end as 'TOPICO',\nCASE\nWHEN xls.[Event: Additional Therapy Area] is null then sp.[Event: Additional Therapy Area]\nelse xls.[Event: Additional Therapy Area] end as 'AREA TERAPEUTICA',\nCASE\nWHEN xls.[Event: Therapy Area - Others]is null then sp.[Event: Therapy Area - Others]\nelse xls.[Event: Therapy Area - Others] end as 'AREA TERAPEUTICA 2',\nCASE\nWHEN xls.[Event: Parent Event] is null then sp.[Parent Event]\nelse xls.[Event: Parent Event] end as 'NOME_EVENTO_PAI',\nCASE\nWHEN xls.[Event: Record Type] is null then sp.[Event: Record Type]\nelse xls.[Event: Record Type] end as 'TIPO_REGISTRO',\nCASE\nWHEN xls.[Event: Created Alias] is null then sp.[Event: Created Alias]\nelse xls.[Event: Created Alias] end as 'MUDID_CRADOR',\nCASE\nWHEN xls.[Event: Created By] is null then sp.[Event: Created By]\nelse xls.[Event: Created By] end as 'CRIADO_POR'\nfrom [USPRD1967].[dbo].[br_veeva_evento_evento] as xls\nfull join [USPRD1967].[dbo].[br_veeva_evento_sem_participantes]\nas sp on xls.[Event: Event ID] = sp.[Event: Event ID]",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
