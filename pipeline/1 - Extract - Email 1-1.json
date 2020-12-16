@@ -16,195 +16,36 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
+						"type": "BinarySource",
 						"storeSettings": {
 							"type": "FileServerReadSettings",
 							"recursive": true,
-							"enablePartitionDiscovery": false
+							"wildcardFolderPath": "EMAIL 1-1/FILES",
+							"wildcardFileName": "dim_audit_end.txt",
+							"enablePartitionDiscovery": false,
+							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+							"type": "BinaryReadSettings"
 						}
 					},
 					"sink": {
-						"type": "DelimitedTextSink",
+						"type": "BinarySink",
 						"storeSettings": {
 							"type": "AzureBlobStorageWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
 						}
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"name": "ID",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "ID",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "CRM_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "CRM_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "MEDICO_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "MEDICO_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ESPECIALIDADE_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "ESPECIALIDADE_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "LOGRADOURO_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "LOGRADOURO_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "BAIRRO_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "BAIRRO_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "CIDADE_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "CIDADE_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "CEP_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "CEP_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ORIGEM_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "ORIGEM_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "UF_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "UF_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "BRICK_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "BRICK_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TELEFONE_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "TELEFONE_UNIV",
-									"type": "String",
-									"physicalType": "String"
-								}
-							}
-						],
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+					"enableStaging": false
 				},
 				"inputs": [
 					{
-						"referenceName": "FileSystemGSK",
-						"type": "DatasetReference",
-						"parameters": {
-							"nome_arquivo": "dim_audit_end.txt"
-						}
+						"referenceName": "FileSystemGSKBinary",
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "Arquivo_Em_TxT_1",
+						"referenceName": "AzureBlobSynapseBinary",
 						"type": "DatasetReference",
 						"parameters": {
 							"nome_arquivo": "dim_audit_end.txt"
@@ -215,7 +56,14 @@
 			{
 				"name": "dim_interacao_visitas_realizadas",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_audit_end",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -461,7 +309,14 @@
 			{
 				"name": "dim_interacao_visitas_medicos",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_interacao_visitas_realizadas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -791,7 +646,14 @@
 			{
 				"name": "dim_forca_vendas",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_interacao_visitas_medicos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -1037,7 +899,14 @@
 			{
 				"name": "dim_cad_target_sro",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_forca_vendas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -1199,7 +1068,14 @@
 			{
 				"name": "dim_interacao_email",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_cad_target_sro",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -1421,7 +1297,14 @@
 			{
 				"name": "dim_interacao_visitas_franchise",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_interacao_email",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -1595,7 +1478,14 @@
 			{
 				"name": "dim_quadrante_medico",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_interacao_visitas_franchise",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -1757,7 +1647,14 @@
 			{
 				"name": "dim_quadrante_medico_gp",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_quadrante_medico",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -1931,7 +1828,14 @@
 			{
 				"name": "dim_painel_medico",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_quadrante_medico_gp",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
