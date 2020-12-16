@@ -1,16 +1,16 @@
 {
 	"name": "FileServerGSK",
-	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "FileServer",
 		"typeProperties": {
 			"host": "C:\\Users\\dqa99106\\OneDrive - GSK\\Documents\\",
 			"userId": "WMSERVICE\\dqa99106",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJjOTI4NjA3MS1mOWIwLTQ5ODAtYTk5Ny1lODM1OWIwN2M2NTgiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiOWE0NzE0Yy1hZGM5LTRjNTAtYmUxNC03OWE4NzU2Yzc5OTEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
-			"referenceName": "IntegrationRuntimeHomolog",
+			"referenceName": "IntegrationRuntimeGSK",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
