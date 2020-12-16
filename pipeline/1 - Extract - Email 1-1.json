@@ -1961,21 +1961,6 @@
 					"enableStaging": false,
 					"parallelCopies": 5,
 					"enableSkipIncompatibleRow": false,
-					"validateDataConsistency": false,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Warning",
-							"enableReliableLogging": false
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "AzureBlobStorage",
-								"type": "LinkedServiceReference"
-							},
-							"path": "altrangsk/log_banco"
-						}
-					},
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [

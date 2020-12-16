@@ -1,10 +1,6 @@
 {
 	"name": "Listar_Arquivos_Txt_2",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage",
-			"type": "LinkedServiceReference"
-		},
 		"folder": {
 			"name": "2 - KPI Visitacao"
 		},

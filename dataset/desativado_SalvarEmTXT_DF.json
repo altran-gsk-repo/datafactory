@@ -1,10 +1,6 @@
 {
 	"name": "desativado_SalvarEmTXT_DF",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage",
-			"type": "LinkedServiceReference"
-		},
 		"folder": {
 			"name": "0_Desabilitado"
 		},

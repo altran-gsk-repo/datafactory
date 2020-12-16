@@ -1,10 +1,6 @@
 {
 	"name": "desativado_contador",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage",
-			"type": "LinkedServiceReference"
-		},
 		"folder": {
 			"name": "0_Desabilitado"
 		},

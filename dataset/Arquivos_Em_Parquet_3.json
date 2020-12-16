@@ -1,10 +1,6 @@
 {
 	"name": "Arquivos_Em_Parquet_3",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage",
-			"type": "LinkedServiceReference"
-		},
 		"folder": {
 			"name": "3 - GSO"
 		},

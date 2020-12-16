@@ -1,10 +1,6 @@
 {
 	"name": "Listar_Arquivos_Txt_3",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage",
-			"type": "LinkedServiceReference"
-		},
 		"folder": {
 			"name": "3 - GSO"
 		},

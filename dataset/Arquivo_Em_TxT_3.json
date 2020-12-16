@@ -1,10 +1,6 @@
 {
 	"name": "Arquivo_Em_TxT_3",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage",
-			"type": "LinkedServiceReference"
-		},
 		"parameters": {
 			"nome_arquivo": {
 				"type": "string"

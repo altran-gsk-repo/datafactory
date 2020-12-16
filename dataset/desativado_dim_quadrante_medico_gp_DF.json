@@ -1,10 +1,6 @@
 {
 	"name": "desativado_dim_quadrante_medico_gp_DF",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage",
-			"type": "LinkedServiceReference"
-		},
 		"folder": {
 			"name": "0_Desabilitado"
 		},

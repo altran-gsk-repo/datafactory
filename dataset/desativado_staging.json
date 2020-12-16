@@ -1,10 +1,6 @@
 {
 	"name": "desativado_staging",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage",
-			"type": "LinkedServiceReference"
-		},
 		"folder": {
 			"name": "0_Desabilitado"
 		},
