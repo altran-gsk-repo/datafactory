@@ -19,9 +19,7 @@
 						"type": "BinarySource",
 						"storeSettings": {
 							"type": "FileServerReadSettings",
-							"recursive": true,
-							"wildcardFolderPath": "EMAIL 1-1/FILES",
-							"wildcardFileName": "dim_audit_end.txt",
+							"fileListPath": "EMAIL 1-1/FILES/dim_audit_end.txt",
 							"enablePartitionDiscovery": false,
 							"deleteFilesAfterCompletion": false
 						},
@@ -48,7 +46,7 @@
 						"referenceName": "AzureBlobSynapseBinary",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "dim_audit_end.txt"
+							"nome_arquivo": "dim_audit_end"
 						}
 					}
 				]
