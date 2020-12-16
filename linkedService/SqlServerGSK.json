@@ -1,15 +1,15 @@
 {
 	"name": "SqlServerGSK",
-	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "SqlServer",
 		"typeProperties": {
 			"connectionString": "integrated security=False;data source=US1SXWNSQL0029;initial catalog=GSK_Intelligence;user id=GSK_Intelligence_O;packet size=32767",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJhM2FkYTQyYi0yNTgwLTRjYjAtOTkxZC0yZjhhMjM2OGQ4MzkiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIyYzgzZTM3MC1lYjM4LTQ0YzUtYmJiOS0wNjUwMTU2MzdhZjkiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
-			"referenceName": "IntegrationRuntimeHomolog",
+			"referenceName": "IntegrationRuntimeGSK",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
