@@ -5,14 +5,7 @@
 			{
 				"name": "Lista_Arquivos",
 				"type": "GetMetadata",
-				"dependsOn": [
-					{
-						"activity": "Extract",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -29,10 +22,6 @@
 					"fieldList": [
 						"childItems"
 					],
-					"storeSettings": {
-						"type": "AzureBlobStorageReadSettings",
-						"recursive": true
-					},
 					"formatSettings": {
 						"type": "DelimitedTextReadSettings"
 					}
@@ -173,19 +162,6 @@
 						"recursive": true,
 						"wildcardFileName": "*.txt"
 					}
-				}
-			},
-			{
-				"name": "Extract",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "2 - Extract - KPI Visitacao",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
 				}
 			}
 		],

@@ -1,8 +1,12 @@
 {
 	"name": "Arquivo_Em_TxT_3",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorageBlobSynapse",
+			"type": "LinkedServiceReference"
+		},
 		"parameters": {
-			"nome_arquivo": {
+			"pasta_nome_arquivo": {
 				"type": "string"
 			}
 		},
@@ -15,11 +19,11 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": {
-					"value": "@dataset().nome_arquivo",
+					"value": "@dataset().pasta_nome_arquivo",
 					"type": "Expression"
 				},
-				"folderPath": "dash.gso",
-				"container": "altrangsk"
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+				"container": "gsksynapsestorage"
 			},
 			"columnDelimiter": "\t",
 			"encodingName": "ISO-8859-1",

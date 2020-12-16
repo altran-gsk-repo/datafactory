@@ -98,7 +98,7 @@
 						"referenceName": "Arquivo_Em_TxT_3",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "dim_visits.txt"
+							"pasta_nome_arquivo": "dim_visits.txt"
 						}
 					}
 				]
@@ -250,7 +250,7 @@
 						"referenceName": "Arquivo_Em_TxT_3",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "dim_survey_question.txt"
+							"pasta_nome_arquivo": "dim_survey_question.txt"
 						}
 					}
 				]
@@ -501,7 +501,7 @@
 						"referenceName": "Arquivo_Em_TxT_3",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "dim_sales_force_teradata.txt"
+							"pasta_nome_arquivo": "dim_sales_force_teradata.txt"
 						}
 					}
 				]
@@ -590,7 +590,7 @@
 						"referenceName": "Arquivo_Em_TxT_3",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "dim_sales_force_funcionario.txt"
+							"pasta_nome_arquivo": "dim_sales_force_funcionario.txt"
 						}
 					}
 				]
@@ -823,7 +823,7 @@
 						"referenceName": "Arquivo_Em_TxT_3",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "dim_sales_force_sqlserver.txt"
+							"pasta_nome_arquivo": "dim_sales_force_sqlserver.txt"
 						}
 					}
 				]
@@ -1251,7 +1251,7 @@
 						"referenceName": "Arquivo_Em_TxT_3",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "dim_fato_gso_call_summary.txt"
+							"pasta_nome_arquivo": "dim_fato_gso_call_summary.txt"
 						}
 					}
 				]
@@ -1602,7 +1602,7 @@
 						"referenceName": "Arquivo_Em_TxT_3",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "dim_fato_gso_response.txt"
+							"pasta_nome_arquivo": "dim_fato_gso_response.txt"
 						}
 					}
 				]
