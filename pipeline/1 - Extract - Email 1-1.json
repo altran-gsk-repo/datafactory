@@ -5,14 +5,7 @@
 			{
 				"name": "dim_audit_end",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "dim_quadrante_medico_gp",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -222,14 +215,7 @@
 			{
 				"name": "dim_interacao_visitas_realizadas",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "dim_quadrante_medico",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -475,14 +461,7 @@
 			{
 				"name": "dim_interacao_visitas_medicos",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "dim_interacao_visitas_realizadas",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -1058,14 +1037,7 @@
 			{
 				"name": "dim_cad_target_sro",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "dim_forca_vendas",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -1227,14 +1199,7 @@
 			{
 				"name": "dim_interacao_email",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "dim_cad_target_sro",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -1792,14 +1757,7 @@
 			{
 				"name": "dim_quadrante_medico_gp",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "dim_interacao_visitas_franchise",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -1973,14 +1931,7 @@
 			{
 				"name": "dim_painel_medico",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "dim_interacao_email",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
