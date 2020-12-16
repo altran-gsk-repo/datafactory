@@ -1,6 +1,10 @@
 {
 	"name": "Arquivos_Em_Parquet_3",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Arquivos_Em_Parquet_3",
+			"type": "LinkedServiceReference"
+		},
 		"folder": {
 			"name": "3 - GSO"
 		},
@@ -9,10 +13,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "dash.gso",
-				"container": "altrangsk"
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+				"container": "gsksynapsestorage"
 			},
-			"compressionCodec": "snappy"
+			"compressionCodec": "gzip"
 		},
 		"schema": []
 	}
