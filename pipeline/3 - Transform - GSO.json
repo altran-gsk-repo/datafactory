@@ -24,7 +24,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
-						"recursive": true
+						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
 						"type": "DelimitedTextReadSettings"
@@ -91,7 +91,7 @@
 									"storeSettings": {
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
-										"wildcardFolderPath": "dash.gso",
+										"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
 										"wildcardFileName": {
 											"value": "@{item().name}",
 											"type": "Expression"
@@ -190,6 +190,37 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "GSO_ETL",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Coarse"
+				}
+			},
+			{
+				"name": "GSO_TIPO",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "GSO_ETL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "GSO_TIPO",
 						"type": "DataFlowReference"
 					},
 					"compute": {

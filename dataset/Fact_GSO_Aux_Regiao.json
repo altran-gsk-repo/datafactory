@@ -1,0 +1,39 @@
+{
+	"name": "Fact_GSO_Aux_Regiao",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "area.xlsx",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/aux.tabelas_auxiliares",
+				"fileSystem": "gsksynapsestorage"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "BRASIL.Area",
+				"type": "String"
+			},
+			{
+				"name": "Outlet State",
+				"type": "String"
+			},
+			{
+				"name": "Regiao",
+				"type": "String"
+			},
+			{
+				"name": "State",
+				"type": "String"
+			}
+		]
+	}
+}
