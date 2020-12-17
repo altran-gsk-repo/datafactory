@@ -1,0 +1,15 @@
+{
+	"name": "SQL script 4",
+	"properties": {
+		"content": {
+			"query": "SELECT TOP (100) [PRIMARY KEY]\n,[ID]\n,[CRM_UNIV]\n,[MEDICO_UNIV]\n,[ESPECIALIDADE_UNIV]\n,[LOGRADOURO_UNIV]\n,[BAIRRO_UNIV]\n,[CIDADE_UNIV]\n,[CEP_UNIV]\n,[ORIGEM_UNIV]\n,[UF_UNIV]\n,[BRICK_UNIV]\n,[TELEFONE_UNIV]\n FROM [dbo].[AUDIT_END_TESTE]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "GSK",
+				"type": "SqlOnDemand"
+			}
+		}
+	}
+}

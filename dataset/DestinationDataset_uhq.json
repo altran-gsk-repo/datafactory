@@ -1,22 +1,20 @@
 {
-	"name": "Arquivos_Em_Parquet_2",
+	"name": "DestinationDataset_uhq",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Arquivos_Em_Parquet_3",
+			"referenceName": "AzureBlobStorageSynapse",
 			"type": "LinkedServiceReference"
-		},
-		"folder": {
-			"name": "2 - KPI Visitacao"
 		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao",
+				"fileName": "dim_audit_end.parquet",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
 				"container": "gsksynapsestorage"
 			},
-			"compressionCodec": "gzip"
+			"compressionCodec": "snappy"
 		},
 		"schema": []
 	},

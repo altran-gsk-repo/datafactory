@@ -49,7 +49,7 @@
 						"type": "Expression"
 					},
 					"condition": {
-						"value": "@contains(item().name,'.zip')",
+						"value": "@contains(item().name,'til.txt')",
 						"type": "Expression"
 					}
 				}
@@ -74,85 +74,9 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Transforma_ZIP_to_TXT",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "DelimitedTextSource",
-									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
-										"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
-										"wildcardFileName": "@{item().name}"
-									},
-									"formatSettings": {
-										"type": "DelimitedTextReadSettings",
-										"compressionProperties": {
-											"type": "ZipDeflateReadSettings"
-										}
-									}
-								},
-								"sink": {
-									"type": "DelimitedTextSink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
-									},
-									"formatSettings": {
-										"type": "DelimitedTextWriteSettings",
-										"quoteAllText": true,
-										"fileExtension": ".txt"
-									}
-								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
-							},
-							"inputs": [
-								{
-									"referenceName": "AbrirArquivoComprimido",
-									"type": "DatasetReference"
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "Arquivo_Em_TxT_Sem_Comprimir_1",
-									"type": "DatasetReference",
-									"parameters": {
-										"nome_arquivo": {
-											"value": "@{concat(replace(item().name,'.zip',''),'.txt')}",
-											"type": "Expression"
-										},
-										"pasta": "dash.email1to1"
-									}
-								}
-							]
-						},
-						{
 							"name": "Transforma_TXT_to_Parquet",
 							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "Transforma_ZIP_to_TXT",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
@@ -169,7 +93,144 @@
 										"recursive": true,
 										"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
 										"wildcardFileName": {
-											"value": "@{concat(replace(item().name,'.zip',''),'.txt')}",
+											"value": "@{item().name}",
+											"type": "Expression"
+										}
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Listar_Arquivos_Txt_1",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Arquivos_Em_Parquet_1",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Deletar_Arquivos_TXT",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Para_Cada_TXT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "Listar_Arquivos_Txt_1",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"wildcardFileName": "*til.txt"
+					}
+				}
+			},
+			{
+				"name": "Filtra_Arquivos_TXT_painel",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Lista_Arquivos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lista_Arquivos').output.childitems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@contains(item().name,'dim_painel_medico.txt')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Para_Cada_TXT_painel",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filtra_Arquivos_TXT_painel",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Filtra_Arquivos_TXT_painel').output.Value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Transforma_TXT_to_Parquet_painel",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+										"wildcardFileName": {
+											"value": "@{item().name}",
 											"type": "Expression"
 										}
 									},
@@ -217,7 +278,7 @@
 				"type": "Delete",
 				"dependsOn": [
 					{
-						"activity": "Para_Cada_TXT",
+						"activity": "Para_Cada_TXT_painel",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -256,6 +317,8 @@
 		"folder": {
 			"name": "Transform"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2020-12-17T02:42:58Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
 }

@@ -24,6 +24,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -172,6 +173,8 @@
 		"folder": {
 			"name": "Transform"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2020-12-17T04:26:03Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
 }

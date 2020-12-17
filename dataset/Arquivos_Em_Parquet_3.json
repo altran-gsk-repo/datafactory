@@ -19,5 +19,6 @@
 			"compressionCodec": "gzip"
 		},
 		"schema": []
-	}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
 }

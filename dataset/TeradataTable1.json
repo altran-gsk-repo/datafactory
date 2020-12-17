@@ -11,5 +11,6 @@
 		"annotations": [],
 		"type": "TeradataTable",
 		"schema": []
-	}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
 }
