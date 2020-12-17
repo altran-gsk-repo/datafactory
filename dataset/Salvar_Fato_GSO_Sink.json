@@ -1,0 +1,229 @@
+{
+	"name": "Salvar_Fato_GSO_Sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+				"fileSystem": "gsksynapsestorage"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "CALL_SUMMARY_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "PARENT_CALL_AID",
+				"type": "UTF8"
+			},
+			{
+				"name": "LOCAL_CALL_DATE_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "CALL_DATE_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "TERRITORY_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "CYCLE",
+				"type": "UTF8"
+			},
+			{
+				"name": "SALES_FORCE_KEY",
+				"type": "UTF8"
+			},
+			{
+				"name": "DATE",
+				"type": "UTF8"
+			},
+			{
+				"name": "LOCAL_CALL_TIME_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "ACCOUNT_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "CALL_NAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "RX_CALL_TYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "CALL_STATUS",
+				"type": "UTF8"
+			},
+			{
+				"name": "ATTENDEE_TYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "CLM_IND",
+				"type": "UTF8"
+			},
+			{
+				"name": "SAMPLE_CALL_IND",
+				"type": "UTF8"
+			},
+			{
+				"name": "CALL_TYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "DETAILED_PRODUCTS",
+				"type": "UTF8"
+			},
+			{
+				"name": "DURATION",
+				"type": "UTF8"
+			},
+			{
+				"name": "CREATED_DATE_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "CREATED_DATE_TIME_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "LAST_MODIFIED_DATE_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "LAST_MODIFIED_DATE_TIME_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "PRE_CALL_NOTES",
+				"type": "UTF8"
+			},
+			{
+				"name": "NEXT_CALL_NOTES",
+				"type": "UTF8"
+			},
+			{
+				"name": "REVIEW_STATUS",
+				"type": "UTF8"
+			},
+			{
+				"name": "ACCOUNT_NAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "RX_LEGAL_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "KEY_MESSAGE_NAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "QUESTION_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "PRODUCT",
+				"type": "UTF8"
+			},
+			{
+				"name": "CALL_DATE",
+				"type": "UTF8"
+			},
+			{
+				"name": "ORIGEM",
+				"type": "UTF8"
+			},
+			{
+				"name": "SURVEY_KEY",
+				"type": "UTF8"
+			},
+			{
+				"name": "SOURCE_CREATED_TS",
+				"type": "UTF8"
+			},
+			{
+				"name": "RESPONSE_LAST_MODIFIED_TS",
+				"type": "UTF8"
+			},
+			{
+				"name": "SOURCE_USER_AID",
+				"type": "UTF8"
+			},
+			{
+				"name": "QUESTION_RESPONSE_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "RESPONSE_NAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "RESPONSE_NUMBER",
+				"type": "UTF8"
+			},
+			{
+				"name": "RESPONSE",
+				"type": "UTF8"
+			},
+			{
+				"name": "RESPONSE_QUESTION_ORDER",
+				"type": "UTF8"
+			},
+			{
+				"name": "TARGET_LAST_MODIFIED_TS",
+				"type": "UTF8"
+			},
+			{
+				"name": "MODIFIED_DATE",
+				"type": "UTF8"
+			},
+			{
+				"name": "START_DATE_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "END_DATE_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "REVIEW_DATE_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "MANAGER_TERRITORY_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "EMPLOYEE_TERRITORY_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "DATE_DIFF",
+				"type": "UTF8"
+			},
+			{
+				"name": "FLAG_PREMIO",
+				"type": "UTF8"
+			},
+			{
+				"name": "RESPONSES_KEY",
+				"type": "UTF8"
+			}
+		]
+	}
+}
