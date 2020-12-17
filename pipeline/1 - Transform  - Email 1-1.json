@@ -74,7 +74,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Transforma_TXT_to_Parquet",
+							"name": "Transforma_ZIP_to_TXT",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -90,13 +90,91 @@
 									"type": "DelimitedTextSource",
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
-										"recursive": true
+										"recursive": true,
+										"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+										"wildcardFileName": "@{item().name}"
 									},
 									"formatSettings": {
 										"type": "DelimitedTextReadSettings",
 										"compressionProperties": {
 											"type": "ZipDeflateReadSettings"
 										}
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "AbrirArquivoComprimido",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Arquivo_Em_TxT_Sem_Comprimir_1",
+									"type": "DatasetReference",
+									"parameters": {
+										"nome_arquivo": {
+											"value": "@{concat(replace(item().name,'.zip',''),'.txt')}",
+											"type": "Expression"
+										},
+										"pasta": "dash.email1to1"
+									}
+								}
+							]
+						},
+						{
+							"name": "Transforma_TXT_to_Parquet",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Transforma_ZIP_to_TXT",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+										"wildcardFileName": {
+											"value": "@{concat(replace(item().name,'.zip',''),'.txt')}",
+											"type": "Expression"
+										}
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
 									}
 								},
 								"sink": {
@@ -120,15 +198,8 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "AbrirArquivoComprimido",
-									"type": "DatasetReference",
-									"parameters": {
-										"pasta": "dash.email1to1",
-										"nome_arquivo": {
-											"value": "@replace('@{item().name}','\\\\','/')",
-											"type": "Expression"
-										}
-									}
+									"referenceName": "Listar_Arquivos_Txt_1",
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
@@ -169,7 +240,7 @@
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
 						"recursive": true,
-						"wildcardFileName": "*.zip"
+						"wildcardFileName": "*.txt"
 					}
 				}
 			}

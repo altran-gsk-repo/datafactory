@@ -10,11 +10,12 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "synapse/workspaces/gsk-synapse/warehouse",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
 				"fileSystem": "gsksynapsestorage"
 			},
 			"columnDelimiter": "~",
 			"compressionCodec": "ZipDeflate",
+			"compressionLevel": "Optimal",
 			"encodingName": "ISO-8859-1",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
