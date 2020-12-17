@@ -1,0 +1,12 @@
+{
+	"name": "PowerBIWorkSpaceGSK",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "PowerBIWorkspace",
+		"typeProperties": {
+			"workspaceID": "GSK",
+			"tenantID": "ae26548d-b193-4d6e-8001-922ca3c436d9"
+		}
+	}
+}
