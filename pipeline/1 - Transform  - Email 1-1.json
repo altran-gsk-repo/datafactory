@@ -125,7 +125,7 @@
 									"parameters": {
 										"pasta": "dash.email1to1",
 										"nome_arquivo": {
-											"value": "@{item().name}",
+											"value": "@replace('@{item().name}','\\\\','/')",
 											"type": "Expression"
 										}
 									}
