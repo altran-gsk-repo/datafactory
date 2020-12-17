@@ -178,7 +178,14 @@
 			{
 				"name": "dim_interacao_visitas_franchise",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_painel_medico",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -348,6 +355,74 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"nome_arquivo": "dim_interacao_visitas_franchise.zip",
+							"pasta": "dash.email1to1"
+						}
+					}
+				]
+			},
+			{
+				"name": "dim_painel_medico",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "FileSystemGSK",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_painel_medico.zip"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Arquivo_Em_TxT_1",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_painel_medico.zip",
 							"pasta": "dash.email1to1"
 						}
 					}
