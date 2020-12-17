@@ -31,7 +31,7 @@
 				},
 				"fileSystem": "gsksynapsestorage"
 			},
-			"columnDelimiter": "~",
+			"columnDelimiter": "\t",
 			"compressionCodec": "ZipDeflate",
 			"encodingName": "ISO-8859-1",
 			"escapeChar": "\\",
