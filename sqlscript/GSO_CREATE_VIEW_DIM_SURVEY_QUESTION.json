@@ -1,6 +1,9 @@
 {
 	"name": "GSO_CREATE_VIEW_DIM_SURVEY_QUESTION",
 	"properties": {
+		"folder": {
+			"name": "GSO"
+		},
 		"content": {
 			"query": "CREATE VIEW gso.dim_survey_question\nAS\n\nSELECT\n     [QUESTION_ID] COLLATE Latin1_General_100_BIN2_UTF8 as [QUESTION_ID]\n    ,CAST(LEFT(QUESTION_CREATED_DATE,19) AS DATETIME) as [QUESTION_CREATED_DATE]\n    ,[QUESTION_NAME] COLLATE Latin1_General_100_BIN2_UTF8 as [QUESTION_NAME]\n    ,CAST(LEFT([QUESTION_LAST_MODIFIED_TS] ,19) AS DATETIME) as [QUESTION_LAST_MODIFIED_TS]\n    ,[QUESTION_TEXT]  COLLATE Latin1_General_100_BIN2_UTF8 as [QUESTION_TEXT]\n    ,[QUESTION_ORDER] COLLATE Latin1_General_100_BIN2_UTF8 as [QUESTION_ORDER]\n    ,[QUESTION_TYPE] COLLATE Latin1_General_100_BIN2_UTF8 as [QUESTION_TYPE]\n    ,[TIPO_QUESTAO] COLLATE Latin1_General_100_BIN2_UTF8 as [TIPO_QUESTAO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gsksynapsestorage/synapse/workspaces/gsk-synapse/warehouse/dash.gso/dim_survey_question.parquet',\n        FORMAT='PARQUET') \n        WITH( [QUESTION_ID] VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,QUESTION_CREATED_DATE VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[QUESTION_NAME] VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[QUESTION_LAST_MODIFIED_TS] VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[QUESTION_TEXT]  VARCHAR(MAX) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[QUESTION_ORDER] VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[QUESTION_TYPE] VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[TIPO_QUESTAO] VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8 ) as ROW\n           \n",
 			"metadata": {
