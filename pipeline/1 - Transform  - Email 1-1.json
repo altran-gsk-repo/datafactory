@@ -124,7 +124,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"pasta": "dash.email1to1",
-										"nome_arquivo": "@{item().name}"
+										"nome_arquivo": {
+											"value": "@{item().name}",
+											"type": "Expression"
+										}
 									}
 								}
 							],
