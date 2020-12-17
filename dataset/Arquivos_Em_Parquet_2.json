@@ -1,0 +1,23 @@
+{
+	"name": "Arquivos_Em_Parquet_2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Arquivos_Em_Parquet_3",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 - KPI Visitacao"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao",
+				"container": "gsksynapsestorage"
+			},
+			"compressionCodec": "gzip"
+		},
+		"schema": []
+	}
+}

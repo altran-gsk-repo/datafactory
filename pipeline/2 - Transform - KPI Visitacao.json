@@ -19,9 +19,11 @@
 						"referenceName": "Listar_Arquivos_Txt_2",
 						"type": "DatasetReference"
 					},
-					"fieldList": [
-						"childItems"
-					],
+					"fieldList": [],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"enablePartitionDiscovery": false
+					},
 					"formatSettings": {
 						"type": "DelimitedTextReadSettings"
 					}
@@ -87,7 +89,7 @@
 									"storeSettings": {
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
-										"wildcardFolderPath": "dash.kpi_visitacao",
+										"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao",
 										"wildcardFileName": {
 											"value": "@{item().name}",
 											"type": "Expression"
