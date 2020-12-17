@@ -829,11 +829,11 @@
 				]
 			},
 			{
-				"name": "dim_fato_gso_call_summary",
+				"name": "fato_gso_call_summary",
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "dim_fato_gso_response",
+						"activity": "fato_gso_response",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1251,13 +1251,13 @@
 						"referenceName": "Arquivo_Em_TxT_3",
 						"type": "DatasetReference",
 						"parameters": {
-							"pasta_nome_arquivo": "dim_fato_gso_call_summary.txt"
+							"pasta_nome_arquivo": "fato_gso_call_summary.txt"
 						}
 					}
 				]
 			},
 			{
-				"name": "dim_fato_gso_response",
+				"name": "fato_gso_response",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -1602,7 +1602,7 @@
 						"referenceName": "Arquivo_Em_TxT_3",
 						"type": "DatasetReference",
 						"parameters": {
-							"pasta_nome_arquivo": "dim_fato_gso_response.txt"
+							"pasta_nome_arquivo": "fato_gso_response.txt"
 						}
 					}
 				]
