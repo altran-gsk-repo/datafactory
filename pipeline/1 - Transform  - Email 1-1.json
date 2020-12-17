@@ -89,18 +89,44 @@
 									"storeSettings": {
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
-										"wildcardFolderPath": "dash.email1to1",
-										"wildcardFileName": {
-											"value": "@{item().name}",
-											"type": "Expression"
-										}
+										"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+										"wildcardFileName": "@{item().name}"
 									},
 									"formatSettings": {
 										"type": "DelimitedTextReadSettings"
 									}
 								},
-								"enableStaging": false
-							}
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Listar_Arquivos_Txt_1",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Arquivos_Em_Parquet_1",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}
@@ -125,6 +151,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataset": {
+						"referenceName": "Listar_Arquivos_Txt_1",
+						"type": "DatasetReference"
+					},
 					"enableLogging": false,
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
@@ -193,7 +223,7 @@
 									"storeSettings": {
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
-										"wildcardFolderPath": "dash.email1to1",
+										"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
 										"wildcardFileName": {
 											"value": "@{item().name}",
 											"type": "Expression"
@@ -212,8 +242,28 @@
 										"type": "ParquetWriteSettings"
 									}
 								},
-								"enableStaging": false
-							}
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Listar_Arquivos_Txt_1",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Arquivos_Em_Parquet_1",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}
@@ -238,6 +288,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataset": {
+						"referenceName": "Listar_Arquivos_Txt_1",
+						"type": "DatasetReference"
+					},
 					"enableLogging": false,
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
