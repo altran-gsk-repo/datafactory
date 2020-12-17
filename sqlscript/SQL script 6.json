@@ -1,0 +1,16 @@
+{
+	"name": "SQL script 6",
+	"properties": {
+		"content": {
+			"query": "SELECT TOP (100) [QUESTION_ID]\n,[QUESTION_CREATED_DATE]\n,[QUESTION_NAME]\n,[QUESTION_LAST_MODIFIED_TS]\n,[QUESTION_TEXT]\n,[QUESTION_ORDER]\n,[QUESTION_TYPE]\n,[TIPO_QUESTAO]\n FROM [gso].[dim_survey_question]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "GSK",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
