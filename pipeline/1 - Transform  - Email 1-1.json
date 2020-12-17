@@ -269,7 +269,7 @@
 						"referenceName": "Listar_Arquivos_Txt_1",
 						"type": "DatasetReference"
 					},
-					"enableLogging": true,
+					"enableLogging": false,
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
 						"recursive": true,
