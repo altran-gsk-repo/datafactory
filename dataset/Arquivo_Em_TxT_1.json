@@ -1,8 +1,15 @@
 {
 	"name": "Arquivo_Em_TxT_1",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CompressArquivoSave",
+			"type": "LinkedServiceReference"
+		},
 		"parameters": {
 			"nome_arquivo": {
+				"type": "string"
+			},
+			"pasta": {
 				"type": "string"
 			}
 		},
@@ -13,15 +20,19 @@
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobStorageLocation",
+				"type": "AzureBlobFSLocation",
 				"fileName": {
 					"value": "@dataset().nome_arquivo",
 					"type": "Expression"
 				},
-				"folderPath": "dash.email1to1",
-				"container": "altrangsk"
+				"folderPath": {
+					"value": "@concat('synapse/workspaces/gsk-synapse/warehouse/',dataset().pasta)",
+					"type": "Expression"
+				},
+				"fileSystem": "gsksynapsestorage"
 			},
 			"columnDelimiter": "~",
+			"compressionCodec": "ZipDeflate",
 			"encodingName": "ISO-8859-1",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
