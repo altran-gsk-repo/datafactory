@@ -5,27 +5,12 @@
 			"referenceName": "CompressArquivoSave",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"pasta": {
-				"type": "string"
-			},
-			"nome_arquivo": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "@dataset().nome_arquivo",
-					"type": "Expression"
-				},
-				"folderPath": {
-					"value": "@concat('synapse/workspaces/gsk-synapse/warehouse/',dataset().pasta)",
-					"type": "Expression"
-				},
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse",
 				"fileSystem": "gsksynapsestorage"
 			},
 			"columnDelimiter": "~",
