@@ -89,16 +89,14 @@
 								"source": {
 									"type": "DelimitedTextSource",
 									"storeSettings": {
-										"type": "AzureBlobStorageReadSettings",
-										"recursive": true,
-										"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
-										"wildcardFileName": {
-											"value": "@{item().name}",
-											"type": "Expression"
-										}
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true
 									},
 									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
+										"type": "DelimitedTextReadSettings",
+										"compressionProperties": {
+											"type": "ZipDeflateReadSettings"
+										}
 									}
 								},
 								"sink": {
@@ -122,8 +120,12 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "Listar_Arquivos_Txt_1",
-									"type": "DatasetReference"
+									"referenceName": "AbrirArquivoComprimido",
+									"type": "DatasetReference",
+									"parameters": {
+										"pasta": "dash.email1to1",
+										"nome_arquivo": "@{item().name}"
+									}
 								}
 							],
 							"outputs": [
