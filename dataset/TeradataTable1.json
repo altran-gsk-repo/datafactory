@@ -5,6 +5,9 @@
 			"referenceName": "TeradataVeevaGSK",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "0_Habilitado"
+		},
 		"annotations": [],
 		"type": "TeradataTable",
 		"schema": []

@@ -1,0 +1,27 @@
+{
+	"name": "Listar_Arquivos_Txt_1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Listar_Arquivos_Txt_3",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "1 - Email 1-1"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+				"container": "gsksynapsestorage"
+			},
+			"columnDelimiter": "~",
+			"encodingName": "ISO-8859-1",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
