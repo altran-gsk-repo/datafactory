@@ -1,0 +1,25 @@
+{
+	"name": "Salvar_Dim_GSO_Region_Sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "3 - GSO"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "dim_region.parquet",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+				"fileSystem": "gsksynapsestorage"
+			},
+			"compressionCodec": "gzip"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
