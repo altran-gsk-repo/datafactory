@@ -5,6 +5,9 @@
 			"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "3 - GSO"
+		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {

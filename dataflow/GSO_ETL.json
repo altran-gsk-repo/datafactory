@@ -1,6 +1,9 @@
 {
 	"name": "GSO_ETL",
 	"properties": {
+		"folder": {
+			"name": "GSO"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

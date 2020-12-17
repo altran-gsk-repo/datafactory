@@ -5,6 +5,9 @@
 			"referenceName": "AzureBlobStorageSynapse",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "3 - GSO"
+		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {
