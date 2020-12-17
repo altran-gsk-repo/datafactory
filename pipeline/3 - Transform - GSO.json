@@ -5,7 +5,14 @@
 			{
 				"name": "Lista_Arquivos",
 				"type": "GetMetadata",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "TranformRegionTxt",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -178,12 +185,6 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
-					},
-					{
-						"activity": "TranformRegionParquet",
-						"dependencyConditions": [
-							"Succeeded"
-						]
 					}
 				],
 				"policy": {
@@ -207,16 +208,9 @@
 				}
 			},
 			{
-				"name": "TranformRegionParquet",
+				"name": "TranformRegionTxt",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Lista_Arquivos",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -235,12 +229,14 @@
 						}
 					},
 					"sink": {
-						"type": "ParquetSink",
+						"type": "DelimitedTextSink",
 						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
+							"type": "AzureBlobStorageWriteSettings"
 						},
 						"formatSettings": {
-							"type": "ParquetWriteSettings"
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
 						}
 					},
 					"enableStaging": false,
@@ -255,7 +251,7 @@
 								},
 								"sink": {
 									"name": "AREA",
-									"physicalType": "UTF8"
+									"physicalType": "String"
 								}
 							},
 							{
@@ -266,7 +262,7 @@
 								},
 								"sink": {
 									"name": "UF",
-									"physicalType": "UTF8"
+									"physicalType": "String"
 								}
 							},
 							{
@@ -277,7 +273,7 @@
 								},
 								"sink": {
 									"name": "REGION",
-									"physicalType": "UTF8"
+									"physicalType": "String"
 								}
 							},
 							{
@@ -288,7 +284,7 @@
 								},
 								"sink": {
 									"name": "STATE",
-									"physicalType": "UTF8"
+									"physicalType": "String"
 								}
 							}
 						],
@@ -307,8 +303,11 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Salvar_Dim_GSO_Region_Sink",
-						"type": "DatasetReference"
+						"referenceName": "Arquivo_Em_TxT_3",
+						"type": "DatasetReference",
+						"parameters": {
+							"pasta_nome_arquivo": "dim_region.txt"
+						}
 					}
 				]
 			}
