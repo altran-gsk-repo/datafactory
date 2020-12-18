@@ -92,7 +92,10 @@
 										"type": "AzureBlobFSReadSettings",
 										"recursive": true,
 										"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
-										"wildcardFileName": "@{item().name}"
+										"wildcardFileName": {
+											"value": "@{item().name}",
+											"type": "Expression"
+										}
 									},
 									"formatSettings": {
 										"type": "DelimitedTextReadSettings",
@@ -130,7 +133,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "Arquivo_Em_TxT_Sem_Comprimir_1",
+									"referenceName": "arquivo_txt_s_comprimir",
 									"type": "DatasetReference",
 									"parameters": {
 										"nome_arquivo": {
@@ -168,7 +171,10 @@
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
 										"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
-										"wildcardFileName": "@{replace(item().name,'.zip','.txt')}",
+										"wildcardFileName": {
+											"value": "@{replace(item().name,'.zip','.txt')}",
+											"type": "Expression"
+										},
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
