@@ -1,0 +1,5175 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"type": "string",
+			"metadata": "Workspace name",
+			"defaultValue": "gsk-synapse"
+		},
+		"Arquivos_Em_Parquet_3_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Arquivos_Em_Parquet_3'"
+		},
+		"AzureBlobStorageSynapse_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageSynapse'"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureDataLakeStorageBlobSynapse_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureDataLakeStorageBlobSynapse'"
+		},
+		"CompressArquivoSave_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'CompressArquivoSave'"
+		},
+		"FileServerDouglas_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'FileServerDouglas'"
+		},
+		"FileServerGSK_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'FileServerGSK'"
+		},
+		"Listar_Arquivos_Txt_3_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Listar_Arquivos_Txt_3'"
+		},
+		"SqlServerConfigCarga_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServerConfigCarga'"
+		},
+		"SqlServerGSK_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServerGSK'"
+		},
+		"SqlServerLocalDouglasDev_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServerLocalDouglasDev'"
+		},
+		"TeradataVeevaGSK_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'TeradataVeevaGSK'"
+		},
+		"gsk-synapse-WorkspaceDefaultSqlServer_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'gsk-synapse-WorkspaceDefaultSqlServer'"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://gsksynapseaccount.dfs.core.windows.net"
+		},
+		"CompressArquivoSave_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://gsksynapseaccount.dfs.core.windows.net"
+		},
+		"FileServerDouglas_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "D:\\Documentos"
+		},
+		"FileServerDouglas_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "DESKTOP-FVENMUR\\dougl"
+		},
+		"FileServerGSK_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "C:\\Users\\dqa99106\\OneDrive - GSK\\Documents\\"
+		},
+		"FileServerGSK_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "WMSERVICE\\dqa99106"
+		},
+		"gsk-synapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://gsksynapseaccount.dfs.core.windows.net"
+		}
+	},
+	"variables": {
+		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/1 - Extract - Email 1-1')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "dim_painel_medico",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"compressionProperties": {
+										"type": "ZipDeflateReadSettings"
+									}
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CRM_CICLO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CRM_CICLO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MES",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "MES",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CICLO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CICLO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CRM",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CRM",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MEDICO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "MEDICO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TIPO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TIPO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TIPOCONTATO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TIPOCONTATO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "GRUPOPROMOCIONAL",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "GRUPOPROMOCIONAL",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ESPECIALIDADE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ESPECIALIDADE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LOGRADOURO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "LOGRADOURO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "COMPLEMENTO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "COMPLEMENTO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BAIRRO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "BAIRRO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CIDADE",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CIDADE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "UF",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "UF",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CEP",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CEP",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BRICK",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "BRICK",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TELEFONEMEDICO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TELEFONEMEDICO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CELULARMEDICO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CELULARMEDICO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EMAIL_1_1",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "EMAIL_1_1",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_FUNCIONARIO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_FUNCIONARIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_TERRITORIO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_TERRITORIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_CONTATO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_CONTATO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "STATUS",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "STATUS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "QTD_VISITA_PLANEJADA_PAINEL",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "QTD_VISITA_PLANEJADA_PAINEL",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "QTD_VISITA_REALIZADA_PAINEL",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "QTD_VISITA_REALIZADA_PAINEL",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ESPECIALIDADE_02",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ESPECIALIDADE_02",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ESPECIALIDADE_03",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ESPECIALIDADE_03",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "VP_PROX",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "VP_PROX",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "STATUS_MEDICO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "STATUS_MEDICO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EMAIL_1_1_CONSENT",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "EMAIL_1_1_CONSENT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NETWORK_ID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "NETWORK_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RX_GIGYA_ID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "RX_GIGYA_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "VEEVA_ID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "VEEVA_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_CONTATO_EXT",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_CONTATO_EXT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EMAIL_MASS",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "EMAIL_MASS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EMAIL_MASS_CONSENT",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "EMAIL_MASS_CONSENT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CYCLE_PLAN",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "CYCLE_PLAN",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MERCADO",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "MERCADO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRODUTO_PAINEL",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "PRODUTO_PAINEL",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "FileSystemGSK",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "dim_painel_medico.zip"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Arquivo_Em_TxT_1",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "dim_painel_medico.zip",
+									"pasta": "dash.email1to1"
+								}
+							}
+						]
+					}
+				],
+				"folder": {
+					"name": "Extract"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/FileSystemGSK')]",
+				"[concat(variables('workspaceId'), '/datasets/Arquivo_Em_TxT_1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/1 - Transform  - Email 1-1')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lista_Arquivos",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Listar_Arquivos_Txt_1",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "Filtra_Arquivos_ZIP",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "Lista_Arquivos",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lista_Arquivos').output.childitems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@contains(item().name,'.zip')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Para_Cada_ZIP",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Filtra_Arquivos_ZIP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Filtra_Arquivos_ZIP').output.Value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Transforma_ZIP_to_TXT",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+												"wildcardFileName": {
+													"value": "@{item().name}",
+													"type": "Expression"
+												}
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings",
+												"compressionProperties": {
+													"type": "ZipDeflateReadSettings"
+												}
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ListarArquivosComprimidos_1",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "arquivo_txt_s_comprimir",
+											"type": "DatasetReference",
+											"parameters": {
+												"nome_arquivo": {
+													"value": "@{replace(item().name,'.zip','.txt')}",
+													"type": "Expression"
+												},
+												"pasta": "dash.email1to1"
+											}
+										}
+									]
+								},
+								{
+									"name": "Transforma_TXT_toParquet",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Transforma_ZIP_to_TXT",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+												"wildcardFileName": {
+													"value": "@{replace(item().name,'.zip','.txt')}",
+													"type": "Expression"
+												},
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "Listar_Arquivos_Txt_1",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "Arquivos_Em_Parquet_1",
+											"type": "DatasetReference",
+											"parameters": {
+												"nome_arquivo": "@{replace(item().name,'.zip','.parquet')}"
+											}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Deletar_Arquivos_ZIP",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Para_Cada_ZIP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Listar_Arquivos_Txt_1",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"wildcardFileName": "*.zip"
+							}
+						}
+					},
+					{
+						"name": "Deletar_Arquivos_TXT",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Para_Cada_ZIP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Listar_Arquivos_Txt_1",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"wildcardFileName": "*.txt",
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"variables": {
+					"ValorVerdadeiro": {
+						"type": "Array"
+					},
+					"ValorFalso": {
+						"type": "Array"
+					}
+				},
+				"folder": {
+					"name": "Transform"
+				},
+				"annotations": [],
+				"lastPublishTime": "2020-12-17T02:42:58Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Listar_Arquivos_Txt_1')]",
+				"[concat(variables('workspaceId'), '/datasets/ListarArquivosComprimidos_1')]",
+				"[concat(variables('workspaceId'), '/datasets/arquivo_txt_s_comprimir')]",
+				"[concat(variables('workspaceId'), '/datasets/Arquivos_Em_Parquet_1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/2 - Transform - KPI Visitacao')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lista_Arquivos",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Listar_Arquivos_Txt_2",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "Filtra_Arquivos_TXT",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "Lista_Arquivos",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lista_Arquivos').output.childitems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@contains(item().name,'.txt')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Para_Cada_TXT",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Filtra_Arquivos_TXT",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Filtra_Arquivos_TXT').output.Value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Transforma_TXT_to_Parquet",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao",
+												"wildcardFileName": {
+													"value": "@{item().name}",
+													"type": "Expression"
+												}
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "Listar_Arquivos_Txt_2",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "Arquivos_Em_Parquet_2",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Deletar_Arquivos_TXT",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Para_Cada_TXT",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Listar_Arquivos_Txt_2",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"wildcardFileName": "*.txt"
+							}
+						}
+					}
+				],
+				"folder": {
+					"name": "Transform"
+				},
+				"annotations": [],
+				"lastPublishTime": "2020-12-17T04:26:03Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Listar_Arquivos_Txt_2')]",
+				"[concat(variables('workspaceId'), '/datasets/Arquivos_Em_Parquet_2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/3 - Extract - GSO')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "dim_visits",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT\n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n\t\"ST\".\"DATE\" AS \"VISIT_DATE\",\n\tCOALESCE(\"PRD\".SURVEY_KEY,'NOT INFORMED') AS \"VISIT_PRODUCT\",\n\tSUM(\"P\".RESPONSE_NUMBER) AS \"TOTAL_VISITS\"\n    \n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n \n LEFT JOIN (SELECT DISTINCT\n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n    \"P\".RESPONSE\n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n WHERE \"P\".QUESTION_ORDER = 0  AND \"P\".RESPONSE IS NOT NULL) AS \"PRD\" ON \"P\".SURVEY_TARGET_ID = \"PRD\".SURVEY_KEY\n \n INNER JOIN (SELECT \n\t  \"ST\".SURVEY_TARGET_ID as \"SURVEY_KEY\",\n\t  CAST(TRIM(CAST(LEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),4)||'-'||\n\t  SUBSTRING(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)) FROM 5 FOR 2) ||'-'||\n\t  RIGHT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),2) AS VARCHAR(10))) AS DATE FORMAT 'yyyy-mm-dd') AS \"DATE\",\n\t  \"ST\".SOURCE_LAST_MODIFIED_TS as \"TARGET_LAST_MODIFIED_TS\",\n\t  CAST(\"ST\".SOURCE_LAST_MODIFIED_TS AS DATE FORMAT 'YYYYMMDD') AS \"MODIFIED_DATE\",\n\t  \"ST\".START_DATE_ID,\n\t  \"ST\".END_DATE_ID,\n\t  \"ST\".REVIEW_DATE_ID,\n\t  \"ST\".REVIEW_STATUS,\n\t  \"ST\".MANAGER_TERRITORY_ID,\n\t  \"ST\".EMPLOYEE_TERRITORY_ID,\n\t  \"ST\".TERRITORY_ID\nFROM LATAMCRMFBICNTRYBRVW.F_SURVEY_TARGETS AS \"ST\"\nWHERE \"ST\".COUNTRY_CODE = 'BR'  AND \n\t\"ST\".SURVEY_TARGET_NAME LIKE '%GSO U%' AND\n\tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6) > '201901') AS \"ST\" ON \"P\".SURVEY_TARGET_ID = \"ST\".SURVEY_KEY\n\nWHERE \"P\".QUESTION_ID = '12215'\nGROUP BY \"P\".SURVEY_TARGET_ID,\n\t\t\t\"ST\".\"DATE\",\n\t\tCOALESCE(\"PRD\".SURVEY_KEY,'NOT INFORMED');",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "SURVEY_KEY",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "SURVEY_KEY",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "VISIT_DATE",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "VISIT_DATE",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "VISIT_PRODUCT",
+											"type": "String"
+										},
+										"sink": {
+											"name": "VISIT_PRODUCT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TOTAL_VISITS",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "TOTAL_VISITS",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Arquivo_Em_TxT_3",
+								"type": "DatasetReference",
+								"parameters": {
+									"pasta_nome_arquivo": "dim_visits.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "dim_survey_question",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "dim_visits",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT \n\t  QUESTION_ID,\n      CREATED_DATE AS \"QUESTION_CREATED_DATE\",\n      QUESTION_NAME,     \n      SOURCE_LAST_MODIFIED_TS\tAS \"QUESTION_LAST_MODIFIED_TS\",\n      QUESTION_TEXT,\n      QUESTION_ORDER \t\tAS \"QUESTION_ORDER\",\n      CASE\n      WHEN QUESTION_ORDER = 0 THEN 'PRODUCT'\n      WHEN QUESTION_ORDER = 1 THEN 'COCO'\n      WHEN QUESTION_ORDER = 2 THEN 'SOB'\n      WHEN QUESTION_ORDER = 3 THEN 'QTC'\n      WHEN QUESTION_ORDER = 4 THEN 'GSO'\n      WHEN QUESTION_ORDER = 5 THEN 'VISITS'\n      ELSE\t'' END \tAS \"QUESTION_TYPE\",\n      CASE\n      WHEN QUESTION_ORDER = 0 THEN 'PRODUCT' \n      WHEN QUESTION_ORDER = 1 THEN 'OCV'\n      WHEN QUESTION_ORDER = 2 THEN 'Foco da Discussão'\n      WHEN QUESTION_ORDER = 3 THEN 'Fechamento'\n      WHEN QUESTION_ORDER = 4 THEN 'GSO'\n      WHEN QUESTION_ORDER = 5 THEN 'Visitas'\n      ELSE '' END\tAS \"TIPO_QUESTAO\"\nFROM LATAMCRMFBICNTRYBRVW.D_SURVEY_QUESTION\nWHERE COUNTRY_CODE = 'BR' AND\nQUESTION_ORDER < 6 AND \nDELETED_IND = 0",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "QUESTION_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "QUESTION_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "QUESTION_CREATED_DATE",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "QUESTION_CREATED_DATE",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "QUESTION_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "QUESTION_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "QUESTION_LAST_MODIFIED_TS",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "QUESTION_LAST_MODIFIED_TS",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "QUESTION_TEXT",
+											"type": "String"
+										},
+										"sink": {
+											"name": "QUESTION_TEXT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "QUESTION_ORDER",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "QUESTION_ORDER",
+											"type": "Decimal",
+											"physicalType": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "QUESTION_TYPE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "QUESTION_TYPE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TIPO_QUESTAO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TIPO_QUESTAO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Arquivo_Em_TxT_3",
+								"type": "DatasetReference",
+								"parameters": {
+									"pasta_nome_arquivo": "dim_survey_question.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "dim_sales_force_teradata",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "dim_survey_question",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT RX_EXTERNAL_ID,\n      USER_ID,\n \t  SOURCE_USER_AID\t\t\t\t\t\t\t\t\t\tAS \"SF_SOURCE_USER_AID\",\n      USER_NAME,\n      FIRST_NAME,\n      NAME,\n      LAST_NAME,      \n      COUNTRY,\n      STATE_PROVINCE,\n      UPPER(CITY) \t\t\t\t\t\t\t\t\t\t\tAS \"CITY\",\n      POSTAL_CODE,\n      ACTIVE_IND,\n      EMAIL,\n      EMPLOYEE_NUMBER_AID,\n      USER_IDENTIFIER_AID,\n      CORE_GSK_FUNCTIONAL_PROFILE,\n      PROFILE_NAME\n FROM  LATAMCRMFBICNTRYBRVW.D_USER\nWHERE ACTIVE_IND = 1;\n ;",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "RX_EXTERNAL_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RX_EXTERNAL_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "USER_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "USER_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "SF_SOURCE_USER_AID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SF_SOURCE_USER_AID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "USER_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "USER_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FIRST_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "FIRST_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LAST_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LAST_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "COUNTRY",
+											"type": "String"
+										},
+										"sink": {
+											"name": "COUNTRY",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "STATE_PROVINCE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "STATE_PROVINCE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CITY",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CITY",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "POSTAL_CODE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "POSTAL_CODE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ACTIVE_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ACTIVE_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EMAIL",
+											"type": "String"
+										},
+										"sink": {
+											"name": "EMAIL",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EMPLOYEE_NUMBER_AID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "EMPLOYEE_NUMBER_AID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "USER_IDENTIFIER_AID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "USER_IDENTIFIER_AID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CORE_GSK_FUNCTIONAL_PROFILE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CORE_GSK_FUNCTIONAL_PROFILE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PROFILE_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PROFILE_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Arquivo_Em_TxT_3",
+								"type": "DatasetReference",
+								"parameters": {
+									"pasta_nome_arquivo": "dim_sales_force_teradata.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "dim_sales_force_funcionario",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "dim_sales_force_teradata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": "select DISTINCT MUDID\tAS 'RX_EXTERNAL_ID',\n \t  UF\nfrom Dim_Cad_Funcionarios",
+								"queryTimeout": "07:30:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "RX_EXTERNAL_ID",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "RX_EXTERNAL_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "UF",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "UF",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SqlServerGSK",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Arquivo_Em_TxT_3",
+								"type": "DatasetReference",
+								"parameters": {
+									"pasta_nome_arquivo": "dim_sales_force_funcionario.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "dim_sales_force_sqlserver",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "dim_sales_force_funcionario",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": "SELECT \n     ROW_ID_FUNCIONARIO\t\t\t\t\t\t\t\t\t\tAS RX_EXTERNAL_ID,\n\t CICLO,\n     CICLO + '-' + ROW_ID_TERRITORIO\t\t\t\t\t\tAS SALES_FORCE_KEY,\n     CICLO + '-' + ROW_ID_TERRITORIO\t\t\t\t\t\tAS SF_KEY,\n\t ROW_ID_TERRITORIO,\n     ROW_ID_GD,\n     NOME_GD,\n     NOME_GR,\n\t CASE\n     WHEN Len(COALESCE(TERRITORIO_GD,'0123456789')) = 0 THEN TERRITORIO_GD\n     ELSE Right(TERRITORIO_GD, 6) END AS TERRITORIO_GD,\n\t CASE\n\t WHEN Len(COALESCE(TERRITORIO_GR,'0123456789')) = 0 THEN TERRITORIO_GR\n     ELSE Right(TERRITORIO_GR, 6)END AS TERRITORIO_GR,\n     BU,\n     CASE\n\t WHEN DIVISÃO = 'REDES' THEN 'REDES DIRETAS'\n     ELSE DIVISÃO END  AS DIVISÃO,\n     CASE\n\t WHEN Len(COALESCE(TERRITORIO,'0123456789')) = 0 THEN TERRITORIO\n     ELSE Right(TERRITORIO, 6) END AS TERRITORIO,\n\t NOME_REPRESENTANTE\t\t\t\t\t\t\t\t\t\tAS NOME_REP        \nFROM Dim_Cad_Forca_Vendas\nWHERE STATUS = 'A'\n  AND CICLO >= '201901'\n  AND (BU = 'FARMA' OR BU = 'BIOTECH');",
+								"queryTimeout": "07:30:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "RX_EXTERNAL_ID",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "RX_EXTERNAL_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CICLO",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "CICLO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SALES_FORCE_KEY",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "SALES_FORCE_KEY",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SF_KEY",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "SF_KEY",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_TERRITORIO",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "ROW_ID_TERRITORIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_GD",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "ROW_ID_GD",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NOME_GD",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "NOME_GD",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NOME_GR",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "NOME_GR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORIO_GD",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "TERRITORIO_GD",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORIO_GR",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "TERRITORIO_GR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BU",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "BU",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DIVISÃO",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "DIVISÃO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORIO",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "TERRITORIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NOME_REP",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "NOME_REP",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SqlServerGSK",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Arquivo_Em_TxT_3",
+								"type": "DatasetReference",
+								"parameters": {
+									"pasta_nome_arquivo": "dim_sales_force_sqlserver.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "fato_gso_call_summary",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "fato_gso_response",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT \n\t\"CM\".CALL_SUMMARY_ID,\n\t \"CM\".PARENT_CALL_AID,\n\t \"CM\".LOCAL_CALL_DATE_ID,\n\t \"CM\".CALL_DATE_ID,\n\t \"CM\".TERRITORY_ID,\n\t LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6) \t\tAS \"CYCLE\",\n\t ((LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6)||'-')||\"CM\".TERRITORY_ID)\tAS \"SALES_FORCE_KEY\",\n\t LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6)\tAS \"DATE\",\n\t \"CM\".LOCAL_CALL_TIME_ID,\n\t \"CM\".ACCOUNT_ID,\n\t \"CM\".CALL_NAME,\n\t \"CM\".RX_CALL_TYPE,\n\t \"CM\".CALL_STATUS,\n\t \"CM\".ATTENDEE_TYPE,\n\t \"CM\".CLM_IND,\n\t \"CM\".SAMPLE_CALL_IND,\n\t \"CM\".CALL_TYPE,\n\t \"CM\".DETAILED_PRODUCTS,\n\t \"CM\".DURATION,\n\t \"CM\".CREATED_DATE_ID,\n\t \"CM\".CREATED_DATE_TIME_ID,\n\t \"CM\".LAST_MODIFIED_DATE_ID,\n\t \"CM\".LAST_MODIFIED_DATE_TIME_ID,\n\t \"CM\".PRE_CALL_NOTES,\n\t \"CM\".NEXT_CALL_NOTES,\n\t 'Completed_vod'\t\t\t\t\t\t\t\t\t\tAS \"REVIEW_STATUS\",\n\t \"AC\".ACCOUNT_NAME,\n\t \"AC\".RX_LEGAL_ID,\n\t \"KEY\".KEY_MESSAGE_NAME,\n\t \"KEY\".QUESTION_ID,\n\t COALESCE(\"KEY\".PRODUCT_NAME,'NOT INFORMED') AS \"PRODUCT\",\n\t \"KEY\".CALL_DATE,\n\t 'CALLS'\t\t\t\tAS \"ORIGEM\"\n\nFROM  \n\tLATAMCRMFBICNTRYBRVW.F_CALL_SUMMARY \"CM\"\n\nLEFT JOIN (\n\t\t\tSELECT \n\t\t\t\tACCOUNT_ID,\n\t \t\t\tNAME AS \"ACCOUNT_NAME\",\n     \t\t\tRX_LEGAL_ID\n\t\t\tFROM \n\t\t\t\tLATAMCRMFBICNTRYBRVW.D_ACCOUNT\n\t\t\tWHERE\n\t\t\t\tCOUNTRY_CODE = 'BR'\n  \t\t\t\tAND DELETED_IND = 0\n  \t\t\t) as \"AC\" ON \"CM\".ACCOUNT_ID = \"AC\".ACCOUNT_ID\n\nLEFT JOIN (\n\t\t\tSELECT\n\t\t\t\t\"CM\".CALL_SUMMARY_ID,\n\t\t\t\t\"KM\".KEY_MESSAGE_NAME,\n\t\t\t\tCASE\n\t\t\t\tWHEN \"KM\".KEY_MESSAGE_NAME = 'Tentativa de GSO - Expositiva' THEN '12209'\n\t\t\t    WHEN \"KM\".KEY_MESSAGE_NAME = 'Tentativa de GSO - Interativa' THEN '12213'\n\t\t\t    WHEN \"KM\".KEY_MESSAGE_NAME = 'Lembrança da marca' THEN '12210'\n\t\t\t    WHEN \"KM\".KEY_MESSAGE_NAME = 'Good Sell Outcome (GSO)' THEN '12212'\n\t\t\t    ELSE \"KM\".KEY_MESSAGE_NAME END AS \"QUESTION_ID\",\n\t\t\t    \"PC\".PRODUCT_NAME,\n\t\t\t    \"CM\".CALL_DATE_ID as \"CALL_DATE\",\n\t\t\t    \"CM\".TERRITORY_ID  \n\t\t\t\n\t\t\tFROM \n\t\t\t\tLATAMCRMFBICNTRYBRVW.F_CALL_MESSAGE as \"CM\"\n\n\t\t\tLEFT JOIN (\n\t\t\t\t\t\tSELECT DISTINCT\n\t\t\t\t\t\t    KEY_MESSAGE_ID \tas \"MESSAGE_ID\",\n\t\t\t\t\t\t    KEY_MESSAGE_ID,\n\t\t\t\t\t\t    KEY_MESSAGE_NAME\n\t\t\t\t\t\t\n\t\t\t\t\t\tFROM \n\t\t\t\t\t\t\tLATAMCRMFBICNTRYBRVW.D_KEY_MESSAGE\n\t\t\t\t\t\tWHERE \t\n\t\t\t\t\t\t\t(KEY_MESSAGE_NAME = 'Visita não promocional' OR\n\t\t\t\t\t\t\t KEY_MESSAGE_NAME = 'Lembrança da marca' OR\n\t\t\t\t\t\t     KEY_MESSAGE_NAME LIKE '*GSO*')\n\t\t\t\t\t \t) AS \"KM\" ON \"CM\".KEY_MESSAGE_ID = \"KM\".KEY_MESSAGE_ID\n        \n\t\t\tLEFT JOIN (\n\t\t\t\t\t\tSELECT \n\t\t\t\t\t\t\tPRODUCT_CATALOG_ID,\n\t\t\t\t \t\t\tPRODUCT_NAME\n\t\t\t\t\t\tFROM \n\t\t\t\t\t\tLATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG\n\t\t\t\t\t  ) AS \"PC\" ON \"CM\".PRODUCT_CATALOG_ID = \"PC\".PRODUCT_CATALOG_ID\n\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\tWHERE \n\t\t\t\t\t\t(EXISTS (\n\t\t\t\t\t\t\t\t\tSELECT DISTINCT\n\t\t\t\t\t\t\t\t\t    KEY_MESSAGE_ID \tas \"MESSAGE_ID\",\n\t\t\t\t\t\t\t\t\t    KEY_MESSAGE_ID,\n\t\t\t\t\t\t\t\t\t    KEY_MESSAGE_NAME\n\t\t\t\t\t\t\t\t\tFROM \n\t\t\t\t\t\t\t\t\t\tLATAMCRMFBICNTRYBRVW.D_KEY_MESSAGE\n\t\t\t\t\t\t\t\t\tWHERE \t\n\t\t\t\t\t\t\t\t\t\t(KEY_MESSAGE_NAME = 'Visita não promocional' OR\n\t\t\t\t\t\t\t\t\t\t KEY_MESSAGE_NAME = 'Lembrança da marca' OR\n\t\t\t\t\t\t\t\t\t     KEY_MESSAGE_NAME LIKE '*GSO*')\n\t\t\t\t\t\t\t\t\t     AND KEY_MESSAGE_ID = \"CM\".KEY_MESSAGE_ID)\n\t\t\t\t\t\t\t\t) \n\t\t\t\t\t\tAND\n\t\t\t\t\t\t(EXISTS (\n\t\t\t\t\t\t\t\t\tSELECT \n\t\t\t\t\t\t\t\t\t\tPRODUCT_CATALOG_ID,\n\t\t\t\t\t\t\t \t\t\tPRODUCT_NAME\n\t\t\t\t\t\t\t\t\tFROM \n\t\t\t\t\t\t\t\t\t\tLATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG\n\t\t\t\t\t\t      \t\tWHERE PRODUCT_CATALOG_ID =\t\"CM\".PRODUCT_CATALOG_ID)\n\t\t\t\t\t\t \t\t)\n\t\t\t\t\t\t AND\n\t\t\t\t\t\t LEFT(CAST(CALL_DATE_ID as CHAR(8)),6) > '201901'\n\t\t) AS \"KEY\" ON \"CM\".CALL_SUMMARY_ID = \"KEY\".CALL_SUMMARY_ID\n  \nWHERE \n\tLEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6)>= '201901' AND\n\t\"CM\".COUNTRY_CODE = 'BR' AND \n  \t\"CM\".CALL_STATUS = 'Submitted_vod' AND \n  \t\"CM\".DELETED_IND = 0;",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 16,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CALL_SUMMARY_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "CALL_SUMMARY_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "PARENT_CALL_AID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PARENT_CALL_AID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LOCAL_CALL_DATE_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "LOCAL_CALL_DATE_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "CALL_DATE_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "CALL_DATE_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORY_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "TERRITORY_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "CYCLE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CYCLE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SALES_FORCE_KEY",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SALES_FORCE_KEY",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DATE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DATE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LOCAL_CALL_TIME_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "LOCAL_CALL_TIME_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCOUNT_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "ACCOUNT_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "CALL_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CALL_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RX_CALL_TYPE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RX_CALL_TYPE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CALL_STATUS",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CALL_STATUS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ATTENDEE_TYPE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ATTENDEE_TYPE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CLM_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CLM_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SAMPLE_CALL_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SAMPLE_CALL_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CALL_TYPE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CALL_TYPE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DETAILED_PRODUCTS",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DETAILED_PRODUCTS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DURATION",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "DURATION",
+											"type": "Decimal",
+											"physicalType": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "CREATED_DATE_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "CREATED_DATE_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "CREATED_DATE_TIME_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "CREATED_DATE_TIME_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "LAST_MODIFIED_DATE_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "LAST_MODIFIED_DATE_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "LAST_MODIFIED_DATE_TIME_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "LAST_MODIFIED_DATE_TIME_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "PRE_CALL_NOTES",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRE_CALL_NOTES",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NEXT_CALL_NOTES",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NEXT_CALL_NOTES",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "REVIEW_STATUS",
+											"type": "String"
+										},
+										"sink": {
+											"name": "REVIEW_STATUS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCOUNT_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ACCOUNT_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RX_LEGAL_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RX_LEGAL_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "KEY_MESSAGE_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "KEY_MESSAGE_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "QUESTION_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "QUESTION_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRODUCT",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRODUCT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CALL_DATE",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "CALL_DATE",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "ORIGEM",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ORIGEM",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Arquivo_Em_TxT_3",
+								"type": "DatasetReference",
+								"parameters": {
+									"pasta_nome_arquivo": "fato_gso_call_summary.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "fato_gso_response",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "dim_sales_force_sqlserver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT \n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n    \"P\".QUESTION_ID,\t\t\t\t\t\n    \"P\".SOURCE_CREATED_TS,\n    \"P\".SOURCE_LAST_MODIFIED_TS\t\t\tAS \"RESPONSE_LAST_MODIFIED_TS\",\n    \"P\".SOURCE_CREATED_BY_AID AS \"SOURCE_USER_AID\",\n    \"P\".QUESTION_RESPONSE_ID,          \n    \"P\".RESPONSE_NAME,\n    \"P\".RESPONSE_NUMBER,\n    \"P\".RESPONSE,\n    COALESCE(\"PRD\".SURVEY_KEY,'NOT INFORMED') AS \"PRODUCT\",\n    \"P\".QUESTION_ORDER\t\t\t\tAS \"RESPONSE_QUESTION_ORDER\",\n\t\"ST\".\"DATE\",\n\t\"ST\".TARGET_LAST_MODIFIED_TS,\n\t\"ST\".MODIFIED_DATE,\n\t\"ST\".START_DATE_ID,\n\t\"ST\".END_DATE_ID,\n\t\"ST\".REVIEW_DATE_ID,\n\t\"ST\".REVIEW_STATUS,\n\t\"ST\".MANAGER_TERRITORY_ID,\n\t\"ST\".EMPLOYEE_TERRITORY_ID,\n\t\"ST\".TERRITORY_ID,\n \t(\"ST\".MODIFIED_DATE - \"ST\".\"DATE\" ) AS \"DATE_DIFF\",\n \tCASE\n \tWHEN (\"ST\".MODIFIED_DATE - ADD_MONTHS(\"ST\".\"DATE\" - EXTRACT(DAY FROM \"ST\".\"DATE\")+1,6)) > 7 THEN 'N'\n \tELSE 'S' END AS \"FLAG_PREMIO\",\n \tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6)||'-'||TRIM(\"ST\".EMPLOYEE_TERRITORY_ID) AS \"SALES_FORCE_KEY\",\n \tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6)||'-'||TRIM(\"ST\".EMPLOYEE_TERRITORY_ID) AS \"RESPONSES_KEY\",\n\t'SURVEYS'\t\t\t\tAS \"ORIGEM\"\n    \n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n \n LEFT JOIN (SELECT DISTINCT\n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n    \"P\".RESPONSE\n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n WHERE \"P\".QUESTION_ORDER = 0  AND \"P\".RESPONSE IS NOT NULL) AS \"PRD\" ON \"P\".SURVEY_TARGET_ID = \"PRD\".SURVEY_KEY\n \n INNER JOIN (SELECT \n\t  \"ST\".SURVEY_TARGET_ID as \"SURVEY_KEY\",\n\t  CAST(TRIM(CAST(LEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),4)||'-'||\n\t  SUBSTRING(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)) FROM 5 FOR 2) ||'-'||\n\t  RIGHT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),2) AS VARCHAR(10))) AS DATE FORMAT 'yyyy-mm-dd') AS \"DATE\",\n\t  \"ST\".SOURCE_LAST_MODIFIED_TS as \"TARGET_LAST_MODIFIED_TS\",\n\t  CAST(\"ST\".SOURCE_LAST_MODIFIED_TS AS DATE FORMAT 'YYYYMMDD') AS \"MODIFIED_DATE\",\n\t  \"ST\".START_DATE_ID,\n\t  \"ST\".END_DATE_ID,\n\t  \"ST\".REVIEW_DATE_ID,\n\t  \"ST\".REVIEW_STATUS,\n\t  \"ST\".MANAGER_TERRITORY_ID,\n\t  \"ST\".EMPLOYEE_TERRITORY_ID,\n\t  \"ST\".TERRITORY_ID\nFROM LATAMCRMFBICNTRYBRVW.F_SURVEY_TARGETS AS \"ST\"\nWHERE \"ST\".COUNTRY_CODE = 'BR'  AND \n\t\"ST\".SURVEY_TARGET_NAME LIKE '%GSO U%' AND\n\tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6) > '201901') AS \"ST\" ON \"P\".SURVEY_TARGET_ID = \"ST\".SURVEY_KEY;",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 16,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "SURVEY_KEY",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "SURVEY_KEY",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "QUESTION_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "QUESTION_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "SOURCE_CREATED_TS",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "SOURCE_CREATED_TS",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "RESPONSE_LAST_MODIFIED_TS",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "RESPONSE_LAST_MODIFIED_TS",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "SOURCE_USER_AID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SOURCE_USER_AID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "QUESTION_RESPONSE_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "QUESTION_RESPONSE_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "RESPONSE_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RESPONSE_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RESPONSE_NUMBER",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "RESPONSE_NUMBER",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "RESPONSE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RESPONSE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRODUCT",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRODUCT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RESPONSE_QUESTION_ORDER",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "RESPONSE_QUESTION_ORDER",
+											"type": "Decimal",
+											"physicalType": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "DATE",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "DATE",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "TARGET_LAST_MODIFIED_TS",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "TARGET_LAST_MODIFIED_TS",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "MODIFIED_DATE",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "MODIFIED_DATE",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "START_DATE_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "START_DATE_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "END_DATE_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "END_DATE_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "REVIEW_DATE_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "REVIEW_DATE_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "REVIEW_STATUS",
+											"type": "String"
+										},
+										"sink": {
+											"name": "REVIEW_STATUS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MANAGER_TERRITORY_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "MANAGER_TERRITORY_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "EMPLOYEE_TERRITORY_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "EMPLOYEE_TERRITORY_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORY_ID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "TERRITORY_ID",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "DATE_DIFF",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "DATE_DIFF",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "FLAG_PREMIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "FLAG_PREMIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SALES_FORCE_KEY",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SALES_FORCE_KEY",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RESPONSES_KEY",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RESPONSES_KEY",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ORIGEM",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ORIGEM",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Arquivo_Em_TxT_3",
+								"type": "DatasetReference",
+								"parameters": {
+									"pasta_nome_arquivo": "fato_gso_response.txt"
+								}
+							}
+						]
+					}
+				],
+				"folder": {
+					"name": "Extract"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/TeradataTable1')]",
+				"[concat(variables('workspaceId'), '/datasets/Arquivo_Em_TxT_3')]",
+				"[concat(variables('workspaceId'), '/datasets/SqlServerGSK')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/3 - Transform - GSO')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lista_Arquivos",
+						"type": "GetMetadata",
+						"dependsOn": [
+							{
+								"activity": "TranformRegionTxt",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Listar_Arquivos_Txt_3",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "Filtra_Arquivos_TXT",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "Lista_Arquivos",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lista_Arquivos').output.childitems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@contains(item().name,'.txt')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Para_Cada_TXT",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Filtra_Arquivos_TXT",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Filtra_Arquivos_TXT').output.Value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Transforma_TXT_to_Parquet",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+												"wildcardFileName": {
+													"value": "@{item().name}",
+													"type": "Expression"
+												}
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "Listar_Arquivos_Txt_3",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "Arquivos_Em_Parquet_3",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Deletar_Arquivos_TXT",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Para_Cada_TXT",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Listar_Arquivos_Txt_3",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"wildcardFileName": "*.txt"
+							}
+						}
+					},
+					{
+						"name": "GSO_ETL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Deletar_Arquivos_TXT",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "GSO_ETL",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"fGsoCallSummarySource": {},
+									"fGsoResponseSource": {},
+									"dSalesForceTeradata": {},
+									"dSalesForceFuncionario": {},
+									"dSalesForceSqlServer": {},
+									"dSalesForceRegiao": {},
+									"FatoGsoDestino": {},
+									"SalesForceDestino": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Coarse"
+						}
+					},
+					{
+						"name": "TranformRegionTxt",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "BRASIL.Area",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "AREA",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Outlet State",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "UF",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Regiao",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "REGION",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "State",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "STATE",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Fact_GSO_Aux_Regiao",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Arquivo_Em_TxT_3",
+								"type": "DatasetReference",
+								"parameters": {
+									"pasta_nome_arquivo": "dim_region.txt"
+								}
+							}
+						]
+					}
+				],
+				"folder": {
+					"name": "Transform"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Listar_Arquivos_Txt_3')]",
+				"[concat(variables('workspaceId'), '/dataflows/GSO_ETL')]",
+				"[concat(variables('workspaceId'), '/datasets/Fact_GSO_Aux_Regiao')]",
+				"[concat(variables('workspaceId'), '/datasets/Arquivo_Em_TxT_3')]",
+				"[concat(variables('workspaceId'), '/datasets/Arquivos_Em_Parquet_3')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/CopyPipeline_uhq')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_uhq",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "EMAIL 1-1/FILES/dim_audit_end.txt"
+							},
+							{
+								"name": "Destination",
+								"value": "gsksynapsestorage/synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_audit_end.parquet"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": 0
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"validateDataConsistency": false
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_uhq",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_uhq",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": [],
+				"lastPublishTime": "2020-12-16T21:57:23Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/SourceDataset_uhq')]",
+				"[concat(variables('workspaceId'), '/datasets/DestinationDataset_uhq')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AbrirArquivoComprimido')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CompressArquivoSave",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"columnDelimiter": "~",
+					"compressionCodec": "ZipDeflate",
+					"compressionLevel": "Optimal",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "202012;REP 631711;CG804878;CLAUDIANE;CLAUDIANE BEATRIZ GURGEL DO AMARAL CANTO SALES;PORTO VELHO;RO;I+P;;20201127;AC0000977;CIRO FALCÃO MACEDO JÚNIOR;CIRO MACEDO JÚNIOR;CIRO;FALCÃO;MACEDO JÚNIOR;RIO BRANCO;AC;\"AVENIDA GETÚLIO VARGAS",
+						"type": "String"
+					},
+					{
+						"name": " 811  \";CARDIOLOGIA;;;;;NULL;NULL;;5569999256460;2020-12-03",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/CompressArquivoSave')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Arquivo_Em_TxT_1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CompressArquivoSave",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"nome_arquivo": {
+						"type": "string"
+					},
+					"pasta": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "1 - Email 1-1"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().nome_arquivo",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat('synapse/workspaces/gsk-synapse/warehouse/',dataset().pasta)",
+							"type": "Expression"
+						},
+						"fileSystem": "gsksynapsestorage"
+					},
+					"columnDelimiter": "\t",
+					"compressionCodec": "ZipDeflate",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/CompressArquivoSave')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Arquivo_Em_TxT_2')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CompressArquivoSave",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"nome_arquivo": {
+						"type": "string"
+					},
+					"pasta": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "2 - KPI Visitacao"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().nome_arquivo",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat('synapse/workspaces/gsk-synapse/warehouse/',dataset().pasta)",
+							"type": "Expression"
+						},
+						"fileSystem": "gsksynapsestorage"
+					},
+					"columnDelimiter": "~",
+					"compressionCodec": "ZipDeflate",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/CompressArquivoSave')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Arquivo_Em_TxT_3')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorageBlobSynapse",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"pasta_nome_arquivo": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "3 - GSO"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().pasta_nome_arquivo",
+							"type": "Expression"
+						},
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+						"container": "gsksynapsestorage"
+					},
+					"columnDelimiter": "\t",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureDataLakeStorageBlobSynapse')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Arquivos_Em_Parquet_1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Arquivos_Em_Parquet_3",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"nome_arquivo": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "1 - Email 1-1"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().nome_arquivo",
+							"type": "Expression"
+						},
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+						"container": "gsksynapsestorage"
+					},
+					"compressionCodec": "gzip"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/Arquivos_Em_Parquet_3')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Arquivos_Em_Parquet_2')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Arquivos_Em_Parquet_3",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2 - KPI Visitacao"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao",
+						"container": "gsksynapsestorage"
+					},
+					"compressionCodec": "gzip"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/Arquivos_Em_Parquet_3')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Arquivos_Em_Parquet_3')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Arquivos_Em_Parquet_3",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "3 - GSO"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+						"container": "gsksynapsestorage"
+					},
+					"compressionCodec": "gzip"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/Arquivos_Em_Parquet_3')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DelimitedText1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "GSK_Pulmonar_PF_Datasus.txt.bz2",
+						"folderPath": "dev",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"columnDelimiter": ";",
+					"compressionCodec": "bzip2",
+					"compressionLevel": "Fastest",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "PRODUTO_DESC",
+						"type": "String"
+					},
+					{
+						"name": "MUNICIPIO",
+						"type": "String"
+					},
+					{
+						"name": "UF",
+						"type": "String"
+					},
+					{
+						"name": "FANTASIA",
+						"type": "String"
+					},
+					{
+						"name": "NR_CNPJ",
+						"type": "String"
+					},
+					{
+						"name": "CNES",
+						"type": "String"
+					},
+					{
+						"name": "CID",
+						"type": "String"
+					},
+					{
+						"name": "QTDE_INICIAL_PACIENTES",
+						"type": "String"
+					},
+					{
+						"name": "MS_INICIAL_PACIENTES",
+						"type": "String"
+					},
+					{
+						"name": "QTDE_PACIENTES_NOVOS",
+						"type": "String"
+					},
+					{
+						"name": "QTDE_PACIENTES_RETORNO_MESMA",
+						"type": "String"
+					},
+					{
+						"name": "QTDE_PACIENTES_RETORNO_OUTRA",
+						"type": "String"
+					},
+					{
+						"name": "QTDE_PACIENTES_VIERAM",
+						"type": "String"
+					},
+					{
+						"name": "QTDE_PACIENTES_FORAM",
+						"type": "String"
+					},
+					{
+						"name": "QTDE_PACIENTES_DELTA",
+						"type": "String"
+					},
+					{
+						"name": "QTDE_PACIENTES_SAIRAM",
+						"type": "String"
+					},
+					{
+						"name": "QTDE_MOVIMENTACAO",
+						"type": "String"
+					},
+					{
+						"name": "QTDE_FINAL_PACIENTES",
+						"type": "String"
+					},
+					{
+						"name": "MS_FINAL_PACIENTES",
+						"type": "String"
+					},
+					{
+						"name": "PP",
+						"type": "String"
+					},
+					{
+						"name": "DT_PERIODO_INICIAL",
+						"type": "String"
+					},
+					{
+						"name": "DT_PERIODO_FINAL",
+						"type": "String"
+					},
+					{
+						"name": "QTDE_PACIENTES_CONTINUAM",
+						"type": "String"
+					},
+					{
+						"name": "MERCADO",
+						"type": "String"
+					},
+					{
+						"name": "TERRITORIO",
+						"type": "String"
+					},
+					{
+						"name": "GD",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DestinationDataset_uhq')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageSynapse",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "dim_audit_end.parquet",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+						"container": "gsksynapsestorage"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureBlobStorageSynapse')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Fact_GSO_Aux_Regiao')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "3 - GSO"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Sheet1",
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "area.xlsx",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/aux.tabelas_auxiliares",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "BRASIL.Area",
+						"type": "String"
+					},
+					{
+						"name": "Outlet State",
+						"type": "String"
+					},
+					{
+						"name": "Regiao",
+						"type": "String"
+					},
+					{
+						"name": "State",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Fact_GSO_Data_Flow')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageSynapse",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "3 - GSO"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+						"container": "gsksynapsestorage"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "CALL_SUMMARY_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "PARENT_CALL_AID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LOCAL_CALL_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "TERRITORY_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CYCLE",
+						"type": "UTF8"
+					},
+					{
+						"name": "SALES_FORCE_KEY",
+						"type": "UTF8"
+					},
+					{
+						"name": "DATE",
+						"type": "UTF8"
+					},
+					{
+						"name": "LOCAL_CALL_TIME_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "ACCOUNT_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_NAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "RX_CALL_TYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_STATUS",
+						"type": "UTF8"
+					},
+					{
+						"name": "ATTENDEE_TYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "CLM_IND",
+						"type": "UTF8"
+					},
+					{
+						"name": "SAMPLE_CALL_IND",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_TYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "DETAILED_PRODUCTS",
+						"type": "UTF8"
+					},
+					{
+						"name": "DURATION",
+						"type": "UTF8"
+					},
+					{
+						"name": "CREATED_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CREATED_DATE_TIME_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LAST_MODIFIED_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LAST_MODIFIED_DATE_TIME_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "PRE_CALL_NOTES",
+						"type": "UTF8"
+					},
+					{
+						"name": "NEXT_CALL_NOTES",
+						"type": "UTF8"
+					},
+					{
+						"name": "REVIEW_STATUS",
+						"type": "UTF8"
+					},
+					{
+						"name": "ACCOUNT_NAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "RX_LEGAL_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "KEY_MESSAGE_NAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "QUESTION_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "PRODUCT",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_DATE",
+						"type": "UTF8"
+					},
+					{
+						"name": "ORIGEM",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureBlobStorageSynapse')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/FileSystemGSK')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FileServerGSK",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"nome_arquivo": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "0_Habilitado"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": {
+							"value": "@dataset().nome_arquivo",
+							"type": "Expression"
+						},
+						"folderPath": "EMAIL 1-1/FILES"
+					},
+					"columnDelimiter": "$",
+					"compressionCodec": "ZipDeflate",
+					"compressionLevel": "Fastest",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID~CRM_UNIV~MEDICO_UNIV~ESPECIALIDADE_UNIV~LOGRADOURO_UNIV~BAIRRO_UNIV~CIDADE_UNIV~CEP_UNIV~ORIGEM_UNIV~UF_UNIV~BRICK_UNIV~TELEFONE_UNIV",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/FileServerGSK')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ListarArquivosComprimidos_1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"columnDelimiter": "\t",
+					"compressionCodec": "ZipDeflate",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Listar_Arquivos_Txt_1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Listar_Arquivos_Txt_3",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "1 - Email 1-1"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+						"container": "gsksynapsestorage"
+					},
+					"columnDelimiter": "~",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/Listar_Arquivos_Txt_3')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Listar_Arquivos_Txt_2')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Listar_Arquivos_Txt_3",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2 - KPI Visitacao"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao",
+						"container": "gsksynapsestorage"
+					},
+					"columnDelimiter": "~",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/Listar_Arquivos_Txt_3')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Listar_Arquivos_Txt_3')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Listar_Arquivos_Txt_3",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "3 - GSO"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+						"container": "gsksynapsestorage"
+					},
+					"columnDelimiter": "\t",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/Listar_Arquivos_Txt_3')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Parquet1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "dev/gsk_pulmonar",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CRM_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "MEDICO_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "ESPECIALIDADE_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "LOGRADOURO_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "BAIRRO_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "CIDADE_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "CEP_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "ORIGEM_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "UF_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "BRICK_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "TELEFONE_UNIV",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Salvar_Dim_GSO_Region_Sink')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "3 - GSO"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dim_region.parquet",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"compressionCodec": "gzip"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Salvar_Dim_GSO_Sink')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "3 - GSO"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"compressionCodec": "gzip"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Salvar_Fato_GSO_Sink')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "3 - GSO"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.gso",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"compressionCodec": "gzip"
+				},
+				"schema": [
+					{
+						"name": "CALL_SUMMARY_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "PARENT_CALL_AID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LOCAL_CALL_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "TERRITORY_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CYCLE",
+						"type": "UTF8"
+					},
+					{
+						"name": "SALES_FORCE_KEY",
+						"type": "UTF8"
+					},
+					{
+						"name": "DATE",
+						"type": "UTF8"
+					},
+					{
+						"name": "LOCAL_CALL_TIME_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "ACCOUNT_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_NAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "RX_CALL_TYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_STATUS",
+						"type": "UTF8"
+					},
+					{
+						"name": "ATTENDEE_TYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "CLM_IND",
+						"type": "UTF8"
+					},
+					{
+						"name": "SAMPLE_CALL_IND",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_TYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "DETAILED_PRODUCTS",
+						"type": "UTF8"
+					},
+					{
+						"name": "DURATION",
+						"type": "UTF8"
+					},
+					{
+						"name": "CREATED_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CREATED_DATE_TIME_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LAST_MODIFIED_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LAST_MODIFIED_DATE_TIME_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "PRE_CALL_NOTES",
+						"type": "UTF8"
+					},
+					{
+						"name": "NEXT_CALL_NOTES",
+						"type": "UTF8"
+					},
+					{
+						"name": "REVIEW_STATUS",
+						"type": "UTF8"
+					},
+					{
+						"name": "ACCOUNT_NAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "RX_LEGAL_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "KEY_MESSAGE_NAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "QUESTION_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "PRODUCT",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_DATE",
+						"type": "UTF8"
+					},
+					{
+						"name": "ORIGEM",
+						"type": "UTF8"
+					},
+					{
+						"name": "SURVEY_KEY",
+						"type": "UTF8"
+					},
+					{
+						"name": "SOURCE_CREATED_TS",
+						"type": "UTF8"
+					},
+					{
+						"name": "RESPONSE_LAST_MODIFIED_TS",
+						"type": "UTF8"
+					},
+					{
+						"name": "SOURCE_USER_AID",
+						"type": "UTF8"
+					},
+					{
+						"name": "QUESTION_RESPONSE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "RESPONSE_NAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "RESPONSE_NUMBER",
+						"type": "UTF8"
+					},
+					{
+						"name": "RESPONSE",
+						"type": "UTF8"
+					},
+					{
+						"name": "RESPONSE_QUESTION_ORDER",
+						"type": "UTF8"
+					},
+					{
+						"name": "TARGET_LAST_MODIFIED_TS",
+						"type": "UTF8"
+					},
+					{
+						"name": "MODIFIED_DATE",
+						"type": "UTF8"
+					},
+					{
+						"name": "START_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "END_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "REVIEW_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "MANAGER_TERRITORY_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "EMPLOYEE_TERRITORY_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "DATE_DIFF",
+						"type": "UTF8"
+					},
+					{
+						"name": "FLAG_PREMIO",
+						"type": "UTF8"
+					},
+					{
+						"name": "RESPONSES_KEY",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SourceDataset_uhq')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FileServerGSK",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": "dim_audit_end.txt",
+						"folderPath": "EMAIL 1-1/FILES"
+					},
+					"columnDelimiter": "~",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID",
+						"type": "String"
+					},
+					{
+						"name": "CRM_UNIV",
+						"type": "String"
+					},
+					{
+						"name": "MEDICO_UNIV",
+						"type": "String"
+					},
+					{
+						"name": "ESPECIALIDADE_UNIV",
+						"type": "String"
+					},
+					{
+						"name": "LOGRADOURO_UNIV",
+						"type": "String"
+					},
+					{
+						"name": "BAIRRO_UNIV",
+						"type": "String"
+					},
+					{
+						"name": "CIDADE_UNIV",
+						"type": "String"
+					},
+					{
+						"name": "CEP_UNIV",
+						"type": "String"
+					},
+					{
+						"name": "ORIGEM_UNIV",
+						"type": "String"
+					},
+					{
+						"name": "UF_UNIV",
+						"type": "String"
+					},
+					{
+						"name": "BRICK_UNIV",
+						"type": "String"
+					},
+					{
+						"name": "TELEFONE_UNIV",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/FileServerGSK')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SqlServerGSK')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlServerGSK",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "0_Habilitado"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/SqlServerGSK')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SqlServerLocalDev')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlServerLocalDouglasDev",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "0_Habilitado"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/SqlServerLocalDouglasDev')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/TeradataTable1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TeradataVeevaGSK",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "0_Habilitado"
+				},
+				"annotations": [],
+				"type": "TeradataTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/TeradataVeevaGSK')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Arquivos_Em_Parquet_3')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('Arquivos_Em_Parquet_3_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureBlobStorageSynapse')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorageSynapse_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureDataLakeStorage1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureDataLakeStorageBlobSynapse')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureDataLakeStorageBlobSynapse_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/CompressArquivoSave')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('CompressArquivoSave_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('CompressArquivoSave_accountKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/FileServerDouglas')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('FileServerDouglas_properties_typeProperties_host')]",
+					"userId": "[parameters('FileServerDouglas_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('FileServerDouglas_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/FileServerGSK')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('FileServerGSK_properties_typeProperties_host')]",
+					"userId": "[parameters('FileServerGSK_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('FileServerGSK_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "IntegrationRuntimeGSK",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/IntegrationRuntimeGSK')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Listar_Arquivos_Txt_3')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('Listar_Arquivos_Txt_3_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SqlServerConfigCarga')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('SqlServerConfigCarga_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SqlServerGSK')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('SqlServerGSK_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "IntegrationRuntimeGSK",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/IntegrationRuntimeGSK')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SqlServerLocalDouglasDev')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('SqlServerLocalDouglasDev_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/TeradataVeevaGSK')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "Teradata",
+				"typeProperties": {
+					"connectionString": "[parameters('TeradataVeevaGSK_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "IntegrationRuntimeGSK",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/IntegrationRuntimeGSK')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/gsk-synapse-WorkspaceDefaultSqlServer')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"DBName": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('gsk-synapse-WorkspaceDefaultSqlServer_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/gsk-synapse-WorkspaceDefaultStorage')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('gsk-synapse-WorkspaceDefaultStorage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Trigger_6ni')]",
+			"type": "Microsoft.Synapse/workspaces/triggers",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 240,
+					"startTime": "2020-12-11T00:37:00.000Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Trigger_ap4')]",
+			"type": "Microsoft.Synapse/workspaces/triggers",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"type": "TumblingWindowTrigger",
+				"typeProperties": {
+					"frequency": "Hour",
+					"interval": 240,
+					"startTime": "2020-12-11T01:11:00.000Z",
+					"delay": "00:00:00",
+					"maxConcurrency": 50,
+					"retryPolicy": {
+						"intervalInSeconds": 30
+					},
+					"dependsOn": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/IntegrationRuntimeGSK')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Dataflow1')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Parquet1",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"script": "source(output(\n\t\tPRODUTO_DESC as string,\n\t\tMUNICIPIO as string,\n\t\tUF as string,\n\t\tFANTASIA as string,\n\t\tNR_CNPJ as string,\n\t\tCNES as integer,\n\t\tCID as string,\n\t\tQTDE_INICIAL_PACIENTES as integer,\n\t\tMS_INICIAL_PACIENTES as decimal(10,0),\n\t\tQTDE_PACIENTES_NOVOS as integer,\n\t\tQTDE_PACIENTES_RETORNO_MESMA as integer,\n\t\tQTDE_PACIENTES_RETORNO_OUTRA as integer,\n\t\tQTDE_PACIENTES_VIERAM as integer,\n\t\tQTDE_PACIENTES_FORAM as integer,\n\t\tQTDE_PACIENTES_DELTA as integer,\n\t\tQTDE_PACIENTES_SAIRAM as integer,\n\t\tQTDE_MOVIMENTACAO as integer,\n\t\tQTDE_FINAL_PACIENTES as integer,\n\t\tMS_FINAL_PACIENTES as decimal(10,0),\n\t\tPP as string,\n\t\tDT_PERIODO_INICIAL as string,\n\t\tDT_PERIODO_FINAL as string,\n\t\tQTDE_PACIENTES_CONTINUAM as integer,\n\t\tMERCADO as string,\n\t\tTERRITORIO as string,\n\t\tGD as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tignoreNoFilesFound: false,\n\tinferDriftedColumnTypes: true,\n\tdateFormats: ['yyyy-MM-dd'],\n\ttimestampFormats: ['yyyy.MM.dd HH:mm:ss'],\n\tpreferredIntegralType: 'integer',\n\tpreferredFractionalType: 'decimal',\n\tpartitionBy('key',\n\t\t0,\n\t\tPRODUTO_DESC\n\t)) ~> source1\nsource1 sink(input(\n\t\tID as string,\n\t\tCRM_UNIV as string,\n\t\tMEDICO_UNIV as string,\n\t\tESPECIALIDADE_UNIV as string,\n\t\tLOGRADOURO_UNIV as string,\n\t\tBAIRRO_UNIV as string,\n\t\tCIDADE_UNIV as string,\n\t\tCEP_UNIV as string,\n\t\tORIGEM_UNIV as string,\n\t\tUF_UNIV as string,\n\t\tBRICK_UNIV as string,\n\t\tTELEFONE_UNIV as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'gsk_pulmonar[n]',\n\ttruncate: true,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/DelimitedText1')]",
+				"[concat(variables('workspaceId'), '/datasets/Parquet1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/GSO_ETL')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "GSO"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Fact_GSO_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "fGsoCallSummarySource"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_GSO_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "fGsoResponseSource"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_GSO_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "dSalesForceTeradata"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_GSO_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "dSalesForceFuncionario"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_GSO_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "dSalesForceSqlServer"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_GSO_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "dSalesForceRegiao"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Salvar_Fato_GSO_Sink",
+								"type": "DatasetReference"
+							},
+							"name": "FatoGsoDestino"
+						},
+						{
+							"dataset": {
+								"referenceName": "Salvar_Dim_GSO_Sink",
+								"type": "DatasetReference"
+							},
+							"name": "SalesForceDestino"
+						}
+					],
+					"transformations": [
+						{
+							"name": "UniaoFato"
+						},
+						{
+							"name": "LeftJoinFuncionario"
+						},
+						{
+							"name": "SelecionarValoresUnicos"
+						},
+						{
+							"name": "LeftJoinSalesForceSQLSERVER"
+						},
+						{
+							"name": "SelecionarValoresUnicos2"
+						},
+						{
+							"name": "LeftJoinRegiao"
+						},
+						{
+							"name": "SelecaoFinal"
+						}
+					],
+					"script": "source(output(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.gso/fato_gso_call_summary.parquet'],\n\tpartitionBy('hash', 1)) ~> fGsoCallSummarySource\nsource(output(\n\t\tSURVEY_KEY as string,\n\t\tQUESTION_ID as string,\n\t\tSOURCE_CREATED_TS as string,\n\t\tRESPONSE_LAST_MODIFIED_TS as string,\n\t\tSOURCE_USER_AID as string,\n\t\tQUESTION_RESPONSE_ID as string,\n\t\tRESPONSE_NAME as string,\n\t\tRESPONSE_NUMBER as string,\n\t\tRESPONSE as string,\n\t\tPRODUCT as string,\n\t\tRESPONSE_QUESTION_ORDER as string,\n\t\tDATE as string,\n\t\tTARGET_LAST_MODIFIED_TS as string,\n\t\tMODIFIED_DATE as string,\n\t\tSTART_DATE_ID as string,\n\t\tEND_DATE_ID as string,\n\t\tREVIEW_DATE_ID as string,\n\t\tREVIEW_STATUS as string,\n\t\tMANAGER_TERRITORY_ID as string,\n\t\tEMPLOYEE_TERRITORY_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tDATE_DIFF as string,\n\t\tFLAG_PREMIO as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tRESPONSES_KEY as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.gso/fato_gso_response.parquet'],\n\tpartitionBy('hash', 1)) ~> fGsoResponseSource\nsource(output(\n\t\tRX_EXTERNAL_ID as string,\n\t\tUSER_ID as string,\n\t\tSF_SOURCE_USER_AID as string,\n\t\tUSER_NAME as string,\n\t\tFIRST_NAME as string,\n\t\tNAME as string,\n\t\tLAST_NAME as string,\n\t\tCOUNTRY as string,\n\t\tSTATE_PROVINCE as string,\n\t\tCITY as string,\n\t\tPOSTAL_CODE as string,\n\t\tACTIVE_IND as string,\n\t\tEMAIL as string,\n\t\tEMPLOYEE_NUMBER_AID as string,\n\t\tUSER_IDENTIFIER_AID as string,\n\t\tCORE_GSK_FUNCTIONAL_PROFILE as string,\n\t\tPROFILE_NAME as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.gso/dim_sales_force_teradata.parquet'],\n\tpartitionBy('hash', 1)) ~> dSalesForceTeradata\nsource(output(\n\t\tRX_EXTERNAL_ID as string,\n\t\tUF as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.gso/dim_sales_force_funcionario.parquet'],\n\tpartitionBy('hash', 1)) ~> dSalesForceFuncionario\nsource(output(\n\t\tRX_EXTERNAL_ID as string,\n\t\tCICLO as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tSF_KEY as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tROW_ID_GD as string,\n\t\tNOME_GD as string,\n\t\tNOME_GR as string,\n\t\tTERRITORIO_GD as string,\n\t\tTERRITORIO_GR as string,\n\t\tBU as string,\n\t\t{DIVISÃO} as string,\n\t\tTERRITORIO as string,\n\t\tNOME_REP as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.gso/dim_sales_force_sqlserver.parquet'],\n\tpartitionBy('hash', 1)) ~> dSalesForceSqlServer\nsource(output(\n\t\tAREA as string,\n\t\tUF as string,\n\t\tREGION as string,\n\t\tSTATE as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.gso/dim_region.parquet'],\n\tpartitionBy('hash', 1)) ~> dSalesForceRegiao\nfGsoResponseSource, fGsoCallSummarySource union(byName: true,\n\tpartitionBy('hash', 1))~> UniaoFato\ndSalesForceTeradata, dSalesForceFuncionario join(dSalesForceTeradata@RX_EXTERNAL_ID == dSalesForceFuncionario@RX_EXTERNAL_ID,\n\tjoinType:'left',\n\tpartitionBy('hash', 1),\n\tbroadcast: 'auto')~> LeftJoinFuncionario\nLeftJoinFuncionario select(mapColumn(\n\t\tRX_EXTERNAL_ID = dSalesForceTeradata@RX_EXTERNAL_ID,\n\t\tUSER_ID,\n\t\tSF_SOURCE_USER_AID,\n\t\tUSER_NAME,\n\t\tFIRST_NAME,\n\t\tNAME,\n\t\tLAST_NAME,\n\t\tCOUNTRY,\n\t\tSTATE_PROVINCE,\n\t\tCITY,\n\t\tPOSTAL_CODE,\n\t\tACTIVE_IND,\n\t\tEMAIL,\n\t\tEMPLOYEE_NUMBER_AID,\n\t\tUSER_IDENTIFIER_AID,\n\t\tCORE_GSK_FUNCTIONAL_PROFILE,\n\t\tPROFILE_NAME,\n\t\tRX_EXTERNAL_ID = dSalesForceFuncionario@RX_EXTERNAL_ID,\n\t\tUF\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecionarValoresUnicos\nSelecionarValoresUnicos, dSalesForceSqlServer join(SelecionarValoresUnicos@RX_EXTERNAL_ID == dSalesForceSqlServer@RX_EXTERNAL_ID,\n\tjoinType:'left',\n\tpartitionBy('hash', 1),\n\tbroadcast: 'auto')~> LeftJoinSalesForceSQLSERVER\nLeftJoinSalesForceSQLSERVER select(mapColumn(\n\t\tRX_EXTERNAL_ID = SelecionarValoresUnicos@RX_EXTERNAL_ID,\n\t\tUSER_ID,\n\t\tSF_SOURCE_USER_AID,\n\t\tUSER_NAME,\n\t\tFIRST_NAME,\n\t\tNAME,\n\t\tLAST_NAME,\n\t\tCOUNTRY,\n\t\tSTATE_PROVINCE,\n\t\tCITY,\n\t\tPOSTAL_CODE,\n\t\tACTIVE_IND,\n\t\tEMAIL,\n\t\tEMPLOYEE_NUMBER_AID,\n\t\tUSER_IDENTIFIER_AID,\n\t\tCORE_GSK_FUNCTIONAL_PROFILE,\n\t\tPROFILE_NAME,\n\t\tUF,\n\t\tRX_EXTERNAL_ID = dSalesForceSqlServer@RX_EXTERNAL_ID,\n\t\tCICLO,\n\t\tSALES_FORCE_KEY,\n\t\tSF_KEY,\n\t\tROW_ID_TERRITORIO,\n\t\tROW_ID_GD,\n\t\tNOME_GD,\n\t\tNOME_GR,\n\t\tTERRITORIO_GD,\n\t\tTERRITORIO_GR,\n\t\tBU,\n\t\tDIVISAO = {DIVISÃO},\n\t\tTERRITORIO,\n\t\tNOME_REP\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecionarValoresUnicos2\nSelecionarValoresUnicos2, dSalesForceRegiao join(SelecionarValoresUnicos2@UF == dSalesForceRegiao@UF,\n\tjoinType:'left',\n\tpartitionBy('hash', 1),\n\tbroadcast: 'auto')~> LeftJoinRegiao\nLeftJoinRegiao select(mapColumn(\n\t\tRX_EXTERNAL_ID,\n\t\tUSER_ID,\n\t\tSF_SOURCE_USER_AID,\n\t\tUSER_NAME,\n\t\tFIRST_NAME,\n\t\tNAME,\n\t\tLAST_NAME,\n\t\tCOUNTRY,\n\t\tSTATE_PROVINCE,\n\t\tCITY,\n\t\tPOSTAL_CODE,\n\t\tACTIVE_IND,\n\t\tEMAIL,\n\t\tEMPLOYEE_NUMBER_AID,\n\t\tUSER_IDENTIFIER_AID,\n\t\tCORE_GSK_FUNCTIONAL_PROFILE,\n\t\tPROFILE_NAME,\n\t\tUF = SelecionarValoresUnicos2@UF,\n\t\tCICLO,\n\t\tSALES_FORCE_KEY,\n\t\tSF_KEY,\n\t\tROW_ID_TERRITORIO,\n\t\tROW_ID_GD,\n\t\tNOME_GD,\n\t\tNOME_GR,\n\t\tTERRITORIO_GD,\n\t\tTERRITORIO_GR,\n\t\tBU,\n\t\tDIVISAO,\n\t\tTERRITORIO,\n\t\tNOME_REP,\n\t\tAREA,\n\t\tUF = dSalesForceRegiao@UF,\n\t\tREGION,\n\t\tSTATE\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoFinal\nUniaoFato sink(input(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string,\n\t\tSURVEY_KEY as string,\n\t\tSOURCE_CREATED_TS as string,\n\t\tRESPONSE_LAST_MODIFIED_TS as string,\n\t\tSOURCE_USER_AID as string,\n\t\tQUESTION_RESPONSE_ID as string,\n\t\tRESPONSE_NAME as string,\n\t\tRESPONSE_NUMBER as string,\n\t\tRESPONSE as string,\n\t\tRESPONSE_QUESTION_ORDER as string,\n\t\tTARGET_LAST_MODIFIED_TS as string,\n\t\tMODIFIED_DATE as string,\n\t\tSTART_DATE_ID as string,\n\t\tEND_DATE_ID as string,\n\t\tREVIEW_DATE_ID as string,\n\t\tMANAGER_TERRITORY_ID as string,\n\t\tEMPLOYEE_TERRITORY_ID as string,\n\t\tDATE_DIFF as string,\n\t\tFLAG_PREMIO as string,\n\t\tRESPONSES_KEY as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['fato_gso.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> FatoGsoDestino\nSelecaoFinal sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dim_sales_force.parquet'],\n\tmapColumn(\n\t\tRX_EXTERNAL_ID,\n\t\tUSER_ID,\n\t\tSF_SOURCE_USER_AID,\n\t\tUSER_NAME,\n\t\tFIRST_NAME,\n\t\tNAME,\n\t\tLAST_NAME,\n\t\tCOUNTRY,\n\t\tSTATE_PROVINCE,\n\t\tCITY,\n\t\tPOSTAL_CODE,\n\t\tACTIVE_IND,\n\t\tEMAIL,\n\t\tEMPLOYEE_NUMBER_AID,\n\t\tUSER_IDENTIFIER_AID,\n\t\tCORE_GSK_FUNCTIONAL_PROFILE,\n\t\tPROFILE_NAME,\n\t\tUF,\n\t\tCICLO,\n\t\tSALES_FORCE_KEY,\n\t\tSF_KEY,\n\t\tROW_ID_TERRITORIO,\n\t\tROW_ID_GD,\n\t\tNOME_GD,\n\t\tNOME_GR,\n\t\tTERRITORIO_GD,\n\t\tTERRITORIO_GR,\n\t\tBU,\n\t\tDIVISAO,\n\t\tTERRITORIO,\n\t\tNOME_REP,\n\t\tAREA,\n\t\tREGION,\n\t\tSTATE\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SalesForceDestino"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Fact_GSO_Data_Flow')]",
+				"[concat(variables('workspaceId'), '/datasets/Salvar_Fato_GSO_Sink')]",
+				"[concat(variables('workspaceId'), '/datasets/Salvar_Dim_GSO_Sink')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/GSO_CREATE_VIEW_DIM_FATO_GSO')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "GSO"
+				},
+				"content": {
+					"query": "-- CREATE VIEW gso.fato_gso\n-- AS\n\nSELECT\n    [CALL_SUMMARY_ID]\n    ,[PARENT_CALL_AID]\n    ,[LOCAL_CALL_DATE_ID]\n    ,[CALL_DATE_ID]\n    ,[TERRITORY_ID]\n    ,[CYCLE]\n    ,[SALES_FORCE_KEY]\n    ,CAST(left([DATE],10) AS DATE) AS [DATE]\n    ,[LOCAL_CALL_TIME_ID]\n    ,[ACCOUNT_ID]\n    ,[CALL_NAME]\n    ,[RX_CALL_TYPE]\n    ,[CALL_STATUS]\n    ,[ATTENDEE_TYPE]\n    ,[CLM_IND]\n    ,[SAMPLE_CALL_IND]\n    ,[CALL_TYPE]\n    ,[DETAILED_PRODUCTS]\n    ,[DURATION]\n    ,[CREATED_DATE_ID]\n    ,[CREATED_DATE_TIME_ID]\n    ,[LAST_MODIFIED_DATE_ID]\n    ,[LAST_MODIFIED_DATE_TIME_ID]\n    ,[PRE_CALL_NOTES]\n    ,[NEXT_CALL_NOTES]\n    ,[REVIEW_STATUS]\n    ,[ACCOUNT_NAME]\n    ,[RX_LEGAL_ID]\n    ,[KEY_MESSAGE_NAME]\n    ,[QUESTION_ID]\n    ,[PRODUCT]\n    ,[CALL_DATE]\n    ,[ORIGEM]\n    ,[SURVEY_KEY]\n    ,CAST(left([SOURCE_CREATED_TS],19) as DATETIME) AS [SOURCE_CREATED_TS]\n    ,CAST(left([RESPONSE_LAST_MODIFIED_TS],19) as DATETIME) AS [RESPONSE_LAST_MODIFIED_TS]\n    ,[SOURCE_USER_AID]\n    ,[QUESTION_RESPONSE_ID]\n    ,[RESPONSE_NAME]\n    ,CAST([RESPONSE_NUMBER] as INT) as [RESPONSE_NUMBER]\n    ,[RESPONSE]\n    ,[RESPONSE_QUESTION_ORDER]\n    ,CAST(left([TARGET_LAST_MODIFIED_TS],19) as DATETIME) AS [TARGET_LAST_MODIFIED_TS]\n    ,CAST(left([MODIFIED_DATE],10) as DATE) AS [MODIFIED_DATE]\n    ,[START_DATE_ID]\n    ,[END_DATE_ID]\n    ,[REVIEW_DATE_ID]\n    ,[MANAGER_TERRITORY_ID]\n    ,[EMPLOYEE_TERRITORY_ID]\n    ,CAST([DATE_DIFF] as INT) as [DATE_DIFF]\n    ,[FLAG_PREMIO]\n    ,[RESPONSES_KEY]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gsksynapsestorage/synapse/workspaces/gsk-synapse/warehouse/dash.gso/fato_gso.parquet',\n        FORMAT='PARQUET'\n    ) WITH(\n\t[CALL_SUMMARY_ID]                    VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[PARENT_CALL_AID]                   VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[LOCAL_CALL_DATE_ID]                VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[CALL_DATE_ID]                      VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[TERRITORY_ID]                      VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[CYCLE]                             VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[SALES_FORCE_KEY]                   VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[DATE]                              VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[LOCAL_CALL_TIME_ID]                VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[ACCOUNT_ID]                        VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[CALL_NAME]                         VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[RX_CALL_TYPE]                      VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[CALL_STATUS]                       VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[ATTENDEE_TYPE]                     VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[CLM_IND]                           VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[SAMPLE_CALL_IND]                   VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[CALL_TYPE]                         VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[DETAILED_PRODUCTS]                 VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[DURATION]                          VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[CREATED_DATE_ID]                   VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[CREATED_DATE_TIME_ID]              VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[LAST_MODIFIED_DATE_ID]             VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[LAST_MODIFIED_DATE_TIME_ID]        VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[PRE_CALL_NOTES]                    VARCHAR(MAX) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[NEXT_CALL_NOTES]                   VARCHAR(MAX) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[REVIEW_STATUS]                     VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[ACCOUNT_NAME]                      VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[RX_LEGAL_ID]                       VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[KEY_MESSAGE_NAME]                  VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[QUESTION_ID]                       VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[PRODUCT]                           VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[CALL_DATE]                         VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[ORIGEM]                            VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[SURVEY_KEY]                        VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[SOURCE_CREATED_TS]                 VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[RESPONSE_LAST_MODIFIED_TS]         VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[SOURCE_USER_AID]                   VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[QUESTION_RESPONSE_ID]              VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[RESPONSE_NAME]                     VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[RESPONSE_NUMBER]                   VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[RESPONSE]                          VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[RESPONSE_QUESTION_ORDER]           VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[TARGET_LAST_MODIFIED_TS]           VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[MODIFIED_DATE]                     VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[START_DATE_ID]                     VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[END_DATE_ID]                       VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[REVIEW_DATE_ID]                    VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[MANAGER_TERRITORY_ID]              VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[EMPLOYEE_TERRITORY_ID]             VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[DATE_DIFF]                         VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[FLAG_PREMIO]                       VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n    ,[RESPONSES_KEY]                     VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8 ) AS ROW\n\n--  SELECT column_name,\n--        data_type,\n--        character_maximum_length,\n--        table_name\n-- FROM information_schema.columns\n-- WHERE        table_name like '%fato%'\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"name": "GSK",
+						"type": "SqlOnDemand"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/GSO_CREATE_VIEW_DIM_SALES_FORCE')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "GSO"
+				},
+				"content": {
+					"query": "CREATE VIEW gso.dim_sales_force\nAS\n\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gsksynapsestorage/synapse/workspaces/gsk-synapse/warehouse/dash.gso/dim_sales_force.parquet',\n        FORMAT='PARQUET'\n    ) WITH( USER_ID                         VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8,\n            SF_SOURCE_USER_AID              VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8,\n            [USER_NAME]                       VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8,\n            FIRST_NAME                      VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8,\n            [NAME]                           VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8,\n            LAST_NAME                       VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8,\n            COUNTRY                         CHAR(2) COLLATE Latin1_General_100_BIN2_UTF8,\n            STATE_PROVINCE                  CHAR(2) COLLATE Latin1_General_100_BIN2_UTF8,\n            CITY                            VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8,\n            POSTAL_CODE                     VARCHAR(15) COLLATE Latin1_General_100_BIN2_UTF8,\n            ACTIVE_IND                      VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8,\n            EMAIL                           VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8,\n            EMPLOYEE_NUMBER_AID           VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8 ,\n            USER_IDENTIFIER_AID             VARCHAR(15) COLLATE Latin1_General_100_BIN2_UTF8,\n            CORE_GSK_FUNCTIONAL_PROFILE     VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8,\n            PROFILE_NAME                    VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8,\n            CICLO                           VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8 ,\n            SALES_FORCE_KEY                 VARCHAR(15) COLLATE Latin1_General_100_BIN2_UTF8,\n            ROW_ID_TERRITORIO               VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8,\n            ROW_ID_GD                       VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8,\n            NOME_GD                         VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8,\n            NOME_GR                         VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8,\n            TERRITORIO_GD                   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8,\n            TERRITORIO_GR                   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8,\n            BU                              VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8,\n            DIVISAO                         VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8,\n            TERRITORIO                      VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8,\n            NOME_REP                        VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8,\n            AREA                            VARCHAR(MAX) COLLATE Latin1_General_100_BIN2_UTF8,\n            UF                              CHAR(2) COLLATE Latin1_General_100_BIN2_UTF8,\n            REGION                          VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8,\n            [STATE]                           VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8 \n            \n        ) AS ROW",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"name": "GSK",
+						"type": "SqlOnDemand"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/GSO_CREATE_VIEW_DIM_SURVEY_QUESTION')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "GSO"
+				},
+				"content": {
+					"query": "CREATE VIEW gso.dim_survey_question\nAS\n\nSELECT\n     [QUESTION_ID] COLLATE Latin1_General_100_BIN2_UTF8 as [QUESTION_ID]\n    ,CAST(LEFT(QUESTION_CREATED_DATE,19) AS DATETIME) as [QUESTION_CREATED_DATE]\n    ,[QUESTION_NAME] COLLATE Latin1_General_100_BIN2_UTF8 as [QUESTION_NAME]\n    ,CAST(LEFT([QUESTION_LAST_MODIFIED_TS] ,19) AS DATETIME) as [QUESTION_LAST_MODIFIED_TS]\n    ,[QUESTION_TEXT]  COLLATE Latin1_General_100_BIN2_UTF8 as [QUESTION_TEXT]\n    ,[QUESTION_ORDER] COLLATE Latin1_General_100_BIN2_UTF8 as [QUESTION_ORDER]\n    ,[QUESTION_TYPE] COLLATE Latin1_General_100_BIN2_UTF8 as [QUESTION_TYPE]\n    ,[TIPO_QUESTAO] COLLATE Latin1_General_100_BIN2_UTF8 as [TIPO_QUESTAO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gsksynapsestorage/synapse/workspaces/gsk-synapse/warehouse/dash.gso/dim_survey_question.parquet',\n        FORMAT='PARQUET') \n        WITH( [QUESTION_ID] VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,QUESTION_CREATED_DATE VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[QUESTION_NAME] VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[QUESTION_LAST_MODIFIED_TS] VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[QUESTION_TEXT]  VARCHAR(MAX) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[QUESTION_ORDER] VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[QUESTION_TYPE] VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[TIPO_QUESTAO] VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8 ) as ROW\n           \n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"name": "GSK",
+						"type": "SqlOnDemand"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/GSO_CREATE_VIEW_DIM_VISITS')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "GSO"
+				},
+				"content": {
+					"query": "-- CREATE VIEW gso.dim_visits\n-- AS\n\nSELECT\n     [SURVEY_KEY]\n    ,CAST(left([VISIT_DATE],10) as date) as [VISIT_DATE]\n    ,[VISIT_PRODUCT]\n    ,CAST([TOTAL_VISITS] as int) as [TOTAL_VISITS]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gsksynapsestorage/synapse/workspaces/gsk-synapse/warehouse/dash.gso/dim_visits.parquet',\n        FORMAT='PARQUET'\n    ) WITH( \n             [SURVEY_KEY]       VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8 \n            ,[VISIT_DATE]       VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[VISIT_PRODUCT]    VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[TOTAL_VISITS]     VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8 ) as ROW\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"name": "GSK",
+						"type": "SqlOnDemand"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/TESTE UNITARIO')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT\n    TOP 100  \n    chave.[PRIMARY KEY],\n    valor.*\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gsksynapsestorage/synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_audit_end.parquet',\n        FORMAT='PARQUET'\n    ) AS valor\nleft join (\n  SELECT\n\t   ROW_NUMBER() OVER(ORDER BY(temp.[CRM_UNIV])) AS 'PRIMARY KEY'\t\n      ,temp.[CRM_UNIV]\n  FROM \n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gsksynapsestorage/synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_audit_end.parquet',\n        FORMAT='PARQUET'\n   ) as temp\n   GROUP BY temp.[CRM_UNIV]) AS [chave] ON valor.[CRM_UNIV] = chave.[CRM_UNIV];",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"name": "GSK",
+						"type": "SqlOnDemand"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/arquivo_txt_s_comprimir')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CompressArquivoSave",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"nome_arquivo": {
+						"type": "string"
+					},
+					"pasta": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "1 - Email 1-1"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().nome_arquivo",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat('synapse/workspaces/gsk-synapse/warehouse/',dataset().pasta)",
+							"type": "Expression"
+						},
+						"fileSystem": "gsksynapsestorage"
+					},
+					"columnDelimiter": "~",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/CompressArquivoSave')]"
+			]
+		}
+	]
+}

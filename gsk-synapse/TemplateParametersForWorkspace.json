@@ -1,0 +1,69 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "gsk-synapse"
+		},
+		"Arquivos_Em_Parquet_3_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorageSynapse_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorageBlobSynapse_connectionString": {
+			"value": ""
+		},
+		"CompressArquivoSave_accountKey": {
+			"value": ""
+		},
+		"FileServerDouglas_password": {
+			"value": ""
+		},
+		"FileServerGSK_password": {
+			"value": ""
+		},
+		"Listar_Arquivos_Txt_3_connectionString": {
+			"value": ""
+		},
+		"SqlServerConfigCarga_connectionString": {
+			"value": ""
+		},
+		"SqlServerGSK_connectionString": {
+			"value": ""
+		},
+		"SqlServerLocalDouglasDev_connectionString": {
+			"value": ""
+		},
+		"TeradataVeevaGSK_connectionString": {
+			"value": ""
+		},
+		"gsk-synapse-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://gsksynapseaccount.dfs.core.windows.net"
+		},
+		"CompressArquivoSave_properties_typeProperties_url": {
+			"value": "https://gsksynapseaccount.dfs.core.windows.net"
+		},
+		"FileServerDouglas_properties_typeProperties_host": {
+			"value": "D:\\Documentos"
+		},
+		"FileServerDouglas_properties_typeProperties_userId": {
+			"value": "DESKTOP-FVENMUR\\dougl"
+		},
+		"FileServerGSK_properties_typeProperties_host": {
+			"value": "C:\\Users\\dqa99106\\OneDrive - GSK\\Documents\\"
+		},
+		"FileServerGSK_properties_typeProperties_userId": {
+			"value": "WMSERVICE\\dqa99106"
+		},
+		"gsk-synapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://gsksynapseaccount.dfs.core.windows.net"
+		}
+	}
+}
