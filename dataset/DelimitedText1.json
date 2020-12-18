@@ -11,6 +11,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "GSK_Pulmonar_PF_Datasus.txt.bz2",
+				"folderPath": "dev",
 				"fileSystem": "gsksynapsestorage"
 			},
 			"columnDelimiter": ";",
