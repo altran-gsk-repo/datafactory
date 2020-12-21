@@ -298,7 +298,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "EMAIL1_1_ETL",
+						"referenceName": "EMAIL_ETL",
 						"type": "DataFlowReference"
 					},
 					"compute": {
