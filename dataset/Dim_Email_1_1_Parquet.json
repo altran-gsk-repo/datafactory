@@ -13,7 +13,7 @@
 				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
 				"fileSystem": "gsksynapsestorage"
 			},
-			"compressionCodec": "snappy"
+			"compressionCodec": "gzip"
 		},
 		"schema": [
 			{
