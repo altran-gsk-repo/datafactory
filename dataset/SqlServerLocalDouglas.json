@@ -1,0 +1,128 @@
+{
+	"name": "SqlServerLocalDouglas",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerLocalDouglasDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "EVENTO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ID_EVENTO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EV CICLO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "% DATA_EVENTO",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DATA_EVENTO",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "EV CICLO_TERRITORIO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EV CICLO_CONTATO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "KEY_TERR_CONT_CICLO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ID_PARTICIPANTE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NOME_PARTICIPANTE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EV ROW_ID_TERRITORIO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NOME_USUARIO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EV ROW_ID_CONTATO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DOCUMENTO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EV ESPECIALIDADE_ENG",
+				"type": "varchar"
+			},
+			{
+				"name": "STATUS_CONVIDADO_GR",
+				"type": "nvarchar"
+			},
+			{
+				"name": "STATUS_CONVIDADO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "STATUS_CONVIDADO_ENG",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PRODUTO_PRIMARIO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PRODUTO_SECUNDARIO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TIPO_PARTICIPACAO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TIPO_PARTICIPACAO_ENG",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TIPO_CONTA",
+				"type": "varchar"
+			},
+			{
+				"name": "TIPO_CONTA_ENG",
+				"type": "varchar"
+			},
+			{
+				"name": "VISITADO_SETOR",
+				"type": "varchar"
+			},
+			{
+				"name": "NOME_SETOR_VISITANTE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TIPO_INTERACAO",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "altran_email"
+		}
+	}
+}

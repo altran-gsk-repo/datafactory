@@ -567,15 +567,7 @@
 						"partitionOption": "None"
 					},
 					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
+						"type": "SqlServerSink"
 					},
 					"enableStaging": false,
 					"enableSkipIncompatibleRow": true,
@@ -591,7 +583,7 @@
 								"sink": {
 									"name": "EVENTO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -603,7 +595,7 @@
 								"sink": {
 									"name": "ID_EVENTO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -615,7 +607,7 @@
 								"sink": {
 									"name": "EV CICLO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -627,7 +619,7 @@
 								"sink": {
 									"name": "% DATA_EVENTO",
 									"type": "Int32",
-									"physicalType": "Int32"
+									"physicalType": "int"
 								}
 							},
 							{
@@ -639,7 +631,7 @@
 								"sink": {
 									"name": "DATA_EVENTO",
 									"type": "DateTime",
-									"physicalType": "DateTime"
+									"physicalType": "smalldatetime"
 								}
 							},
 							{
@@ -651,7 +643,7 @@
 								"sink": {
 									"name": "EV CICLO_TERRITORIO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -663,7 +655,7 @@
 								"sink": {
 									"name": "EV CICLO_CONTATO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -675,7 +667,7 @@
 								"sink": {
 									"name": "KEY_TERR_CONT_CICLO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -687,7 +679,7 @@
 								"sink": {
 									"name": "ID_PARTICIPANTE",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -699,7 +691,7 @@
 								"sink": {
 									"name": "NOME_PARTICIPANTE",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -711,7 +703,7 @@
 								"sink": {
 									"name": "EV ROW_ID_TERRITORIO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -723,7 +715,7 @@
 								"sink": {
 									"name": "NOME_USUARIO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -735,7 +727,7 @@
 								"sink": {
 									"name": "EV ROW_ID_CONTATO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -747,7 +739,7 @@
 								"sink": {
 									"name": "DOCUMENTO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -759,7 +751,7 @@
 								"sink": {
 									"name": "EV ESPECIALIDADE_ENG",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -771,7 +763,7 @@
 								"sink": {
 									"name": "STATUS_CONVIDADO_GR",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -783,7 +775,7 @@
 								"sink": {
 									"name": "STATUS_CONVIDADO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -795,7 +787,7 @@
 								"sink": {
 									"name": "STATUS_CONVIDADO_ENG",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -807,7 +799,7 @@
 								"sink": {
 									"name": "PRODUTO_PRIMARIO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -819,7 +811,7 @@
 								"sink": {
 									"name": "PRODUTO_SECUNDARIO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -831,7 +823,7 @@
 								"sink": {
 									"name": "TIPO_PARTICIPACAO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -843,7 +835,7 @@
 								"sink": {
 									"name": "TIPO_PARTICIPACAO_ENG",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -855,7 +847,7 @@
 								"sink": {
 									"name": "TIPO_CONTA",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -867,7 +859,7 @@
 								"sink": {
 									"name": "TIPO_CONTA_ENG",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -879,7 +871,7 @@
 								"sink": {
 									"name": "VISITADO_SETOR",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -891,7 +883,7 @@
 								"sink": {
 									"name": "NOME_SETOR_VISITANTE",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								}
 							},
 							{
@@ -903,7 +895,7 @@
 								"sink": {
 									"name": "TIPO_INTERACAO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								}
 							}
 						],
@@ -922,12 +914,8 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Arquivo_Em_TxT_1",
-						"type": "DatasetReference",
-						"parameters": {
-							"nome_arquivo": "dim_interacao_eventos.zip",
-							"pasta": "dash.email1to1"
-						}
+						"referenceName": "SqlServerLocalDouglas",
+						"type": "DatasetReference"
 					}
 				]
 			}
