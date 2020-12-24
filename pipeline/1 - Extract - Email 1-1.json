@@ -7,7 +7,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "dim_interacao_eventos",
+						"activity": "dim_interacao_eventos_new",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -549,7 +549,7 @@
 				]
 			},
 			{
-				"name": "dim_interacao_eventos",
+				"name": "dim_interacao_eventos_new",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -566,7 +566,8 @@
 						"storeSettings": {
 							"type": "FileServerReadSettings",
 							"recursive": true,
-							"enablePartitionDiscovery": false
+							"enablePartitionDiscovery": false,
+							"fileFilter": "dim_interacao_eventos.zip"
 						},
 						"formatSettings": {
 							"type": "DelimitedTextReadSettings",
@@ -587,7 +588,6 @@
 						}
 					},
 					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
@@ -925,11 +925,8 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "FileSystemGSK",
-						"type": "DatasetReference",
-						"parameters": {
-							"nome_arquivo": "dim_interacao_eventos.zip"
-						}
+						"referenceName": "FileServerLocalDouglas",
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [

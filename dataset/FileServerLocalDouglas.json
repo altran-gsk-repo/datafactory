@@ -1,0 +1,41 @@
+{
+	"name": "FileServerLocalDouglas",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FileServerDouglasNew",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation"
+			},
+			"columnDelimiter": "\t",
+			"compressionCodec": "ZipDeflate",
+			"compressionLevel": "Fastest",
+			"encodingName": "ISO-8859-1",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "PK\u0003\u0004-\u0000\u0000\u0000\t\u0000�\u0011�Q�S����������\u0019\u0000\u0014\u0000dim_interacao_eventos.txt\u0001\u0000\u0010\u0000'���\u0002\u0000\u0000\u0000�K+)\u0000\u0000\u0000\u0000�_͎�8r>�\u0001�\u0003/>6 Q�{c*YJVJb6%eM�1�",
+				"type": "String"
+			},
+			{
+				"name": "\u0016\u0003",
+				"type": "String"
+			},
+			{
+				"name": "���`�}<c\u000f�\u001e|��O� �*��g_\u0002���MvV%�\u001b��È`H����'s��=�wћ~�O�\"�jU��8��۪�3�u��k��W\u0005o��7�{z����)7�Vӛ��W�4�I����q��\u001b���醴m˦�\u0007�w�O:�~����rӽQ�9������i�7m\u000b���/�o�����7�Oޜ=o��vsf�ώ/",
+				"type": "String"
+			},
+			{
+				"name": "���3����}�",
+				"type": "String"
+			}
+		]
+	}
+}
