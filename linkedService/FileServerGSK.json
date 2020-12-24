@@ -7,7 +7,7 @@
 		"typeProperties": {
 			"host": "C:\\Users\\dqa99106\\OneDrive - GSK\\Documents\\",
 			"userId": "WMSERVICE\\dqa99106",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiOWE0NzE0Yy1hZGM5LTRjNTAtYmUxNC03OWE4NzU2Yzc5OTEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiZjAwOTBlYy0yODg2LTRkM2ItYWM0My1iMGE0YTYzOTMxMGIiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "IntegrationRuntimeGSK",
