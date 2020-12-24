@@ -17,6 +17,7 @@
 			"encodingName": "ISO-8859-1",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
+			"nullValue": "N/D",
 			"quoteChar": "\""
 		},
 		"schema": [

@@ -562,19 +562,9 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "FileServerReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false,
-							"fileFilter": "dim_interacao_eventos.zip"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings",
-							"compressionProperties": {
-								"type": "ZipDeflateReadSettings"
-							}
-						}
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -588,6 +578,7 @@
 						}
 					},
 					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
@@ -595,7 +586,7 @@
 								"source": {
 									"name": "EVENTO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "EVENTO",
@@ -607,7 +598,7 @@
 								"source": {
 									"name": "ID_EVENTO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "ID_EVENTO",
@@ -619,7 +610,7 @@
 								"source": {
 									"name": "EV CICLO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "EV CICLO",
@@ -630,32 +621,32 @@
 							{
 								"source": {
 									"name": "% DATA_EVENTO",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int32",
+									"physicalType": "int"
 								},
 								"sink": {
 									"name": "% DATA_EVENTO",
-									"type": "String",
-									"physicalType": "String"
+									"type": "Int32",
+									"physicalType": "Int32"
 								}
 							},
 							{
 								"source": {
 									"name": "DATA_EVENTO",
-									"type": "String",
-									"physicalType": "String"
+									"type": "DateTime",
+									"physicalType": "smalldatetime"
 								},
 								"sink": {
 									"name": "DATA_EVENTO",
-									"type": "String",
-									"physicalType": "String"
+									"type": "DateTime",
+									"physicalType": "DateTime"
 								}
 							},
 							{
 								"source": {
 									"name": "EV CICLO_TERRITORIO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "EV CICLO_TERRITORIO",
@@ -667,7 +658,7 @@
 								"source": {
 									"name": "EV CICLO_CONTATO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "EV CICLO_CONTATO",
@@ -679,7 +670,7 @@
 								"source": {
 									"name": "KEY_TERR_CONT_CICLO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "KEY_TERR_CONT_CICLO",
@@ -691,7 +682,7 @@
 								"source": {
 									"name": "ID_PARTICIPANTE",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "ID_PARTICIPANTE",
@@ -703,7 +694,7 @@
 								"source": {
 									"name": "NOME_PARTICIPANTE",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "NOME_PARTICIPANTE",
@@ -715,7 +706,7 @@
 								"source": {
 									"name": "EV ROW_ID_TERRITORIO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "EV ROW_ID_TERRITORIO",
@@ -727,7 +718,7 @@
 								"source": {
 									"name": "NOME_USUARIO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "NOME_USUARIO",
@@ -739,7 +730,7 @@
 								"source": {
 									"name": "EV ROW_ID_CONTATO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "EV ROW_ID_CONTATO",
@@ -751,7 +742,7 @@
 								"source": {
 									"name": "DOCUMENTO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "DOCUMENTO",
@@ -763,7 +754,7 @@
 								"source": {
 									"name": "EV ESPECIALIDADE_ENG",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "EV ESPECIALIDADE_ENG",
@@ -775,7 +766,7 @@
 								"source": {
 									"name": "STATUS_CONVIDADO_GR",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "STATUS_CONVIDADO_GR",
@@ -787,7 +778,7 @@
 								"source": {
 									"name": "STATUS_CONVIDADO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "STATUS_CONVIDADO",
@@ -799,7 +790,7 @@
 								"source": {
 									"name": "STATUS_CONVIDADO_ENG",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "STATUS_CONVIDADO_ENG",
@@ -811,7 +802,7 @@
 								"source": {
 									"name": "PRODUTO_PRIMARIO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "PRODUTO_PRIMARIO",
@@ -823,7 +814,7 @@
 								"source": {
 									"name": "PRODUTO_SECUNDARIO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "PRODUTO_SECUNDARIO",
@@ -835,7 +826,7 @@
 								"source": {
 									"name": "TIPO_PARTICIPACAO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "TIPO_PARTICIPACAO",
@@ -847,7 +838,7 @@
 								"source": {
 									"name": "TIPO_PARTICIPACAO_ENG",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "TIPO_PARTICIPACAO_ENG",
@@ -859,7 +850,7 @@
 								"source": {
 									"name": "TIPO_CONTA",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "TIPO_CONTA",
@@ -871,7 +862,7 @@
 								"source": {
 									"name": "TIPO_CONTA_ENG",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "TIPO_CONTA_ENG",
@@ -883,7 +874,7 @@
 								"source": {
 									"name": "VISITADO_SETOR",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "VISITADO_SETOR",
@@ -895,7 +886,7 @@
 								"source": {
 									"name": "NOME_SETOR_VISITANTE",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "nvarchar"
 								},
 								"sink": {
 									"name": "NOME_SETOR_VISITANTE",
@@ -907,7 +898,7 @@
 								"source": {
 									"name": "TIPO_INTERACAO",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "varchar"
 								},
 								"sink": {
 									"name": "TIPO_INTERACAO",
@@ -925,7 +916,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "FileServerLocalDouglas",
+						"referenceName": "SqlServerGSK",
 						"type": "DatasetReference"
 					}
 				],

@@ -24,7 +24,7 @@
 				},
 				"folderPath": "EMAIL 1-1/FILES"
 			},
-			"columnDelimiter": "\t",
+			"columnDelimiter": "$",
 			"compressionCodec": "ZipDeflate",
 			"compressionLevel": "Optimal",
 			"encodingName": "ISO-8859-1",
