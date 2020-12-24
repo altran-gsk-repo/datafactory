@@ -5,7 +5,14 @@
 			{
 				"name": "dim_painel_medico",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "dim_interacao_eventos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -536,6 +543,402 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"nome_arquivo": "dim_painel_medico.zip",
+							"pasta": "dash.email1to1"
+						}
+					}
+				]
+			},
+			{
+				"name": "dim_interacao_eventos",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"parallelCopies": 8,
+					"enableSkipIncompatibleRow": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ID_EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EV CICLO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EV CICLO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "% DATA_EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "% DATA_EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DATA_EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DATA_EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EV CICLO_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EV CICLO_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EV CICLO_CONTATO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EV CICLO_CONTATO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "KEY_TERR_CONT_CICLO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "KEY_TERR_CONT_CICLO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_PARTICIPANTE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ID_PARTICIPANTE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME_PARTICIPANTE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NOME_PARTICIPANTE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EV ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EV ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME_USUARIO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NOME_USUARIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EV ROW_ID_CONTATO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EV ROW_ID_CONTATO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DOCUMENTO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DOCUMENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EV ESPECIALIDADE_ENG",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EV ESPECIALIDADE_ENG",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "STATUS_CONVIDADO_GR",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "STATUS_CONVIDADO_GR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "STATUS_CONVIDADO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "STATUS_CONVIDADO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "STATUS_CONVIDADO_ENG",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "STATUS_CONVIDADO_ENG",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PRODUTO_PRIMARIO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PRODUTO_PRIMARIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PRODUTO_SECUNDARIO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PRODUTO_SECUNDARIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_PARTICIPACAO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TIPO_PARTICIPACAO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_PARTICIPACAO_ENG",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TIPO_PARTICIPACAO_ENG",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_CONTA",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TIPO_CONTA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_CONTA_ENG",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TIPO_CONTA_ENG",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "VISITADO_SETOR",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "VISITADO_SETOR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME_SETOR_VISITANTE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NOME_SETOR_VISITANTE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_INTERACAO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TIPO_INTERACAO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "FileSystemGSK",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_interacao_eventos.zip"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Arquivo_Em_TxT_1",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "dim_interacao_eventos.zip",
 							"pasta": "dash.email1to1"
 						}
 					}
