@@ -16,7 +16,7 @@
 				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao",
 				"container": "gsksynapsestorage"
 			},
-			"columnDelimiter": "~",
+			"columnDelimiter": "\t",
 			"encodingName": "ISO-8859-1",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
