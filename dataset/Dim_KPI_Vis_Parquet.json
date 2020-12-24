@@ -1,0 +1,69 @@
+{
+	"name": "Dim_KPI_Vis_Parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao",
+				"fileSystem": "gsksynapsestorage"
+			},
+			"compressionCodec": "gzip"
+		},
+		"schema": [
+			{
+				"name": "ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "CRM_UNIV",
+				"type": "UTF8"
+			},
+			{
+				"name": "MEDICO_UNIV",
+				"type": "UTF8"
+			},
+			{
+				"name": "ESPECIALIDADE_UNIV",
+				"type": "UTF8"
+			},
+			{
+				"name": "LOGRADOURO_UNIV",
+				"type": "UTF8"
+			},
+			{
+				"name": "BAIRRO_UNIV",
+				"type": "UTF8"
+			},
+			{
+				"name": "CIDADE_UNIV",
+				"type": "UTF8"
+			},
+			{
+				"name": "CEP_UNIV",
+				"type": "UTF8"
+			},
+			{
+				"name": "ORIGEM_UNIV",
+				"type": "UTF8"
+			},
+			{
+				"name": "UF_UNIV",
+				"type": "UTF8"
+			},
+			{
+				"name": "BRICK_UNIV",
+				"type": "UTF8"
+			},
+			{
+				"name": "TELEFONE_UNIV",
+				"type": "UTF8"
+			}
+		]
+	}
+}
