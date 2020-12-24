@@ -285,7 +285,7 @@
 				}
 			},
 			{
-				"name": "Dataflow2",
+				"name": "EMAIL_ETL",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
