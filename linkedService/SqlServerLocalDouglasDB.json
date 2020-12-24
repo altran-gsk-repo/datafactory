@@ -1,0 +1,16 @@
+{
+	"name": "SqlServerLocalDouglasDB",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=DESKTOP-FVENMUR;initial catalog=transport_base_gsk;user id=sa",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI2ODBjYjU1ZC1jZmU2LTQzNDItYWZkOC0yYmYyMTg0MGM2YTUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "IntegrationRuntimeLocalDouglas",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
