@@ -1,0 +1,17 @@
+{
+	"name": "FileServerDouglasNew",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "C:\\Users\\dougl\\OneDrive\\GSK_FLAT_FILES",
+			"userId": "DESKTOP-FVENMUR\\dougl",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIzZGY4NWZhMi1iMGE4LTQ3MDctYmJhNi1kZjdlNWUxZjcxOWQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "IntegrationRuntimeLocalDouglas",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
