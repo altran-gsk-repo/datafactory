@@ -5,6 +5,9 @@
 			"referenceName": "FileServerDouglasNew",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "0_Habilitado"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {

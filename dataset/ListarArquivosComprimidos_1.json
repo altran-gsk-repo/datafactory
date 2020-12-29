@@ -5,6 +5,9 @@
 			"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "1 - Email 1-1"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
@@ -13,8 +16,9 @@
 				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
 				"fileSystem": "gsksynapsestorage"
 			},
-			"columnDelimiter": "\t",
+			"columnDelimiter": "<",
 			"compressionCodec": "ZipDeflate",
+			"compressionLevel": "Fastest",
 			"encodingName": "ISO-8859-1",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
