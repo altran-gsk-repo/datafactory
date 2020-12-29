@@ -1,0 +1,157 @@
+{
+	"name": "Fact_Email_e_KPI_Data_Flow",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageSynapse",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "3 - GSO"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+				"container": "gsksynapsestorage"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "CALL_SUMMARY_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "PARENT_CALL_AID",
+				"type": "UTF8"
+			},
+			{
+				"name": "LOCAL_CALL_DATE_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "CALL_DATE_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "TERRITORY_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "CYCLE",
+				"type": "UTF8"
+			},
+			{
+				"name": "SALES_FORCE_KEY",
+				"type": "UTF8"
+			},
+			{
+				"name": "DATE",
+				"type": "UTF8"
+			},
+			{
+				"name": "LOCAL_CALL_TIME_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "ACCOUNT_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "CALL_NAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "RX_CALL_TYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "CALL_STATUS",
+				"type": "UTF8"
+			},
+			{
+				"name": "ATTENDEE_TYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "CLM_IND",
+				"type": "UTF8"
+			},
+			{
+				"name": "SAMPLE_CALL_IND",
+				"type": "UTF8"
+			},
+			{
+				"name": "CALL_TYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "DETAILED_PRODUCTS",
+				"type": "UTF8"
+			},
+			{
+				"name": "DURATION",
+				"type": "UTF8"
+			},
+			{
+				"name": "CREATED_DATE_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "CREATED_DATE_TIME_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "LAST_MODIFIED_DATE_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "LAST_MODIFIED_DATE_TIME_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "PRE_CALL_NOTES",
+				"type": "UTF8"
+			},
+			{
+				"name": "NEXT_CALL_NOTES",
+				"type": "UTF8"
+			},
+			{
+				"name": "REVIEW_STATUS",
+				"type": "UTF8"
+			},
+			{
+				"name": "ACCOUNT_NAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "RX_LEGAL_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "KEY_MESSAGE_NAME",
+				"type": "UTF8"
+			},
+			{
+				"name": "QUESTION_ID",
+				"type": "UTF8"
+			},
+			{
+				"name": "PRODUCT",
+				"type": "UTF8"
+			},
+			{
+				"name": "CALL_DATE",
+				"type": "UTF8"
+			},
+			{
+				"name": "ORIGEM",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
