@@ -23,6 +23,9 @@
 		"FileServerDouglas_password": {
 			"value": ""
 		},
+		"FileServerDouglasNew_password": {
+			"value": ""
+		},
 		"FileServerGSK_password": {
 			"value": ""
 		},
@@ -33,6 +36,9 @@
 			"value": ""
 		},
 		"SqlServerGSK_connectionString": {
+			"value": ""
+		},
+		"SqlServerLocalDouglasDB_connectionString": {
 			"value": ""
 		},
 		"SqlServerLocalDouglasDev_connectionString": {
@@ -54,6 +60,12 @@
 			"value": "D:\\Documentos"
 		},
 		"FileServerDouglas_properties_typeProperties_userId": {
+			"value": "DESKTOP-FVENMUR\\dougl"
+		},
+		"FileServerDouglasNew_properties_typeProperties_host": {
+			"value": "C:\\Users\\dougl\\OneDrive\\GSK_FLAT_FILES"
+		},
+		"FileServerDouglasNew_properties_typeProperties_userId": {
 			"value": "DESKTOP-FVENMUR\\dougl"
 		},
 		"FileServerGSK_properties_typeProperties_host": {

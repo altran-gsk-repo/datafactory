@@ -31,6 +31,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'FileServerDouglas'"
 		},
+		"FileServerDouglasNew_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'FileServerDouglasNew'"
+		},
 		"FileServerGSK_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'FileServerGSK'"
@@ -46,6 +50,10 @@
 		"SqlServerGSK_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SqlServerGSK'"
+		},
+		"SqlServerLocalDouglasDB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServerLocalDouglasDB'"
 		},
 		"SqlServerLocalDouglasDev_connectionString": {
 			"type": "secureString",
@@ -72,6 +80,14 @@
 			"defaultValue": "D:\\Documentos"
 		},
 		"FileServerDouglas_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "DESKTOP-FVENMUR\\dougl"
+		},
+		"FileServerDouglasNew_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "C:\\Users\\dougl\\OneDrive\\GSK_FLAT_FILES"
+		},
+		"FileServerDouglasNew_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "DESKTOP-FVENMUR\\dougl"
 		},
@@ -769,6 +785,7 @@
 											}
 										},
 										"enableStaging": false,
+										"enableSkipIncompatibleRow": true,
 										"translator": {
 											"type": "TabularTranslator",
 											"typeConversion": true,
@@ -845,6 +862,7 @@
 											}
 										},
 										"enableStaging": false,
+										"enableSkipIncompatibleRow": true,
 										"translator": {
 											"type": "TabularTranslator",
 											"typeConversion": true,
@@ -3205,43 +3223,75 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/AbrirArquivoComprimido')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
+			"name": "[concat(parameters('workspaceName'), '/temp')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "CompressArquivoSave",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
-						"fileSystem": "gsksynapsestorage"
-					},
-					"columnDelimiter": "~",
-					"compressionCodec": "ZipDeflate",
-					"compressionLevel": "Optimal",
-					"encodingName": "ISO-8859-1",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
+				"activities": [
 					{
-						"name": "202012;REP 631711;CG804878;CLAUDIANE;CLAUDIANE BEATRIZ GURGEL DO AMARAL CANTO SALES;PORTO VELHO;RO;I+P;;20201127;AC0000977;CIRO FALCÃO MACEDO JÚNIOR;CIRO MACEDO JÚNIOR;CIRO;FALCÃO;MACEDO JÚNIOR;RIO BRANCO;AC;\"AVENIDA GETÚLIO VARGAS",
-						"type": "String"
-					},
-					{
-						"name": " 811  \";CARDIOLOGIA;;;;;NULL;NULL;;5569999256460;2020-12-03",
-						"type": "String"
+						"name": "EMAIL_ETL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "EMAIL_ETL",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"dIntVisitasRealizadas": {},
+									"dIntVisitasMedico": {},
+									"dIntEmail": {},
+									"dIntVisitasFranchise": {},
+									"dIntEventos": {},
+									"HistZona": {},
+									"RepsZona": {},
+									"dForcaVendas": {},
+									"dKPITerritorio": {},
+									"dCoaching": {},
+									"dMSLDivision": {},
+									"dTargetSRO": {},
+									"dQuadranteMedico": {},
+									"dQuadranteMedicoGP": {},
+									"dAuditEnd": {},
+									"dPainelMedico": {},
+									"TraducaoEspecialidadeEventos": {},
+									"SinkFatoInteracoes": {},
+									"SinkDimForcaVendas": {},
+									"SinkDimHistoricoZonas": {},
+									"SinkDimKpiTerritorio": {},
+									"SinkCoaching": {},
+									"SinkDimMslDivision": {},
+									"SinkDimTargetSro": {},
+									"SinkDimQuadranteMedico": {},
+									"SinkDimQuadranteMedicoGp": {},
+									"SinkDimAuditEnd": {},
+									"SinkDimPainelMedico": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
-				]
+				],
+				"folder": {
+					"name": "ISOLATION"
+				},
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/CompressArquivoSave')]"
+				"[concat(variables('workspaceId'), '/dataflows/EMAIL_ETL')]"
 			]
 		},
 		{
@@ -3279,8 +3329,9 @@
 						},
 						"fileSystem": "gsksynapsestorage"
 					},
-					"columnDelimiter": "\t",
-					"compressionCodec": "ZipDeflate",
+					"columnDelimiter": "$",
+					"compressionCodec": "bzip2",
+					"compressionLevel": "Fastest",
 					"encodingName": "ISO-8859-1",
 					"escapeChar": "\\",
 					"firstRowAsHeader": true,
@@ -3638,6 +3689,321 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Dim_Email_1_1_Parquet')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "1 - Email 1-1"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"compressionCodec": "gzip"
+				},
+				"schema": [
+					{
+						"name": "ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CRM_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "MEDICO_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "ESPECIALIDADE_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "LOGRADOURO_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "BAIRRO_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "CIDADE_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "CEP_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "ORIGEM_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "UF_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "BRICK_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "TELEFONE_UNIV",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Dim_KPI_Vis_Parquet')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2 - KPI Visitacao"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"compressionCodec": "gzip"
+				},
+				"schema": [
+					{
+						"name": "ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CRM_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "MEDICO_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "ESPECIALIDADE_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "LOGRADOURO_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "BAIRRO_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "CIDADE_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "CEP_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "ORIGEM_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "UF_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "BRICK_UNIV",
+						"type": "UTF8"
+					},
+					{
+						"name": "TELEFONE_UNIV",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Fact_Email_e_KPI_Data_Flow')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageSynapse",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "3 - GSO"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+						"container": "gsksynapsestorage"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "CALL_SUMMARY_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "PARENT_CALL_AID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LOCAL_CALL_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "TERRITORY_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CYCLE",
+						"type": "UTF8"
+					},
+					{
+						"name": "SALES_FORCE_KEY",
+						"type": "UTF8"
+					},
+					{
+						"name": "DATE",
+						"type": "UTF8"
+					},
+					{
+						"name": "LOCAL_CALL_TIME_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "ACCOUNT_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_NAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "RX_CALL_TYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_STATUS",
+						"type": "UTF8"
+					},
+					{
+						"name": "ATTENDEE_TYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "CLM_IND",
+						"type": "UTF8"
+					},
+					{
+						"name": "SAMPLE_CALL_IND",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_TYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "DETAILED_PRODUCTS",
+						"type": "UTF8"
+					},
+					{
+						"name": "DURATION",
+						"type": "UTF8"
+					},
+					{
+						"name": "CREATED_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "CREATED_DATE_TIME_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LAST_MODIFIED_DATE_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "LAST_MODIFIED_DATE_TIME_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "PRE_CALL_NOTES",
+						"type": "UTF8"
+					},
+					{
+						"name": "NEXT_CALL_NOTES",
+						"type": "UTF8"
+					},
+					{
+						"name": "REVIEW_STATUS",
+						"type": "UTF8"
+					},
+					{
+						"name": "ACCOUNT_NAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "RX_LEGAL_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "KEY_MESSAGE_NAME",
+						"type": "UTF8"
+					},
+					{
+						"name": "QUESTION_ID",
+						"type": "UTF8"
+					},
+					{
+						"name": "PRODUCT",
+						"type": "UTF8"
+					},
+					{
+						"name": "CALL_DATE",
+						"type": "UTF8"
+					},
+					{
+						"name": "ORIGEM",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureBlobStorageSynapse')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Fact_GSO_Aux_Regiao')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -3846,6 +4212,56 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/FileServerLocalDouglas')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "FileServerDouglasNew",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "0_Habilitado"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation"
+					},
+					"columnDelimiter": "\t",
+					"compressionCodec": "ZipDeflate",
+					"compressionLevel": "Fastest",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"nullValue": "N/D",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "PK\u0003\u0004-\u0000\u0000\u0000\t\u0000�\u0011�Q�S����������\u0019\u0000\u0014\u0000dim_interacao_eventos.txt\u0001\u0000\u0010\u0000'���\u0002\u0000\u0000\u0000�K+)\u0000\u0000\u0000\u0000�_͎�8r>�\u0001�\u0003/>6 Q�{c*YJVJb6%eM�1�",
+						"type": "String"
+					},
+					{
+						"name": "\u0016\u0003",
+						"type": "String"
+					},
+					{
+						"name": "���`�}<c\u000f�\u001e|��O� �*��g_\u0002���MvV%�\u001b��È`H����'s��=�wћ~�O�\"�jU��8��۪�3�u��k��W\u0005o��7�{z����)7�Vӛ��W�4�I����q��\u001b���醴m˦�\u0007�w�O:�~����rӽQ�9������i�7m\u000b���/�o�����7�Oޜ=o��vsf�ώ/",
+						"type": "String"
+					},
+					{
+						"name": "���3����}�",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/FileServerDouglasNew')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/FileSystemGSK')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -3875,7 +4291,7 @@
 					},
 					"columnDelimiter": "$",
 					"compressionCodec": "ZipDeflate",
-					"compressionLevel": "Fastest",
+					"compressionLevel": "Optimal",
 					"encodingName": "ISO-8859-1",
 					"escapeChar": "\\",
 					"firstRowAsHeader": true,
@@ -3901,6 +4317,9 @@
 					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "1 - Email 1-1"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -3909,8 +4328,9 @@
 						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
 						"fileSystem": "gsksynapsestorage"
 					},
-					"columnDelimiter": "\t",
+					"columnDelimiter": "<",
 					"compressionCodec": "ZipDeflate",
+					"compressionLevel": "Fastest",
 					"encodingName": "ISO-8859-1",
 					"escapeChar": "\\",
 					"firstRowAsHeader": true,
@@ -3942,7 +4362,7 @@
 						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
 						"container": "gsksynapsestorage"
 					},
-					"columnDelimiter": "~",
+					"columnDelimiter": "<",
 					"encodingName": "ISO-8859-1",
 					"escapeChar": "\\",
 					"firstRowAsHeader": true,
@@ -3974,7 +4394,7 @@
 						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao",
 						"container": "gsksynapsestorage"
 					},
-					"columnDelimiter": "~",
+					"columnDelimiter": "\t",
 					"encodingName": "ISO-8859-1",
 					"escapeChar": "\\",
 					"firstRowAsHeader": true,
@@ -4478,8 +4898,123 @@
 				},
 				"annotations": [],
 				"type": "SqlServerTable",
-				"schema": [],
-				"typeProperties": {}
+				"schema": [
+					{
+						"name": "EVENTO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ID_EVENTO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EV CICLO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "% DATA_EVENTO",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DATA_EVENTO",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "EV CICLO_TERRITORIO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EV CICLO_CONTATO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "KEY_TERR_CONT_CICLO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ID_PARTICIPANTE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NOME_PARTICIPANTE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EV ROW_ID_TERRITORIO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NOME_USUARIO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EV ROW_ID_CONTATO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DOCUMENTO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EV ESPECIALIDADE_ENG",
+						"type": "varchar"
+					},
+					{
+						"name": "STATUS_CONVIDADO_GR",
+						"type": "nvarchar"
+					},
+					{
+						"name": "STATUS_CONVIDADO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "STATUS_CONVIDADO_ENG",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PRODUTO_PRIMARIO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PRODUTO_SECUNDARIO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TIPO_PARTICIPACAO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TIPO_PARTICIPACAO_ENG",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TIPO_CONTA",
+						"type": "varchar"
+					},
+					{
+						"name": "TIPO_CONTA_ENG",
+						"type": "varchar"
+					},
+					{
+						"name": "VISITADO_SETOR",
+						"type": "varchar"
+					},
+					{
+						"name": "NOME_SETOR_VISITANTE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TIPO_INTERACAO",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "altran_fato_eventos_email_1_to_1"
+				}
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/SqlServerGSK')]"
@@ -4507,6 +5042,142 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/SqlServerLocalDouglas')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlServerLocalDouglasDB",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "0_Habilitado"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "EVENTO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ID_EVENTO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EV CICLO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "% DATA_EVENTO",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DATA_EVENTO",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "EV CICLO_TERRITORIO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EV CICLO_CONTATO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "KEY_TERR_CONT_CICLO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ID_PARTICIPANTE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NOME_PARTICIPANTE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EV ROW_ID_TERRITORIO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NOME_USUARIO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EV ROW_ID_CONTATO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DOCUMENTO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EV ESPECIALIDADE_ENG",
+						"type": "varchar"
+					},
+					{
+						"name": "STATUS_CONVIDADO_GR",
+						"type": "nvarchar"
+					},
+					{
+						"name": "STATUS_CONVIDADO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "STATUS_CONVIDADO_ENG",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PRODUTO_PRIMARIO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PRODUTO_SECUNDARIO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TIPO_PARTICIPACAO",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TIPO_PARTICIPACAO_ENG",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TIPO_CONTA",
+						"type": "varchar"
+					},
+					{
+						"name": "TIPO_CONTA_ENG",
+						"type": "varchar"
+					},
+					{
+						"name": "VISITADO_SETOR",
+						"type": "varchar"
+					},
+					{
+						"name": "NOME_SETOR_VISITANTE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TIPO_INTERACAO",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "altran_email"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/SqlServerLocalDouglasDB')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/TeradataTable1')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -4525,6 +5196,53 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/TeradataVeevaGSK')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/arquivo_txt_s_comprimir')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CompressArquivoSave",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"nome_arquivo": {
+						"type": "string"
+					},
+					"pasta": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "1 - Email 1-1"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().nome_arquivo",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat('synapse/workspaces/gsk-synapse/warehouse/',dataset().pasta)",
+							"type": "Expression"
+						},
+						"fileSystem": "gsksynapsestorage"
+					},
+					"columnDelimiter": "<",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/CompressArquivoSave')]"
 			]
 		},
 		{
@@ -4644,9 +5362,39 @@
 						"type": "SecureString",
 						"value": "[parameters('FileServerDouglas_password')]"
 					}
+				},
+				"connectVia": {
+					"referenceName": "IntegrationRuntimeLocalDouglas",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/IntegrationRuntimeLocalDouglas')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/FileServerDouglasNew')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('FileServerDouglasNew_properties_typeProperties_host')]",
+					"userId": "[parameters('FileServerDouglasNew_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('FileServerDouglasNew_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "IntegrationRuntimeLocalDouglas",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/IntegrationRuntimeLocalDouglas')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/FileServerGSK')]",
@@ -4700,9 +5448,15 @@
 				"type": "SqlServer",
 				"typeProperties": {
 					"connectionString": "[parameters('SqlServerConfigCarga_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "IntegrationRuntimeLocalDouglas",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/IntegrationRuntimeLocalDouglas')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/SqlServerGSK')]",
@@ -4724,6 +5478,25 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/SqlServerLocalDouglasDB')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('SqlServerLocalDouglasDB_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "IntegrationRuntimeLocalDouglas",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/IntegrationRuntimeLocalDouglas')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/SqlServerLocalDouglasDev')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -4732,9 +5505,15 @@
 				"type": "SqlServer",
 				"typeProperties": {
 					"connectionString": "[parameters('SqlServerLocalDouglasDev_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "IntegrationRuntimeLocalDouglas",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/IntegrationRuntimeLocalDouglas')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/TeradataVeevaGSK')]",
@@ -4872,6 +5651,16 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/IntegrationRuntimeLocalDouglas')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Dataflow1')]",
 			"type": "Microsoft.Synapse/workspaces/dataflows",
 			"apiVersion": "2019-06-01-preview",
@@ -4903,6 +5692,357 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/DelimitedText1')]",
 				"[concat(variables('workspaceId'), '/datasets/Parquet1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/EMAIL_ETL')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Dim_Email_1_1_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dIntVisitasRealizadas"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_Email_1_1_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dIntVisitasMedico"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_Email_1_1_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dIntEmail"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_Email_1_1_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dIntVisitasFranchise"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_Email_1_1_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dIntEventos"
+						},
+						{
+							"linkedService": {
+								"referenceName": "AzureBlobStorageSynapse",
+								"type": "LinkedServiceReference"
+							},
+							"name": "HistZona"
+						},
+						{
+							"linkedService": {
+								"referenceName": "AzureBlobStorageSynapse",
+								"type": "LinkedServiceReference"
+							},
+							"name": "RepsZona"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_Email_1_1_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dForcaVendas"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_KPI_Vis_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dKPITerritorio"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_KPI_Vis_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dCoaching"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_KPI_Vis_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dMSLDivision"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_Email_1_1_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dTargetSRO"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_Email_1_1_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dQuadranteMedico"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_Email_1_1_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dQuadranteMedicoGP"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_Email_1_1_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dAuditEnd"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dim_Email_1_1_Parquet",
+								"type": "DatasetReference"
+							},
+							"name": "dPainelMedico"
+						},
+						{
+							"linkedService": {
+								"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+								"type": "LinkedServiceReference"
+							},
+							"name": "TraducaoEspecialidadeEventos"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Fact_Email_e_KPI_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "SinkFatoInteracoes"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_Email_e_KPI_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "SinkDimForcaVendas"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_Email_e_KPI_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "SinkDimHistoricoZonas"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_Email_e_KPI_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "SinkDimKpiTerritorio"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_Email_e_KPI_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "SinkCoaching"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_Email_e_KPI_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "SinkDimMslDivision"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_Email_e_KPI_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "SinkDimTargetSro"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_Email_e_KPI_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "SinkDimQuadranteMedico"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_Email_e_KPI_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "SinkDimQuadranteMedicoGp"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_Email_e_KPI_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "SinkDimAuditEnd"
+						},
+						{
+							"dataset": {
+								"referenceName": "Fact_Email_e_KPI_Data_Flow",
+								"type": "DatasetReference"
+							},
+							"name": "SinkDimPainelMedico"
+						}
+					],
+					"transformations": [
+						{
+							"name": "ChavemamentoVisitasRealizadas",
+							"description": "Autogenerated by data preview actions"
+						},
+						{
+							"name": "ConcatChave"
+						},
+						{
+							"name": "ConcatChave2"
+						},
+						{
+							"name": "ChaveamentoVisitasMedicos",
+							"description": "Autogenerated by data preview actions"
+						},
+						{
+							"name": "ConcatChave3"
+						},
+						{
+							"name": "ChaveamentoEmail",
+							"description": "Autogenerated by data preview actions"
+						},
+						{
+							"name": "ConcatChave4"
+						},
+						{
+							"name": "ChaveamentoVisitasFranchise",
+							"description": "Autogenerated by data preview actions"
+						},
+						{
+							"name": "UnpivotHistZona"
+						},
+						{
+							"name": "SelecaoTempHistZona"
+						},
+						{
+							"name": "ChaveamentoHistZona"
+						},
+						{
+							"name": "SelecaoTempRepsZona"
+						},
+						{
+							"name": "ChaveamentoRepsZona"
+						},
+						{
+							"name": "SelecaoTempForcaVendas"
+						},
+						{
+							"name": "ChaveamentoForcaVendas"
+						},
+						{
+							"name": "LeftJoinRepsZonaFV"
+						},
+						{
+							"name": "SelecaoTempKPITerr"
+						},
+						{
+							"name": "ChaveamentoKPITerr"
+						},
+						{
+							"name": "SelecaoTempCoaching"
+						},
+						{
+							"name": "ChaveamentoCoching"
+						},
+						{
+							"name": "SelecaoTempMSLDivision"
+						},
+						{
+							"name": "ChaveamentoMSLDivision"
+						},
+						{
+							"name": "SelecaoTempCadTargetSRO"
+						},
+						{
+							"name": "ChaveamentoTargetSRO"
+						},
+						{
+							"name": "SelecaoTempQM"
+						},
+						{
+							"name": "ChaveamentoQuadranteMedico"
+						},
+						{
+							"name": "SelecaotTempQDGP"
+						},
+						{
+							"name": "ChaveamentoQuadranteMedicoGP"
+						},
+						{
+							"name": "SelecaoTempAuditEnd"
+						},
+						{
+							"name": "ChaveamentoAuditEnd"
+						},
+						{
+							"name": "ChaveamentoPainelMedico"
+						},
+						{
+							"name": "RemoverErros1"
+						},
+						{
+							"name": "RemoverErros2"
+						},
+						{
+							"name": "RemoverErros3"
+						},
+						{
+							"name": "UpperEspecialidadeBR",
+							"description": "Autogenerated by data preview actions"
+						},
+						{
+							"name": "TraducaoEspecialidadePTBR"
+						},
+						{
+							"name": "LeftJoinTraducaoEspecialidadeEventos"
+						},
+						{
+							"name": "ChaveamentoEventos"
+						},
+						{
+							"name": "UnionVisitasMedico"
+						},
+						{
+							"name": "SelecaoFatoInteracao"
+						},
+						{
+							"name": "DimForcaVendas"
+						},
+						{
+							"name": "SelecaoPainelMedico"
+						}
+					],
+					"script": "source(output(\n\t\tID as string,\n\t\tID_VISITA as string,\n\t\tTIPO_VISITA as string,\n\t\tTIPO_VISITA_PTBR as string,\n\t\tTIPO_VISITA_ORDER as string,\n\t\tCLM_IND as string,\n\t\tRECORD_TYPE_ID as string,\n\t\tRECORD_TYPE_NAME as string,\n\t\tDATA as string,\n\t\tCICLO as string,\n\t\tTARGET_PER_ID as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tSEMANA as string,\n\t\tFLAG_VISITA as string,\n\t\tTIPO_INTERACAO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_visitas_realizadas.parquet'],\n\tpartitionBy('hash', 1)) ~> dIntVisitasRealizadas\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tROW_ID_CONTATO as string,\n\t\tVP as string,\n\t\tVR as string,\n\t\tVRE as string,\n\t\tVRT as string,\n\t\tPLANEJUN as string,\n\t\tREALUN as string,\n\t\tEFFECTIVE_CALLS as string,\n\t\tUNDER_CALLS as string,\n\t\tOVER_CALLS as string,\n\t\tOFF_TARGET_CALLS as string,\n\t\tTARGET_CUST as string,\n\t\tUNDER_TARGET as string,\n\t\tON_TARGET as string,\n\t\tOVER_TARGET as string,\n\t\tEMAIL_CONSENT_KPI as string,\n\t\tAT_DESIRED_FREQUENCY as string,\n\t\tOVER_DESIRED_FREQUENCY as string,\n\t\tTIPO_INTERACAO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_visitas_medicos.parquet'],\n\tpartitionBy('hash', 1)) ~> dIntVisitasMedico\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tID_ENVIO_EMAIL as string,\n\t\tID_ATIV_EMAIL as string,\n\t\tTIPO_ATIV_EMAIL as string,\n\t\tDATA_ATIV_EMAIL as string,\n\t\tPRODUTO as string,\n\t\tROW_ID_CONTATO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tDOCUMENTO_EMAIL as string,\n\t\tDESC_DOCUMENTO_EMAIL as string,\n\t\tASSUNTO_EMAIL as string,\n\t\tTIPO_INTERACAO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_email.parquet'],\n\tpartitionBy('hash', 1)) ~> dIntEmail\nsource(output(\n\t\tID as string,\n\t\tROW_ID_CONTATO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tCICLO as string,\n\t\tPRODUTO_FRANCHISE as string,\n\t\tFRANCHISE as string,\n\t\tSUB_CAT_FRANCHISE as string,\n\t\tPESO_FRANCHISE as string,\n\t\tTIPO_INTERACAO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_visitas_franchise.parquet'],\n\tpartitionBy('hash', 1)) ~> dIntVisitasFranchise\nsource(output(\n\t\tEVENTO as string,\n\t\tID_EVENTO as string,\n\t\tEV_CICLO as string,\n\t\tDATA_EVENTO as string,\n\t\tDATA_EVENTO_2 as string,\n\t\tEV_CICLO_TERRITORIO as string,\n\t\tEV_CICLO_CONTATO as string,\n\t\tKEY_TERR_CONT_CICLO as string,\n\t\tID_PARTICIPANTE as string,\n\t\tNOME_PARTICIPANTE as string,\n\t\tEV_ROW_ID_TERRITORIO as string,\n\t\tNOME_USUARIO as string,\n\t\tEV_ROW_ID_CONTATO as string,\n\t\tDOCUMENTO as string,\n\t\tEV_ESPECIALIDADE_ENG as string,\n\t\tSTATUS_CONVIDADO_GR as string,\n\t\tSTATUS_CONVIDADO as string,\n\t\tSTATUS_CONVIDADO_ENG as string,\n\t\tPRODUTO_PRIMARIO as string,\n\t\tPRODUTO_SECUNDARIO as string,\n\t\tTIPO_PARTICIPACAO as string,\n\t\tTIPO_PARTICIPACAO_ENG as string,\n\t\tTIPO_CONTA as string,\n\t\tTIPO_CONTA_ENG as string,\n\t\tVISITADO_SETOR as string,\n\t\tNOME_SETOR_VISITANTE as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_eventos.parquet'],\n\tpartitionBy('hash', 1)) ~> dIntEventos\nsource(output(\n\t\tUF as string,\n\t\t{Cidade Base} as string,\n\t\tCHAVE as string,\n\t\tTotal_Reps_OneFarma as short,\n\t\t{2020-05-26} as string,\n\t\t{2020-05-29} as string,\n\t\t{2020-06-01} as string,\n\t\t{2020-06-02} as string,\n\t\t{2020-06-03} as string,\n\t\t{2020-06-08} as string,\n\t\t{2020-06-09} as string,\n\t\t{2020-06-10} as string,\n\t\t{2020-06-11} as string,\n\t\t{2020-06-15} as string,\n\t\t{2020-06-17} as string,\n\t\t{2020-06-18} as string,\n\t\t{2020-06-19} as string,\n\t\t{2020-06-22} as string,\n\t\t{2020-06-24} as string,\n\t\t{2020-06-25} as string,\n\t\t{2020-06-26} as string,\n\t\t{2020-06-29} as string,\n\t\t{2020-06-30} as string,\n\t\t{2020-07-01} as string,\n\t\t{2020-07-06} as string,\n\t\t{2020-07-07} as string,\n\t\t{2020-07-10} as string,\n\t\t{2020-07-13} as string,\n\t\t{2020-07-14} as string,\n\t\t{2020-07-15} as string,\n\t\t{2020-07-20} as string,\n\t\t{2020-07-21} as string,\n\t\t{2020-07-27} as string,\n\t\t{2020-07-28} as string,\n\t\t{2020-08-04} as string,\n\t\t{2020-08-05} as string,\n\t\t{2020-08-06} as string,\n\t\t{2020-08-07} as string,\n\t\t{2020-08-10} as string,\n\t\t{2020-08-11} as string,\n\t\t{2020-09-04} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tinferDriftedColumnTypes: true,\n\tformat: 'excel',\n\tcontainer: 'gsksynapsestorage',\n\tfolderPath: 'synapse/workspaces/gsk-synapse/warehouse/aux.tabelas_auxiliares',\n\tfileName: 'BASE CIDADES REPS - 04_09_2020.xlsx',\n\tsheetName: 'ZONAS CIDADES - HISTORICO',\n\tfirstRowAsHeader: true,\n\tpartitionBy('hash', 1)) ~> HistZona\nsource(output(\n\t\tMudid as string,\n\t\tCIDADE as string,\n\t\tUF as string,\n\t\tCHAVE as string,\n\t\tZONA as string,\n\t\t{_c5} as string,\n\t\t{_c6} as string,\n\t\t{_c7} as string,\n\t\t{_c8} as string,\n\t\t{_c9} as string,\n\t\t{_c10} as string,\n\t\t{_c11} as string,\n\t\t{_c12} as string,\n\t\t{_c13} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'excel',\n\tcontainer: 'gsksynapsestorage',\n\tfolderPath: 'synapse/workspaces/gsk-synapse/warehouse/aux.tabelas_auxiliares',\n\tfileName: 'BASE CIDADES REPS - 04_09_2020.xlsx',\n\tsheetName: 'REPS_ZONAS',\n\tfirstRowAsHeader: true,\n\tpartitionBy('hash', 1)) ~> RepsZona\nsource(output(\n\t\tID as string,\n\t\tBU as string,\n\t\tDIVISAO as string,\n\t\tNOME_GD as string,\n\t\tNOME_GR as string,\n\t\tNOME_REPRESENTANTE as string,\n\t\tMUDID as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tTERRITORIO as string,\n\t\tTERRITORIO_GD as string,\n\t\tTERRITORIO_GR as string,\n\t\tCICLO_FV as string,\n\t\tROW_ID_FUNCIONARIO as string,\n\t\tFLAG_PROJETO as string,\n\t\tFLAG_TARGET as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_forca_vendas.parquet'],\n\tpartitionBy('hash', 1)) ~> dForcaVendas\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tTFT as string,\n\t\tDIAS_UTEIS as string,\n\t\tVISITAS_ABATER as string,\n\t\tOBJETIVO_VISITA_DIA as string,\n\t\tDIAS_VISITACAO as string,\n\t\tVR_CLM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao/dim_kpi_territorio.parquet'],\n\tpartitionBy('hash', 1)) ~> dKPITerritorio\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tTERRITORIO_GD as string,\n\t\tTOTAL_COACHING as string,\n\t\tTOTAL_ABATER as string,\n\t\tDIAS_UTEIS_COACHING as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao/dim_coaching.parquet'],\n\tpartitionBy('hash', 1)) ~> dCoaching\nsource(output(\n\t\tID as string,\n\t\tKEY_DIVISAO_CICLO as string,\n\t\tFUNC_TOTAL as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao/dim_msl_division.parquet'],\n\tpartitionBy('hash', 1)) ~> dMSLDivision\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tDIVISAO as string,\n\t\tTARGET_SRO_CRM as string,\n\t\tTARGET_SRO_VISITA as string,\n\t\tTARGET_SRO_MEDIA_DIA as string,\n\t\tTARGET_SRO_COACHING as string,\n\t\tTARGET_SRO_COB as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_cad_target_sro.parquet'],\n\tpartitionBy('hash', 1)) ~> dTargetSRO\nsource(output(\n\t\tID as string,\n\t\tCICLO_QUAD as string,\n\t\tCRM_QUAD as string,\n\t\tMERCADO_QUAD as string,\n\t\tCATEGORIA_QUAD as string,\n\t\tMKT_SHARE_QUAD as string,\n\t\tQUADRANTE_QUAD as string,\n\t\tJORNADA_QUAD as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_quadrante_medico.parquet'],\n\tpartitionBy('hash', 1)) ~> dQuadranteMedico\nsource(output(\n\t\tID as string,\n\t\tCRM_GP as string,\n\t\tMERCADO_GP as string,\n\t\tCATEGORIA_GP as string,\n\t\tJORNADA_GP as string,\n\t\tQUADRANTE_GP as string,\n\t\tROW_ID_TERRITORIO_GP as string,\n\t\tROW_ID_CONTATO_GP as string,\n\t\tCICLO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_quadrante_medico_gp.parquet'],\n\tpartitionBy('hash', 1)) ~> dQuadranteMedicoGP\nsource(output(\n\t\tID as string,\n\t\tCRM_UNIV as string,\n\t\tMEDICO_UNIV as string,\n\t\tESPECIALIDADE_UNIV as string,\n\t\tLOGRADOURO_UNIV as string,\n\t\tBAIRRO_UNIV as string,\n\t\tCIDADE_UNIV as string,\n\t\tCEP_UNIV as string,\n\t\tORIGEM_UNIV as string,\n\t\tUF_UNIV as string,\n\t\tBRICK_UNIV as string,\n\t\tTELEFONE_UNIV as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_audit_end.parquet'],\n\tpartitionBy('hash', 1)) ~> dAuditEnd\nsource(output(\n\t\tCRM_CICLO as string,\n\t\tMES as string,\n\t\tCICLO as string,\n\t\tCRM as string,\n\t\tMEDICO as string,\n\t\tTIPO as string,\n\t\tTIPOCONTATO as string,\n\t\tGRUPOPROMOCIONAL as string,\n\t\tESPECIALIDADE as string,\n\t\tLOGRADOURO as string,\n\t\tCOMPLEMENTO as string,\n\t\tBAIRRO as string,\n\t\tCIDADE as string,\n\t\tUF as string,\n\t\tCEP as string,\n\t\tBRICK as string,\n\t\tTELEFONEMEDICO as string,\n\t\tCELULARMEDICO as string,\n\t\tEMAIL_1_1 as string,\n\t\tROW_ID_FUNCIONARIO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tROW_ID_CONTATO as string,\n\t\tSTATUS as string,\n\t\tQTD_VISITA_PLANEJADA_PAINEL as string,\n\t\tQTD_VISITA_REALIZADA_PAINEL as string,\n\t\tESPECIALIDADE_02 as string,\n\t\tESPECIALIDADE_03 as string,\n\t\tVP_PROX as string,\n\t\tSTATUS_MEDICO as string,\n\t\tEMAIL_1_1_CONSENT as string,\n\t\tNETWORK_ID as string,\n\t\tRX_GIGYA_ID as string,\n\t\tVEEVA_ID as string,\n\t\tROW_ID_CONTATO_EXT as string,\n\t\tEMAIL_MASS as string,\n\t\tEMAIL_MASS_CONSENT as string,\n\t\tCYCLE_PLAN as string,\n\t\tMERCADO as string,\n\t\tPRODUTO_PAINEL as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_painel_medico.parquet'],\n\tpartitionBy('hash', 1)) ~> dPainelMedico\nsource(output(\n\t\tEN as string,\n\t\tPT_BR as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'excel',\n\tfileSystem: 'gsksynapsestorage',\n\tfolderPath: 'synapse/workspaces/gsk-synapse/warehouse/aux.tabelas_auxiliares',\n\tfileName: 'Aux_Veeva_Especialidade_Traducao.xlsx',\n\tsheetName: 'Sheet3',\n\tfirstRowAsHeader: true,\n\tpartitionBy('hash', 1)) ~> TraducaoEspecialidadeEventos\nConcatChave select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tID_VISITA,\n\t\tTIPO_VISITA,\n\t\tTIPO_VISITA_PTBR,\n\t\tTIPO_VISITA_ORDER,\n\t\tCLM_IND,\n\t\tRECORD_TYPE_ID,\n\t\tRECORD_TYPE_NAME,\n\t\tDATA,\n\t\tCICLO,\n\t\tTARGET_PER_ID,\n\t\tROW_ID_TERRITORIO,\n\t\tSEMANA,\n\t\tFLAG_VISITA,\n\t\tTIPO_INTERACAO\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChavemamentoVisitasRealizadas\ndIntVisitasRealizadas derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO, TARGET_PER_ID, CICLO),\n\tpartitionBy('hash', 1)) ~> ConcatChave\ndIntVisitasMedico derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO,ROW_ID_CONTATO,CICLO),\n\tpartitionBy('hash', 1)) ~> ConcatChave2\nConcatChave2 select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tCICLO,\n\t\tROW_ID_TERRITORIO,\n\t\tROW_ID_CONTATO,\n\t\tVP,\n\t\tVR,\n\t\tVRE,\n\t\tVRT,\n\t\tPLANEJUN,\n\t\tREALUN,\n\t\tEFFECTIVE_CALLS,\n\t\tUNDER_CALLS,\n\t\tOVER_CALLS,\n\t\tOFF_TARGET_CALLS,\n\t\tTARGET_CUST,\n\t\tUNDER_TARGET,\n\t\tON_TARGET,\n\t\tOVER_TARGET,\n\t\tEMAIL_CONSENT_KPI,\n\t\tAT_DESIRED_FREQUENCY,\n\t\tOVER_DESIRED_FREQUENCY,\n\t\tTIPO_INTERACAO\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChaveamentoVisitasMedicos\ndIntEmail derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO,ROW_ID_CONTATO,CICLO),\n\tpartitionBy('hash', 1)) ~> ConcatChave3\nConcatChave3 select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tCICLO,\n\t\tID_ENVIO_EMAIL,\n\t\tID_ATIV_EMAIL,\n\t\tTIPO_ATIV_EMAIL,\n\t\tDATA_ATIV_EMAIL,\n\t\tPRODUTO,\n\t\tROW_ID_CONTATO,\n\t\tROW_ID_TERRITORIO,\n\t\tDOCUMENTO_EMAIL,\n\t\tDESC_DOCUMENTO_EMAIL,\n\t\tASSUNTO_EMAIL,\n\t\tTIPO_INTERACAO\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChaveamentoEmail\ndIntVisitasFranchise derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO,ROW_ID_CONTATO,CICLO),\n\tpartitionBy('hash', 1)) ~> ConcatChave4\nConcatChave4 select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tROW_ID_CONTATO,\n\t\tROW_ID_TERRITORIO,\n\t\tCICLO,\n\t\tPRODUTO_FRANCHISE,\n\t\tFRANCHISE,\n\t\tSUB_CAT_FRANCHISE,\n\t\tPESO_FRANCHISE,\n\t\tTIPO_INTERACAO\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChaveamentoVisitasFranchise\nHistZona unpivot(output(\n\t\tDATA_ZONA as string,\n\t\t{2020-05-26} as string,\n\t\t{2020-05-29} as string,\n\t\t{2020-06-01} as string,\n\t\t{2020-06-02} as string,\n\t\t{2020-06-03} as string,\n\t\t{2020-06-08} as string,\n\t\t{2020-06-09} as string,\n\t\t{2020-06-10} as string,\n\t\t{2020-06-11} as string,\n\t\t{2020-06-15} as string,\n\t\t{2020-06-17} as string,\n\t\t{2020-06-18} as string,\n\t\t{2020-06-19} as string,\n\t\t{2020-06-22} as string,\n\t\t{2020-06-24} as string,\n\t\t{2020-06-25} as string,\n\t\t{2020-06-26} as string,\n\t\t{2020-06-29} as string,\n\t\t{2020-06-30} as string,\n\t\t{2020-07-01} as string,\n\t\t{2020-07-06} as string,\n\t\t{2020-07-07} as string,\n\t\t{2020-07-10} as string,\n\t\t{2020-07-13} as string,\n\t\t{2020-07-14} as string,\n\t\t{2020-07-15} as string,\n\t\t{2020-07-20} as string,\n\t\t{2020-07-21} as string,\n\t\t{2020-07-27} as string,\n\t\t{2020-07-28} as string,\n\t\t{2020-08-04} as string,\n\t\t{2020-08-05} as string,\n\t\t{2020-08-06} as string,\n\t\t{2020-08-07} as string,\n\t\t{2020-08-10} as string,\n\t\t{2020-08-11} as string,\n\t\t{2020-09-04} as string\n\t),\n\tungroupBy(UF,\n\t\t{Cidade Base},\n\t\tCHAVE,\n\t\tTotal_Reps_OneFarma),\n\tlateral: true,\n\tignoreNullPivots: true,\n\tpartitionBy('hash', 1)) ~> UnpivotHistZona\nUnpivotHistZona select(mapColumn(\n\t\tCHAVE_ZONA = CHAVE,\n\t\tDATA_ZONA,\n\t\tSTATUS_ZONA = {2020-05-26}\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempHistZona\nSelecaoTempHistZona derive(DATA_ZONA = toDate(DATA_ZONA),\n\t\tNUM_DATA_ZONA = minus(toDate(DATA_ZONA),toDate('1900-01-01'))+2,\n\t\tMES_ZONA = toString(toDate(DATA_ZONA), 'MMM'),\n\tpartitionBy('hash', 1)) ~> ChaveamentoHistZona\nRepsZona select(mapColumn(\n\t\tMUDID = Mudid,\n\t\tCIDADE_ZONA = CIDADE,\n\t\tUF_ZONA = UF,\n\t\tCHAVE,\n\t\tZONA_COMPLETA = ZONA\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempRepsZona\nSelecaoTempRepsZona derive(CHAVE_ZONA = concat(CIDADE_ZONA,'-',UF_ZONA),\n\t\tZONA = trim(split(ZONA_COMPLETA,' - ')[1]),\n\tpartitionBy('hash', 1)) ~> ChaveamentoRepsZona\ndForcaVendas select(mapColumn(\n\t\tBU,\n\t\tDIVISAO,\n\t\tNOME_GD,\n\t\tNOME_GR,\n\t\tNOME_REPRESENTANTE,\n\t\tMUDID,\n\t\tROW_ID_TERRITORIO,\n\t\tTERRITORIO,\n\t\tTERRITORIO_GD,\n\t\tTERRITORIO_GR,\n\t\tCICLO_FV,\n\t\tROW_ID_FUNCIONARIO,\n\t\tFLAG_PROJETO,\n\t\tFLAG_TARGET\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempForcaVendas\nSelecaoTempForcaVendas derive(KEY_TERR_CICLO = concat(ROW_ID_TERRITORIO,CICLO_FV),\n\t\tKEY_CICLO_TERR_GD = concat(CICLO_FV,right(TERRITORIO_GD,6)),\n\t\tKEY_DIVISAO_CICLO = concat(DIVISAO, CICLO_FV),\n\t\tKEY_MUDID_TERR = concat(MUDID, TERRITORIO),\n\t\tKEY_TERR = trim(concat(ROW_ID_TERRITORIO,'')),\n\tpartitionBy('hash', 1)) ~> ChaveamentoForcaVendas\nChaveamentoForcaVendas, ChaveamentoRepsZona join(SelecaoTempForcaVendas@MUDID == SelecaoTempRepsZona@MUDID,\n\tjoinType:'left',\n\tpartitionBy('hash', 1),\n\tbroadcast: 'auto')~> LeftJoinRepsZonaFV\ndKPITerritorio select(mapColumn(\n\t\tCICLO,\n\t\tROW_ID_TERRITORIO,\n\t\tTFT,\n\t\tDIAS_UTEIS,\n\t\tVISITAS_ABATER,\n\t\tOBJETIVO_VISITA_DIA,\n\t\tDIAS_VISITACAO,\n\t\tVR_CLM\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempKPITerr\nSelecaoTempKPITerr derive(KEY_TERR_CICLO = concat(ROW_ID_TERRITORIO,CICLO),\n\tpartitionBy('hash', 1)) ~> ChaveamentoKPITerr\ndCoaching select(mapColumn(\n\t\tCICLO,\n\t\tTERRITORIO_GD,\n\t\tTOTAL_COACHING,\n\t\tTOTAL_ABATER,\n\t\tDIAS_UTEIS_COACHING\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempCoaching\nSelecaoTempCoaching derive(KEY_CICLO_TERR_GD = concat(CICLO, right(TERRITORIO_GD, 6)),\n\tpartitionBy('hash', 1)) ~> ChaveamentoCoching\ndMSLDivision select(mapColumn(\n\t\tKEY_DIVISAO_CICLO,\n\t\tFUNC_TOTAL\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempMSLDivision\nSelecaoTempMSLDivision derive(KEY_DIVISAO_CICLO = replace(KEY_DIVISAO_CICLO, ' - ', ''),\n\tpartitionBy('hash', 1)) ~> ChaveamentoMSLDivision\ndTargetSRO select(mapColumn(\n\t\tCICLO,\n\t\tDIVISAO,\n\t\tTARGET_SRO_CRM,\n\t\tTARGET_SRO_VISITA,\n\t\tTARGET_SRO_MEDIA_DIA,\n\t\tTARGET_SRO_COACHING,\n\t\tTARGET_SRO_COB\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempCadTargetSRO\nSelecaoTempCadTargetSRO derive(KEY_DIVISAO_CICLO = concat(DIVISAO, CICLO),\n\tpartitionBy('hash', 1)) ~> ChaveamentoTargetSRO\ndQuadranteMedico select(mapColumn(\n\t\tCICLO_QUAD,\n\t\tCRM_QUAD,\n\t\tMERCADO_QUAD,\n\t\tCATEGORIA_QUAD,\n\t\tMKT_SHARE_QUAD,\n\t\tQUADRANTE_QUAD,\n\t\tJORNADA_QUAD\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempQM\nSelecaoTempQM derive(KEY_CRM_UNIV = trim(concat(CRM_QUAD,'')),\n\t\tKEY_CICLO_CRM = concat(CICLO_QUAD,CRM_QUAD),\n\tpartitionBy('hash', 1)) ~> ChaveamentoQuadranteMedico\ndQuadranteMedicoGP select(mapColumn(\n\t\tCRM_GP,\n\t\tMERCADO_GP,\n\t\tCATEGORIA_GP,\n\t\tJORNADA_GP,\n\t\tQUADRANTE_GP,\n\t\tROW_ID_TERRITORIO_GP,\n\t\tROW_ID_CONTATO_GP,\n\t\tCICLO\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaotTempQDGP\nSelecaotTempQDGP derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO_GP, ROW_ID_CONTATO_GP, CICLO),\n\tpartitionBy('hash', 1)) ~> ChaveamentoQuadranteMedicoGP\ndAuditEnd select(mapColumn(\n\t\tCRM_UNIV,\n\t\tMEDICO_UNIV,\n\t\tESPECIALIDADE_UNIV,\n\t\tLOGRADOURO_UNIV,\n\t\tBAIRRO_UNIV,\n\t\tCIDADE_UNIV,\n\t\tCEP_UNIV,\n\t\tORIGEM_UNIV,\n\t\tUF_UNIV,\n\t\tBRICK_UNIV,\n\t\tTELEFONE_UNIV\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempAuditEnd\nSelecaoTempAuditEnd derive(KEY_CRM_UNIV = trim(concat(CRM_UNIV,'')),\n\tpartitionBy('hash', 1)) ~> ChaveamentoAuditEnd\ndPainelMedico derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO, ROW_ID_CONTATO,CICLO),\n\t\tKEY_TERR_CICLO = concat(ROW_ID_TERRITORIO, CICLO),\n\t\tKEY_CICLO_CRM = concat(CICLO, CRM),\n\t\t{% Date Key} = toDate(toString(CICLO, 'yyyyMM'),'yyyyMM')) ~> ChaveamentoPainelMedico\ndIntEventos filter(EV_CICLO != '43590',\n\tpartitionBy('hash', 1)) ~> RemoverErros1\nRemoverErros1 filter(EVENTO != 'rio',\n\tpartitionBy('hash', 1)) ~> RemoverErros2\nRemoverErros2 filter(ID_EVENTO != '33825',\n\tpartitionBy('hash', 1)) ~> RemoverErros3\nTraducaoEspecialidadeEventos derive(PT_BR = upper(PT_BR),\n\tpartitionBy('hash', 1)) ~> UpperEspecialidadeBR\nUpperEspecialidadeBR select(mapColumn(\n\t\tEN,\n\t\tEV_ESPECIALIDADE = PT_BR\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> TraducaoEspecialidadePTBR\nRemoverErros3, TraducaoEspecialidadePTBR join(EV_ESPECIALIDADE_ENG == EN,\n\tjoinType:'left',\n\tpartitionBy('hash', 1),\n\tbroadcast: 'auto')~> LeftJoinTraducaoEspecialidadeEventos\nLeftJoinTraducaoEspecialidadeEventos select(mapColumn(\n\t\tEVENTO,\n\t\tID_EVENTO,\n\t\tEV_CICLO,\n\t\tDATA_EVENTO,\n\t\tDATA_EVENTO_2,\n\t\tEV_CICLO_TERRITORIO,\n\t\tEV_CICLO_CONTATO,\n\t\tKEY_TERR_CONT_CICLO,\n\t\tID_PARTICIPANTE,\n\t\tNOME_PARTICIPANTE,\n\t\tEV_ROW_ID_TERRITORIO,\n\t\tNOME_USUARIO,\n\t\tEV_ROW_ID_CONTATO,\n\t\tDOCUMENTO,\n\t\tEV_ESPECIALIDADE_ENG,\n\t\tSTATUS_CONVIDADO_GR,\n\t\tSTATUS_CONVIDADO,\n\t\tSTATUS_CONVIDADO_ENG,\n\t\tPRODUTO_PRIMARIO,\n\t\tPRODUTO_SECUNDARIO,\n\t\tTIPO_PARTICIPACAO,\n\t\tTIPO_PARTICIPACAO_ENG,\n\t\tTIPO_CONTA,\n\t\tTIPO_CONTA_ENG,\n\t\tVISITADO_SETOR,\n\t\tNOME_SETOR_VISITANTE,\n\t\tEV_ESPECIALIDADE\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChaveamentoEventos\nChavemamentoVisitasRealizadas, ChaveamentoVisitasMedicos, ChaveamentoEmail, ChaveamentoVisitasFranchise, ChaveamentoEventos union(byName: true,\n\tpartitionBy('hash', 1))~> UnionVisitasMedico\nUnionVisitasMedico select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tID_VISITA,\n\t\tTIPO_VISITA,\n\t\tTIPO_VISITA_PTBR,\n\t\tTIPO_VISITA_ORDER,\n\t\tCLM_IND,\n\t\tRECORD_TYPE_ID,\n\t\tRECORD_TYPE_NAME,\n\t\tDATA,\n\t\tCICLO,\n\t\tTARGET_PER_ID,\n\t\tROW_ID_TERRITORIO,\n\t\tSEMANA,\n\t\tFLAG_VISITA,\n\t\tTIPO_INTERACAO,\n\t\tROW_ID_CONTATO,\n\t\tVP,\n\t\tVR,\n\t\tVRE,\n\t\tVRT,\n\t\tPLANEJUN,\n\t\tREALUN,\n\t\tEFFECTIVE_CALLS,\n\t\tUNDER_CALLS,\n\t\tOVER_CALLS,\n\t\tOFF_TARGET_CALLS,\n\t\tTARGET_CUST,\n\t\tUNDER_TARGET,\n\t\tON_TARGET,\n\t\tOVER_TARGET,\n\t\tEMAIL_CONSENT_KPI,\n\t\tAT_DESIRED_FREQUENCY,\n\t\tOVER_DESIRED_FREQUENCY,\n\t\tID_ENVIO_EMAIL,\n\t\tID_ATIV_EMAIL,\n\t\tTIPO_ATIV_EMAIL,\n\t\tDATA_ATIV_EMAIL,\n\t\tPRODUTO,\n\t\tDOCUMENTO_EMAIL,\n\t\tDESC_DOCUMENTO_EMAIL,\n\t\tASSUNTO_EMAIL,\n\t\tPRODUTO_FRANCHISE,\n\t\tFRANCHISE,\n\t\tSUB_CAT_FRANCHISE,\n\t\tPESO_FRANCHISE,\n\t\tEVENTO,\n\t\tID_EVENTO,\n\t\tEV_CICLO,\n\t\tDATA_EVENTO,\n\t\tDATA_EVENTO_2,\n\t\tEV_CICLO_TERRITORIO,\n\t\tEV_CICLO_CONTATO,\n\t\tID_PARTICIPANTE,\n\t\tNOME_PARTICIPANTE,\n\t\tEV_ROW_ID_TERRITORIO,\n\t\tNOME_USUARIO,\n\t\tEV_ROW_ID_CONTATO,\n\t\tDOCUMENTO,\n\t\tEV_ESPECIALIDADE_ENG,\n\t\tSTATUS_CONVIDADO_GR,\n\t\tSTATUS_CONVIDADO,\n\t\tSTATUS_CONVIDADO_ENG,\n\t\tPRODUTO_PRIMARIO,\n\t\tPRODUTO_SECUNDARIO,\n\t\tTIPO_PARTICIPACAO,\n\t\tTIPO_PARTICIPACAO_ENG,\n\t\tTIPO_CONTA,\n\t\tTIPO_CONTA_ENG,\n\t\tVISITADO_SETOR,\n\t\tNOME_SETOR_VISITANTE,\n\t\tEV_ESPECIALIDADE\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoFatoInteracao\nLeftJoinRepsZonaFV select(mapColumn(\n\t\tBU,\n\t\tDIVISAO,\n\t\tNOME_GD,\n\t\tNOME_GR,\n\t\tNOME_REPRESENTANTE,\n\t\tMUDID = SelecaoTempForcaVendas@MUDID,\n\t\tROW_ID_TERRITORIO,\n\t\tTERRITORIO,\n\t\tTERRITORIO_GD,\n\t\tTERRITORIO_GR,\n\t\tCICLO_FV,\n\t\tROW_ID_FUNCIONARIO,\n\t\tFLAG_PROJETO,\n\t\tFLAG_TARGET,\n\t\tKEY_TERR_CICLO,\n\t\tKEY_CICLO_TERR_GD,\n\t\tKEY_DIVISAO_CICLO,\n\t\tKEY_MUDID_TERR,\n\t\tKEY_TERR,\n\t\tMUDID = SelecaoTempRepsZona@MUDID,\n\t\tCIDADE_ZONA,\n\t\tUF_ZONA,\n\t\tCHAVE,\n\t\tZONA_COMPLETA,\n\t\tCHAVE_ZONA,\n\t\tZONA\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DimForcaVendas\nChaveamentoPainelMedico select(mapColumn(\n\t\tCRM_CICLO,\n\t\tMES,\n\t\tCICLO,\n\t\tCRM,\n\t\tMEDICO,\n\t\tTIPO,\n\t\tTIPOCONTATO,\n\t\tGRUPOPROMOCIONAL,\n\t\tESPECIALIDADE,\n\t\tLOGRADOURO,\n\t\tCOMPLEMENTO,\n\t\tBAIRRO,\n\t\tCIDADE,\n\t\tUF,\n\t\tCEP,\n\t\tBRICK,\n\t\tTELEFONEMEDICO,\n\t\tCELULARMEDICO,\n\t\tEMAIL_1_1,\n\t\tROW_ID_FUNCIONARIO,\n\t\tROW_ID_TERRITORIO,\n\t\tROW_ID_CONTATO,\n\t\tSTATUS,\n\t\tQTD_VISITA_PLANEJADA_PAINEL,\n\t\tQTD_VISITA_REALIZADA_PAINEL,\n\t\tESPECIALIDADE_02,\n\t\tESPECIALIDADE_03,\n\t\tVP_PROX,\n\t\tSTATUS_MEDICO,\n\t\tEMAIL_1_1_CONSENT,\n\t\tNETWORK_ID,\n\t\tRX_GIGYA_ID,\n\t\tVEEVA_ID,\n\t\tROW_ID_CONTATO_EXT,\n\t\tEMAIL_MASS,\n\t\tEMAIL_MASS_CONSENT,\n\t\tCYCLE_PLAN,\n\t\tMERCADO,\n\t\tPRODUTO_PAINEL,\n\t\tKEY_TERR_CONT_CICLO,\n\t\tKEY_TERR_CICLO,\n\t\tKEY_CICLO_CRM,\n\t\tDATE_KEY = {% Date Key}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoPainelMedico\nSelecaoFatoInteracao sink(input(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['fato_interacoes.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SinkFatoInteracoes\nDimForcaVendas sink(input(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_forca_vendas.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SinkDimForcaVendas\nChaveamentoHistZona sink(input(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_historico_zonas.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SinkDimHistoricoZonas\nChaveamentoKPITerr sink(input(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_kpi_territorio.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SinkDimKpiTerritorio\nChaveamentoCoching sink(input(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_coaching.parquert'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SinkCoaching\nChaveamentoMSLDivision sink(input(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_msl_division.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SinkDimMslDivision\nChaveamentoTargetSRO sink(input(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_target_sro.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SinkDimTargetSro\nChaveamentoQuadranteMedico sink(input(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_quadrante_medico.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SinkDimQuadranteMedico\nChaveamentoQuadranteMedicoGP sink(input(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_quadrante_medico_gp.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SinkDimQuadranteMedicoGp\nChaveamentoAuditEnd sink(input(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_audit_end.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SinkDimAuditEnd\nSelecaoPainelMedico sink(input(\n\t\tCALL_SUMMARY_ID as string,\n\t\tPARENT_CALL_AID as string,\n\t\tLOCAL_CALL_DATE_ID as string,\n\t\tCALL_DATE_ID as string,\n\t\tTERRITORY_ID as string,\n\t\tCYCLE as string,\n\t\tSALES_FORCE_KEY as string,\n\t\tDATE as string,\n\t\tLOCAL_CALL_TIME_ID as string,\n\t\tACCOUNT_ID as string,\n\t\tCALL_NAME as string,\n\t\tRX_CALL_TYPE as string,\n\t\tCALL_STATUS as string,\n\t\tATTENDEE_TYPE as string,\n\t\tCLM_IND as string,\n\t\tSAMPLE_CALL_IND as string,\n\t\tCALL_TYPE as string,\n\t\tDETAILED_PRODUCTS as string,\n\t\tDURATION as string,\n\t\tCREATED_DATE_ID as string,\n\t\tCREATED_DATE_TIME_ID as string,\n\t\tLAST_MODIFIED_DATE_ID as string,\n\t\tLAST_MODIFIED_DATE_TIME_ID as string,\n\t\tPRE_CALL_NOTES as string,\n\t\tNEXT_CALL_NOTES as string,\n\t\tREVIEW_STATUS as string,\n\t\tACCOUNT_NAME as string,\n\t\tRX_LEGAL_ID as string,\n\t\tKEY_MESSAGE_NAME as string,\n\t\tQUESTION_ID as string,\n\t\tPRODUCT as string,\n\t\tCALL_DATE as string,\n\t\tORIGEM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_painel_medico.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SinkDimPainelMedico"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Dim_Email_1_1_Parquet')]",
+				"[concat(variables('workspaceId'), '/linkedServices/AzureBlobStorageSynapse')]",
+				"[concat(variables('workspaceId'), '/datasets/Dim_KPI_Vis_Parquet')]",
+				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]",
+				"[concat(variables('workspaceId'), '/datasets/Fact_Email_e_KPI_Data_Flow')]"
 			]
 		},
 		{
@@ -5106,6 +6246,25 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 1')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT\n    MAX(R.EV_CICLO) AS 'MAX_CICLO'\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gsksynapsestorage/synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_eventos.parquet',\n        FORMAT='PARQUET'\n    ) AS R\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"name": "master",
+						"type": "SqlOnDemand"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/TESTE UNITARIO')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
@@ -5123,53 +6282,6 @@
 				"type": "SqlQuery"
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/arquivo_txt_s_comprimir')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "CompressArquivoSave",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"nome_arquivo": {
-						"type": "string"
-					},
-					"pasta": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "1 - Email 1-1"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().nome_arquivo",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@concat('synapse/workspaces/gsk-synapse/warehouse/',dataset().pasta)",
-							"type": "Expression"
-						},
-						"fileSystem": "gsksynapsestorage"
-					},
-					"columnDelimiter": "~",
-					"encodingName": "ISO-8859-1",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/CompressArquivoSave')]"
-			]
 		}
 	]
 }
