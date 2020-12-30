@@ -1,0 +1,20 @@
+{
+	"name": "SINK_KPI_EMAIL_ADSL2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Email & KPI Visitacao",
+				"fileSystem": "gskoutputfiles"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
