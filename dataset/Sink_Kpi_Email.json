@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "synapse/workspaces/gsk-synapse/warehouse",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/teste",
 				"container": "gsksynapsestorage"
 			},
 			"compressionCodec": "snappy"
