@@ -1,0 +1,16 @@
+{
+	"name": "KPI_EMAIL_CREATE_VIEW_DIM_TARGET_SRO",
+	"properties": {
+		"content": {
+			"query": "-- CREATE VIEW kpiemail.dim_target_sro\n-- AS\nSELECT\n   *\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_target_sro.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "GSK",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
