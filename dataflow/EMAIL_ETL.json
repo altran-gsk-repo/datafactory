@@ -1,6 +1,9 @@
 {
 	"name": "EMAIL_ETL",
 	"properties": {
+		"folder": {
+			"name": "KPI VISITACAO & EMAIL"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
