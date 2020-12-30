@@ -1,0 +1,16 @@
+{
+	"name": "SQL script 2",
+	"properties": {
+		"content": {
+			"query": "SELECT TOP (100) [CHAVE_ZONA]\n,[DATA_ZONA]\n,[STATUS_ZONA]\n,[NUM_DATA_ZONA]\n,[MES_ZONA]\n FROM [kpiemail].[dim_historico_zonas]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "GSK",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
