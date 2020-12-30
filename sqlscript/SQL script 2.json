@@ -1,0 +1,16 @@
+{
+	"name": "SQL script 2",
+	"properties": {
+		"content": {
+			"query": "SELECT\n    top (100)\n[ESPECIALIDADE_UNIV]  COLLATE Latin1_General_100_BIN2_UTF8\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_audit_end.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n [ESPECIALIDADE_UNIV]\tNVARCHAR(1000)\n    ) AS ROW\n\n    ",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "GSK",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
