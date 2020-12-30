@@ -1,6 +1,9 @@
 {
 	"name": "KPI_EMAIL_CREATE_VIEW_DIM_KPI_TERRITORIO",
 	"properties": {
+		"folder": {
+			"name": "KPI VISITACAO & EMAIL"
+		},
 		"content": {
 			"query": "-- CREATE VIEW kpiemail.dim_kpi_territorio\n-- AS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_kpi_territorio.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
 			"metadata": {
