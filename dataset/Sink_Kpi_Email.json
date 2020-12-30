@@ -10,48 +10,11 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse",
 				"container": "gsksynapsestorage"
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": [
-			{
-				"name": "CRM_GP",
-				"type": "UTF8"
-			},
-			{
-				"name": "MERCADO_GP",
-				"type": "UTF8"
-			},
-			{
-				"name": "CATEGORIA_GP",
-				"type": "UTF8"
-			},
-			{
-				"name": "JORNADA_GP",
-				"type": "UTF8"
-			},
-			{
-				"name": "QUADRANTE_GP",
-				"type": "UTF8"
-			},
-			{
-				"name": "ROW_ID_TERRITORIO_GP",
-				"type": "UTF8"
-			},
-			{
-				"name": "ROW_ID_CONTATO_GP",
-				"type": "UTF8"
-			},
-			{
-				"name": "CICLO",
-				"type": "UTF8"
-			},
-			{
-				"name": "KEY_TERR_CONT_CICLO",
-				"type": "UTF8"
-			}
-		]
+		"schema": []
 	}
 }
