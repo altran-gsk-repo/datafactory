@@ -287,7 +287,7 @@
 				}
 			},
 			{
-				"name": "EMAIL_KPI_ETL",
+				"name": "EMAIL_ETL",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
