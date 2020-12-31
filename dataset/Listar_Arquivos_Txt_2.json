@@ -17,8 +17,6 @@
 				"container": "gsksynapsestorage"
 			},
 			"columnDelimiter": "<",
-			"compressionCodec": "ZipDeflate",
-			"compressionLevel": "Fastest",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
