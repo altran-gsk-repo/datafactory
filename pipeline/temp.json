@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "EMAIL_ETL",
+				"name": "KPI_ETL",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "EMAIL_ETL",
+						"referenceName": "KPI_ETL",
 						"type": "DataFlowReference"
 					},
 					"compute": {
