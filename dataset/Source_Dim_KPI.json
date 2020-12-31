@@ -1,0 +1,24 @@
+{
+	"name": "Source_Dim_KPI",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageSynapse",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "3 - GSO"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao",
+				"container": "gsksynapsestorage"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
