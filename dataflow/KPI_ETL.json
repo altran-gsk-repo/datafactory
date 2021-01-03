@@ -1,12 +1,54 @@
 {
 	"name": "KPI_ETL",
 	"properties": {
+		"folder": {
+			"name": "KPI VISITACAO"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
-			"sinks": [],
-			"transformations": [],
-			"script": ""
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+						"type": "LinkedServiceReference"
+					},
+					"name": "DimTopIndependentes"
+				},
+				{
+					"dataset": {
+						"referenceName": "Source_Dim_KPI",
+						"type": "DatasetReference"
+					},
+					"name": "DimPainelMedico"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Sink_KPI_Visitacao",
+						"type": "DatasetReference"
+					},
+					"name": "SinkDimPainelMedico"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CriandoColunaTopIndFlag"
+				},
+				{
+					"name": "ChavemamentoTopIndependente"
+				},
+				{
+					"name": "LeftJoinPainelMedTopIndependente"
+				},
+				{
+					"name": "CondicaoTopIndFlag"
+				},
+				{
+					"name": "SelecaoFinal"
+				}
+			],
+			"script": "source(output(\n\t\tCNPJ as string,\n\t\tGRI as string,\n\t\tREP as string,\n\t\t{RAZAO SOCIAL} as string,\n\t\tENDERECO as string,\n\t\tBAIRRO as string,\n\t\tCIDADE as string,\n\t\tUF as string,\n\t\tSTATUS as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tlimit: 100,\n\tformat: 'excel',\n\tfileSystem: 'gsksynapsestorage',\n\tfolderPath: 'synapse/workspaces/gsk-synapse/warehouse/aux.tabelas_auxiliares',\n\tfileName: 'CNPJS TOP INDEPENDENTES - RI.xlsx',\n\tsheetName: 'LISTA CNPJs',\n\tfirstRowAsHeader: true) ~> DimTopIndependentes\nsource(output(\n\t\tCICLO_TERRITORIO_CONTATO as string,\n\t\tPAINEL_CICLO as string,\n\t\tPAINEL_CICLO_ATUAL as string,\n\t\tPAINEL_ROW_ID_TERRITORIO as string,\n\t\tCICLO_TERRITORIO_DIVISAO as string,\n\t\tDOCUMENTO as string,\n\t\tBRICK as string,\n\t\tMEDICO as string,\n\t\tDOC_NAME as string,\n\t\tGRUPOPROMOCIONAL as string,\n\t\tESPECIALIDADE as string,\n\t\tTIPOCONTATO as string,\n\t\tCOMPLEMENTO as string,\n\t\tCEP as string,\n\t\tLOGRADOURO as string,\n\t\tBAIRRO as string,\n\t\tCIDADE as string,\n\t\tUF as string,\n\t\tEMAIL_1_1 as string,\n\t\tEMAIL_MASS as string,\n\t\tTELEFONEMEDICO as string,\n\t\tCELULARMEDICO as string,\n\t\tULTALTCONTATO as string,\n\t\tUFDOCUMENTO as string,\n\t\tNUMERODOCUMENTO as string,\n\t\tPAINEL_ROW_ID_CONTATO as string,\n\t\tPAINEL_ROW_ID_GRUPOPROMOCIONAL as string,\n\t\tPAINEL_ROW_ID_DIVISAO as string,\n\t\tPAINEL_ROW_ID_FUNCIONARIO as string,\n\t\tPAINEL_DIVISAO as string,\n\t\tPERSON_UID as string,\n\t\tORIGEM_DADOS as string,\n\t\tDATA_CARGA as string,\n\t\tPAINEL_STATUS as string,\n\t\tTIPO as string,\n\t\tBRICK_NOME as string,\n\t\tSITUACAO as string,\n\t\tFLG_OFICIAL_GOVERNO as string,\n\t\tESPECIALIDADE_02 as string,\n\t\tESPECIALIDADE_03 as string,\n\t\tROW_ID_ENDERECO as string,\n\t\tCPF as string,\n\t\tORIGEM_END as string,\n\t\tNETWORKID as string,\n\t\tDOCUMENTO_VEEVA as string,\n\t\tFLG_MEDICO_AUDIT as string,\n\t\tESPEC_CYCLE_PLAN as string,\n\t\tSTATUS_MEDICO as string,\n\t\tEMAIL_1_1_CONSENT as string,\n\t\tEMAIL_MASS_CONSENT as string,\n\t\tCOMENTARIO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tlimit: 100,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao/dim_painel_medico.parquet']) ~> DimPainelMedico\nDimTopIndependentes derive(TOP_IND_FLAG = 'S') ~> CriandoColunaTopIndFlag\nCriandoColunaTopIndFlag select(mapColumn(\n\t\tDOCUMENTO = CNPJ,\n\t\tTOP_IND_FLAG\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChavemamentoTopIndependente\nDimPainelMedico, ChavemamentoTopIndependente join(DimPainelMedico@DOCUMENTO == ChavemamentoTopIndependente@DOCUMENTO,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> LeftJoinPainelMedTopIndependente\nLeftJoinPainelMedTopIndependente derive(TOP_IND_FLAG = case(isNull(TOP_IND_FLAG),'N',TOP_IND_FLAG)) ~> CondicaoTopIndFlag\nCondicaoTopIndFlag select(mapColumn(\n\t\tCICLO_TERRITORIO_CONTATO,\n\t\tPAINEL_CICLO,\n\t\tPAINEL_CICLO_ATUAL,\n\t\tPAINEL_ROW_ID_TERRITORIO,\n\t\tCICLO_TERRITORIO_DIVISAO,\n\t\tDOCUMENTO = DimPainelMedico@DOCUMENTO,\n\t\tBRICK,\n\t\tMEDICO,\n\t\tDOC_NAME,\n\t\tGRUPOPROMOCIONAL,\n\t\tESPECIALIDADE,\n\t\tTIPOCONTATO,\n\t\tCOMPLEMENTO,\n\t\tCEP,\n\t\tLOGRADOURO,\n\t\tBAIRRO,\n\t\tCIDADE,\n\t\tUF,\n\t\tEMAIL_1_1,\n\t\tEMAIL_MASS,\n\t\tTELEFONEMEDICO,\n\t\tCELULARMEDICO,\n\t\tULTALTCONTATO,\n\t\tUFDOCUMENTO,\n\t\tNUMERODOCUMENTO,\n\t\tPAINEL_ROW_ID_CONTATO,\n\t\tPAINEL_ROW_ID_GRUPOPROMOCIONAL,\n\t\tPAINEL_ROW_ID_DIVISAO,\n\t\tPAINEL_ROW_ID_FUNCIONARIO,\n\t\tPAINEL_DIVISAO,\n\t\tPERSON_UID,\n\t\tORIGEM_DADOS,\n\t\tDATA_CARGA,\n\t\tPAINEL_STATUS,\n\t\tTIPO,\n\t\tBRICK_NOME,\n\t\tSITUACAO,\n\t\tFLG_OFICIAL_GOVERNO,\n\t\tESPECIALIDADE_02,\n\t\tESPECIALIDADE_03,\n\t\tROW_ID_ENDERECO,\n\t\tCPF,\n\t\tORIGEM_END,\n\t\tNETWORKID,\n\t\tDOCUMENTO_VEEVA,\n\t\tFLG_MEDICO_AUDIT,\n\t\tESPEC_CYCLE_PLAN,\n\t\tSTATUS_MEDICO,\n\t\tEMAIL_1_1_CONSENT,\n\t\tEMAIL_MASS_CONSENT,\n\t\tCOMENTARIO,\n\t\tDOCUMENTO = DimPainelMedico@DOCUMENTO,\n\t\tTOP_IND_FLAG\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoFinal\nSelecaoFinal sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_painel_medico[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SinkDimPainelMedico"
 		}
 	}
 }
