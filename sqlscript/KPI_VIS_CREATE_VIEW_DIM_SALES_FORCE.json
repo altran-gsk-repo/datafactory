@@ -1,0 +1,19 @@
+{
+	"name": "KPI_VIS_CREATE_VIEW_DIM_SALES_FORCE",
+	"properties": {
+		"folder": {
+			"name": "KPI VISITACAO"
+		},
+		"content": {
+			"query": "CREATE VIEW kpivis.dim_sales_force\nAS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_sales_force.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "GSK",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
