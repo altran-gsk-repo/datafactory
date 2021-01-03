@@ -1,0 +1,19 @@
+{
+	"name": "KPI_VIS_CREATE_VIEW_DIM_PARCELA_CALCULO_KPI",
+	"properties": {
+		"folder": {
+			"name": "KPI VISITACAO"
+		},
+		"content": {
+			"query": "-- CREATE VIEW kpivis.dim_parcela_calculo_kpi\n-- AS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_parcela_calculo_kpi.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "GSK",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
