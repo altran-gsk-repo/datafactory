@@ -5,6 +5,9 @@
 			"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "2 - KPI Visitacao"
+		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {
