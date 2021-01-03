@@ -288,6 +288,43 @@
 						"enablePartitionDiscovery": false
 					}
 				}
+			},
+			{
+				"name": "KPI_ETL",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Deletar_Arquivos_ZIP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Deletar_Arquivos_TXT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "KPI_ETL",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
 			}
 		],
 		"variables": {
