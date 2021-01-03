@@ -5,7 +5,7 @@
 			"name": "KPI VISITACAO"
 		},
 		"content": {
-			"query": "CREATE VIEW kpivis.dim_sales_force\nAS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_sales_force.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
+			"query": "-- CREATE VIEW kpivis.dim_sales_force\n-- AS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_sales_force.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
 			"metadata": {
 				"language": "sql"
 			},
