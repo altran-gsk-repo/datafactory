@@ -1,0 +1,19 @@
+{
+	"name": "SYS_VERIFICAR_COLLATE",
+	"properties": {
+		"folder": {
+			"name": "SYSTEM_TOOLS"
+		},
+		"content": {
+			"query": "SELECT\n\tcol.name, col.collation_name\nfrom\n\tsys.columns col\nwhere\n\tobject_id = OBJECT_ID('nome_tabela')\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "GSK",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

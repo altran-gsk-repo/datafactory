@@ -1,0 +1,19 @@
+{
+	"name": "SYS_VERIFICAR_TIPO",
+	"properties": {
+		"folder": {
+			"name": "SYSTEM_TOOLS"
+		},
+		"content": {
+			"query": "select \n\tc.name as 'Column Name',\n\tt.name as 'Data Type',\n\tc.max_length as 'Max Length',\n\tc.precision,\n\tc.scale,\n\tc.is_nullable,\n\tISNULL(i.is_primary_key,0)\tas 'Primary Key'\nfrom \n\tsys.columns c\nINNER JOIN\n\tsys.types t on c.user_type_id = t.user_type_id\nLEFT OUTER JOIN\n\tsys.index_columns ic ON ic.object_id = c.object_id and ic.column_id = c.column_id\nLEFT OUTER JOIN\n\tsys.indexes i ON ic.object_id = i.object_id and ic.index_id = i.index_id\nwhere\n\tc.object_id = OBJECT_ID('kpivis.dim_tft')",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "GSK",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
