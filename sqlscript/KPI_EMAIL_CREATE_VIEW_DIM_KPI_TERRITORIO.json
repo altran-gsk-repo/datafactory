@@ -5,7 +5,7 @@
 			"name": "KPI VISITACAO & EMAIL"
 		},
 		"content": {
-			"query": "-- CREATE VIEW kpiemail.dim_kpi_territorio\n-- AS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_kpi_territorio.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
+			"query": "-- ALTER VIEW kpiemail.dim_kpi_territorio\n-- AS\nSELECT\n    [CICLO]\n,[ROW_ID_TERRITORIO]\n,[TFT]\n,[DIAS_UTEIS]\n,[VISITAS_ABATER]\n,[OBJETIVO_VISITA_DIA]\n,[DIAS_VISITACAO]\n,[VR_CLM]\n,[KEY_TERR_CICLO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_kpi_territorio.parquet',\n        FORMAT='PARQUET'\n    ) with (\n        [CICLO]                 VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_TERRITORIO]\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TFT]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DIAS_UTEIS]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VISITAS_ABATER]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[OBJETIVO_VISITA_DIA]\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DIAS_VISITACAO]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VR_CLM]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[KEY_TERR_CICLO]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) as row",
 			"metadata": {
 				"language": "sql"
 			},
