@@ -5,7 +5,7 @@
 			"name": "KPI VISITACAO & EMAIL"
 		},
 		"content": {
-			"query": "-- ALTER VIEW kpiemail.dim_quadrante_medico_gp\n-- as\nSELECT\n[CRM_GP]\n,[MERCADO_GP]\n,[CATEGORIA_GP]\n,[JORNADA_GP]\n,[QUADRANTE_GP]\n,[ROW_ID_TERRITORIO_GP]\n,[ROW_ID_CONTATO_GP]\n,[CICLO]\n,[KEY_TERR_CONT_CICLO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_quadrante_medico_gp_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n        \n    ) AS ROW",
+			"query": "-- ALTER VIEW kpiemail.dim_quadrante_medico_gp\n-- as\nSELECT\n[CRM_GP]\n,[MERCADO_GP]\n,[CATEGORIA_GP]\n,[JORNADA_GP]\n,[QUADRANTE_GP]\n,[ROW_ID_TERRITORIO_GP]\n,[ROW_ID_CONTATO_GP]\n,[CICLO]\n,[KEY_TERR_CONT_CICLO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_quadrante_medico_gp_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n        [CRM_GP]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MERCADO_GP]\t\t\t\tVARCHAR(100) COLLATE Latin1_General_100_BIN2_UTF8\n,[CATEGORIA_GP]\t\t\t\tVARCHAR(4) COLLATE Latin1_General_100_BIN2_UTF8\n,[JORNADA_GP]\t\t\t\tVARCHAR(25) COLLATE Latin1_General_100_BIN2_UTF8\n,[QUADRANTE_GP]\t\t\t\tVARCHAR(4) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_TERRITORIO_GP]\t\tVARCHAR(20) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_CONTATO_GP]\t\tVARCHAR(25) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO]\t\t\t\t\tVARCHAR(10) COLLATE Latin1_General_100_BIN2_UTF8\n,[KEY_TERR_CONT_CICLO]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW",
 			"metadata": {
 				"language": "sql"
 			},
