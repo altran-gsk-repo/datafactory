@@ -5,7 +5,7 @@
 			"name": "KPI VISITACAO & EMAIL"
 		},
 		"content": {
-			"query": "-- CREATE VIEW kpiemail.dim_target_sro\n-- AS\nSELECT\n   *\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_target_sro.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
+			"query": "-- ALTER VIEW kpiemail.dim_target_sro\n-- AS\nSELECT\n[CICLO]\n,[DIVISAO]\n,[TARGET_SRO_CRM]\n,[TARGET_SRO_VISITA]\n,[TARGET_SRO_MEDIA_DIA]\n,[TARGET_SRO_COACHING]\n,[TARGET_SRO_COB]\n,[KEY_DIVISAO_CICLO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_target_sro.parquet',\n        FORMAT='PARQUET'\n    ) WITH(\n[CICLO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DIVISAO]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TARGET_SRO_CRM]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TARGET_SRO_VISITA]\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TARGET_SRO_MEDIA_DIA]\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TARGET_SRO_COACHING]\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TARGET_SRO_COB]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[KEY_DIVISAO_CICLO]\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
 			"metadata": {
 				"language": "sql"
 			},
