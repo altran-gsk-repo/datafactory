@@ -5,7 +5,7 @@
 			"name": "GSO"
 		},
 		"content": {
-			"query": "-- ALTER VIEW gso.dim_visits\n-- AS\n\nSELECT\n     [SURVEY_KEY]\n    ,CAST(left([VISIT_DATE],10) as date) as [VISIT_DATE]\n    ,[VISIT_PRODUCT]\n    ,CAST([TOTAL_VISITS] as int) as [TOTAL_VISITS]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/GSO/dimensao_visits.parquet',\n        FORMAT='PARQUET'\n    ) WITH( \n             [SURVEY_KEY]       VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8 \n            ,[VISIT_DATE]       VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[VISIT_PRODUCT]    VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[TOTAL_VISITS]     VARCHAR(250) COLLATE Latin1_General_100_BIN2_UTF8 ) as ROW\n",
+			"query": "-- ALTER VIEW gso.dim_visits\n-- AS\n\nSELECT\n     [SURVEY_KEY]\n    ,CAST(left([VISIT_DATE],10) as date) as [VISIT_DATE]\n    ,[VISIT_PRODUCT]\n    ,CAST([TOTAL_VISITS] as int) as [TOTAL_VISITS]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/GSO/dimensao_visits.parquet',\n        FORMAT='PARQUET'\n    ) WITH( \n             [SURVEY_KEY]       VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8 \n            ,[VISIT_DATE]       VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[VISIT_PRODUCT]    VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n            ,[TOTAL_VISITS]     VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8 ) as ROW\n",
 			"metadata": {
 				"language": "sql"
 			},
