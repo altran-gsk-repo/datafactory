@@ -5,7 +5,7 @@
 			"name": "KPI VISITACAO & EMAIL"
 		},
 		"content": {
-			"query": "-- CREATE VIEW kpiemail.dim_quadrante_medico_gp\n-- as\nSELECT\n     *\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_quadrante_medico_gp_*.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
+			"query": "-- ALTER VIEW kpiemail.dim_quadrante_medico_gp\n-- as\nSELECT\n[CRM_GP]\n,[MERCADO_GP]\n,[CATEGORIA_GP]\n,[JORNADA_GP]\n,[QUADRANTE_GP]\n,[ROW_ID_TERRITORIO_GP]\n,[ROW_ID_CONTATO_GP]\n,[CICLO]\n,[KEY_TERR_CONT_CICLO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_quadrante_medico_gp_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n        \n    ) AS ROW",
 			"metadata": {
 				"language": "sql"
 			},
