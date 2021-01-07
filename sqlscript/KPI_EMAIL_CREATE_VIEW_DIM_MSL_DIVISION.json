@@ -5,7 +5,7 @@
 			"name": "KPI VISITACAO & EMAIL"
 		},
 		"content": {
-			"query": "-- CREATE VIEW kpiemail.dim_msl_division\n-- AS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_msl_division.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
+			"query": "-- ALTER VIEW kpiemail.dim_msl_division\n-- AS\nSELECT\n[KEY_DIVISAO_CICLO]\n,[FUNC_TOTAL]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_msl_division.parquet',\n        FORMAT='PARQUET'\n    ) with (\n         [KEY_DIVISAO_CICLO] VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[FUNC_TOTAL] VARCHAR(10) COLLATE Latin1_General_100_BIN2_UTF8\n    ) as ROW\n",
 			"metadata": {
 				"language": "sql"
 			},
