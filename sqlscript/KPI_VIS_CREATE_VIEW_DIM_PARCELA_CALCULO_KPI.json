@@ -5,7 +5,7 @@
 			"name": "KPI VISITACAO"
 		},
 		"content": {
-			"query": "-- CREATE VIEW kpivis.dim_parcela_calculo_kpi\n-- AS\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_parcela_calculo_kpi.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n",
+			"query": "-- ALTER VIEW kpivis.dim_parcela_calculo_kpi\n-- AS\nSELECT\n[CICLO_TERRITORIO]\n,[VP]\n,[VR]\n,[VRE]\n,[TOTAL_TFT]\n,[DIAS_UTEIS]\n,[VISITAS_ABATER]\n,[OBJETIVO_VISITA_DIA]\n,[DIAS_VISITACAO]\n,[VR_CLM]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_parcela_calculo_kpi.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[CICLO_TERRITORIO]\t\tVARCHAR(20) COLLATE Latin1_General_100_BIN2_UTF8\n,[VP]\t\t\t\t\tVARCHAR(20) COLLATE Latin1_General_100_BIN2_UTF8\n,[VR]\t\t\t\t\tVARCHAR(20) COLLATE Latin1_General_100_BIN2_UTF8\n,[VRE]\t\t\t\t\tVARCHAR(20) COLLATE Latin1_General_100_BIN2_UTF8\n,[TOTAL_TFT]\t\t\tVARCHAR(20) COLLATE Latin1_General_100_BIN2_UTF8\n,[DIAS_UTEIS]\t\t\tVARCHAR(20) COLLATE Latin1_General_100_BIN2_UTF8\n,[VISITAS_ABATER]\t\tVARCHAR(20) COLLATE Latin1_General_100_BIN2_UTF8\n,[OBJETIVO_VISITA_DIA]\tVARCHAR(20) COLLATE Latin1_General_100_BIN2_UTF8\n,[DIAS_VISITACAO]\t\tVARCHAR(20) COLLATE Latin1_General_100_BIN2_UTF8\n,[VR_CLM]\t\t\t\tVARCHAR(20) COLLATE Latin1_General_100_BIN2_UTF8\n\n    ) as ROW \n",
 			"metadata": {
 				"language": "sql"
 			},
