@@ -1,0 +1,16 @@
+{
+	"name": "SQL script 2",
+	"properties": {
+		"content": {
+			"query": "SELECT \n[KEY_TERR_CICLO]\n FROM [kpiemail].[dim_forca_vendas]\n where [KEY_TERR_CICLO] is not null",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "GSK",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
