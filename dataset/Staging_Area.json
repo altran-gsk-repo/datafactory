@@ -1,0 +1,20 @@
+{
+	"name": "Staging_Area",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/staging_area",
+				"fileSystem": "gsksynapsestorage"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

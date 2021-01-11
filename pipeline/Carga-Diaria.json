@@ -1,0 +1,678 @@
+{
+	"name": "Carga-Diaria",
+	"properties": {
+		"activities": [
+			{
+				"name": "STG_Cad_Usuarios_Veeva",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "STG_Cad_Hierarquia_Veeva",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "TeradataSource",
+						"query": "SELECT DISTINCT \n\tTRIM(COALESCE(A.TERRITORY_ID,'')) AS \"TERRITORY_ID\"\n\t,TRIM(COALESCE(C.TERRITORY_NAME,'')) as \"TERRITORY_NAME\"\n\t,TRIM(COALESCE(B.NAME,'')) as \"USER_NAME\"\n\t,TRIM(COALESCE(B.EMAIL,'')) as \"EMAIL\"\n\t,TRIM(COALESCE(B.ALIAS_NAME,'')) as \"MUDID\"\n\t,TRIM(COALESCE(A.ACTIVE_IND,'')) as \"USR_TERR_ACTIVE_IND\"\n\t,TRIM(COALESCE(B.ACTIVE_IND,'')) as \"USR_ACTIVE_IND\"\n\t,TRIM(COALESCE(B.DELETED_IND,'')) AS \"USR_DELETED_ID\"\n\t,TRIM(COALESCE(A.USER_ID,'')) AS \"USER_ID\"\n\t,A.START_DATE as \"START_DATE\"\n\t,A.END_DATE (TITLE'') as \"END_DATE\"\n FROM \n\tLATAMCRMFBICNTRYBRVW.SCD_USER_TERRITORY A LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_USER B\n    \tON A.USER_ID = B.USER_ID\n    LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_TERRITORY C\n    ON\tA.TERRITORY_ID = C.TERRITORY_ID;",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "TERRITORY_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TERRITORY_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TERRITORY_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TERRITORY_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "USER_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "USER_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EMAIL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "EMAIL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MUDID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MUDID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "USR_TERR_ACTIVE_IND",
+									"type": "String"
+								},
+								"sink": {
+									"name": "USR_TERR_ACTIVE_IND",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "USR_ACTIVE_IND",
+									"type": "String"
+								},
+								"sink": {
+									"name": "USR_ACTIVE_IND",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "USR_DELETED_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "USR_DELETED_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "USER_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "USER_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "START_DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "START_DATE",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "END_DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "END_DATE",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TeradataTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Staging_Area_txt",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "STG_Cad_Usuarios_Veeva.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "STG_Cad_Hierarquia_Veeva",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "STG_Fato_Amostras_Entregues_Veeva",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "TeradataSource",
+						"query": "SELECT DISTINCT\n\tTRIM(COALESCE(TR.FIELD_FORCE_NAME,'')) as \"DIVISAO\"\n \t,TRIM(COALESCE(TE.TERRITORY_ID,'')) as \"TERRITORY_ID\"\n \t,TRIM(COALESCE(TR.TERRITORY_NAME,'')) as \"TERRITORIO\"\n \t,TRIM(COALESCE(TE.LEVEL_4_TERRITORY_NAME,'')) as \"TERRITORIO_GD\"\n \t,TRIM(COALESCE(TE.LEVEL_5_TERRITORY_NAME,'')) as \"TERRITORIO_GR\"\n \t,TRIM(COALESCE(TE.LEVEL_6_TERRITORY_NAME,'')) as \"BU\"\n \t,TRIM(COALESCE(CAST(TR.END_DATE AS VARCHAR(100)),''))\t(TITLE'') as \"DATA_FIM_TERRITORIO\"\n FROM   LATAMCRMFBICNTRYBRVW.SCD_HIERARCHY_TERRITORY TE LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_TERRITORY TR\n\t\tON TE.TERRITORY_ID = TR.TERRITORY_ID\n WHERE \n\tTE.DELETED_IND = 0 AND TE.CURRENT_IND = '1'\n\tAND EXISTS (SELECT A.* FROM LATAMCRMFBICNTRYBRVW.D_TERRITORY A WHERE TE.TERRITORY_ID = A.TERRITORY_ID AND A.ACTIVE_IND = '1');",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "DIVISAO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DIVISAO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TERRITORY_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TERRITORY_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TERRITORIO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TERRITORIO_GD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TERRITORIO_GD",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TERRITORIO_GR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TERRITORIO_GR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "BU",
+									"type": "String"
+								},
+								"sink": {
+									"name": "BU",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DATA_FIM_TERRITORIO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DATA_FIM_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TeradataTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Staging_Area_txt",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "STG_Cad_Hierarquia_Veeva.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "STG_Fato_Amostras_Entregues_Veeva",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "STG_Fato_Campos_Espec_Territorio_Veeva",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "TeradataSource",
+						"query": "SELECT DISTINCT\n     TRIM(SAMPLE_TRANSACTION_NAME)  as \"ROW_ID\"\n     ,''                   as \"EQUIPE\"\n     ,''                   as \"REGIONAL\"\n     , TRIM(A.TERRITORY_ID)      as \"SETOR\"\n     , TRIM(A.USER_ID)            as \"USER_ID\"\n     , ''                   as \"NUM_CRM\"\n     , TRIM(A.SIGNATURE_DATE_ID)       as \"ASSINATURA\"\n     , ''                   as \"NOME\"\n     , TRIM(A.CALL_NAME)          as \"ID_VISITA\"\n     , TRIM(A.TRANSACTION_DATE_ID)     as \"DATA_DA_VISITA\"\n     , TRIM(A.PRODUCT_CATALOG_ID)  as \"ID_MATERIAL_AMOSTRA\"\n     , TRIM(A.TRANSACTION_SAMPLE) as \"AMOSTRA_MATERIAL_ME_MERCHANDISING\"\n     , TRIM(A.SAMPLE_LOT_ID)      as \"LOTE\"\n     , TRIM(A.QUANTITY)     as \"QUANTIDADE\"\n     , TRIM(A.ACCOUNT_ID)       as \"PROF_ID\" \n     , ''                   (TITLE'')       as \"CATEGORIA\"     \n FROM \n     LATAMCRMFBICNTRYBRVW.F_SAMPLE_TRANSACTION A \n WHERE \n     A.TYPE_CD = 'Disbursement_vod' AND \n     A.DELETED_IND = '0'\n AND\n     \n     ((SUBSTR(CAST(A.SUBMITTED_DATE_ID as VARCHAR(8)),1,4) = EXTRACT (YEAR FROM CURRENT_DATE) AND \n      SUBSTR(CAST(A.SUBMITTED_DATE_ID as VARCHAR(8)),5,2) = EXTRACT (MONTH FROM CURRENT_DATE))\n     OR\n     (SUBSTR(CAST(A.SUBMITTED_DATE_ID as VARCHAR(8)),1,4) = EXTRACT ( YEAR FROM ADD_MONTHS (CURRENT_DATE , -1) ) AND \n      SUBSTR(CAST(A.SUBMITTED_DATE_ID as VARCHAR(8)),5,2) = EXTRACT ( MONTH FROM ADD_MONTHS (CURRENT_DATE , -1) ) ));",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ROW_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ROW_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EQUIPE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "EQUIPE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "REGIONAL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "REGIONAL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SETOR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SETOR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "USER_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "USER_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_CRM",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_CRM",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ASSINATURA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ASSINATURA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NOME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_VISITA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DATA_DA_VISITA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DATA_DA_VISITA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_MATERIAL_AMOSTRA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_MATERIAL_AMOSTRA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AMOSTRA_MATERIAL_ME_MERCHANDISING",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMOSTRA_MATERIAL_ME_MERCHANDISING",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LOTE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LOTE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "QUANTIDADE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "QUANTIDADE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PROF_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PROF_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CATEGORIA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CATEGORIA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TeradataTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Staging_Area_txt",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "STG_Fato_Amostras_Entregues_Veeva.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "STG_Fato_Campos_Espec_Territorio_Veeva",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "TeradataSource",
+						"query": "SELECT DISTINCT\n\tTRIM(TERRITORY_ID)\tas \"ROW_ID_TERRITORIO\" \n\t,TRIM(ACCOUNT_ID)\tas \"ROW_ID_CONTATO\"\n\t,TRIM(ADDRESS_ID) as \"ROW_ID_ENDERECO\"\t\n\t,TRIM(MY_TARGET_IND)\t(TITLE'') as \"TARGET_IND\"\n FROM \n\tLATAMCRMFBICNTRYBRVW.H_TERR_SPECIFIC_FIELDS\n WHERE\n     SOURCE_DELETED_IND = '0';",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_CONTATO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_CONTATO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_ENDERECO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_ENDERECO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TARGET_IND",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TARGET_IND",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TeradataTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Staging_Area_txt",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "STG_Fato_Campos_Espec_Territorio_Veeva.txt"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Extract - Teradata"
+		},
+		"annotations": []
+	}
+}
