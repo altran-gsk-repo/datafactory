@@ -1427,7 +1427,14 @@
 					{
 						"name": "dim_visits",
 						"type": "Copy",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "fato_gso_call_summary",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -2258,14 +2265,7 @@
 					{
 						"name": "fato_gso_call_summary",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "fato_gso_response",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -2277,7 +2277,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "TeradataSource",
-								"query": "SELECT \n\t\"CM\".CALL_SUMMARY_ID,\n\t \"CM\".PARENT_CALL_AID,\n\t \"CM\".LOCAL_CALL_DATE_ID,\n\t \"CM\".CALL_DATE_ID,\n\t \"CM\".TERRITORY_ID,\n\t LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6) \t\tAS \"CYCLE\",\n\t ((LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6)||'-')||\"CM\".TERRITORY_ID)\tAS \"SALES_FORCE_KEY\",\n\t LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6)\tAS \"DATE\",\n\t \"CM\".LOCAL_CALL_TIME_ID,\n\t \"CM\".ACCOUNT_ID,\n\t \"CM\".CALL_NAME,\n\t \"CM\".RX_CALL_TYPE,\n\t \"CM\".CALL_STATUS,\n\t \"CM\".ATTENDEE_TYPE,\n\t \"CM\".CLM_IND,\n\t \"CM\".SAMPLE_CALL_IND,\n\t \"CM\".CALL_TYPE,\n\t \"CM\".DETAILED_PRODUCTS,\n\t \"CM\".DURATION,\n\t \"CM\".CREATED_DATE_ID,\n\t \"CM\".CREATED_DATE_TIME_ID,\n\t \"CM\".LAST_MODIFIED_DATE_ID,\n\t \"CM\".LAST_MODIFIED_DATE_TIME_ID,\n\t \"CM\".PRE_CALL_NOTES,\n\t \"CM\".NEXT_CALL_NOTES,\n\t 'Completed_vod'\t\t\t\t\t\t\t\t\t\tAS \"REVIEW_STATUS\",\n\t \"AC\".ACCOUNT_NAME,\n\t \"AC\".RX_LEGAL_ID,\n\t \"KEY\".KEY_MESSAGE_NAME,\n\t \"KEY\".QUESTION_ID,\n\t COALESCE(\"KEY\".PRODUCT_NAME,'NOT INFORMED') AS \"PRODUCT\",\n\t \"KEY\".CALL_DATE,\n\t 'CALLS'\t\t\t\tAS \"ORIGEM\"\n\nFROM  \n\tLATAMCRMFBICNTRYBRVW.F_CALL_SUMMARY \"CM\"\n\nLEFT JOIN (\n\t\t\tSELECT \n\t\t\t\tACCOUNT_ID,\n\t \t\t\tNAME AS \"ACCOUNT_NAME\",\n     \t\t\tRX_LEGAL_ID\n\t\t\tFROM \n\t\t\t\tLATAMCRMFBICNTRYBRVW.D_ACCOUNT\n\t\t\tWHERE\n\t\t\t\tCOUNTRY_CODE = 'BR'\n  \t\t\t\tAND DELETED_IND = 0\n  \t\t\t) as \"AC\" ON \"CM\".ACCOUNT_ID = \"AC\".ACCOUNT_ID\n\nLEFT JOIN (\n\t\t\tSELECT\n\t\t\t\t\"CM\".CALL_SUMMARY_ID,\n\t\t\t\t\"KM\".KEY_MESSAGE_NAME,\n\t\t\t\tCASE\n\t\t\t\tWHEN \"KM\".KEY_MESSAGE_NAME = 'Tentativa de GSO - Expositiva' THEN '12209'\n\t\t\t    WHEN \"KM\".KEY_MESSAGE_NAME = 'Tentativa de GSO - Interativa' THEN '12213'\n\t\t\t    WHEN \"KM\".KEY_MESSAGE_NAME = 'Lembrança da marca' THEN '12210'\n\t\t\t    WHEN \"KM\".KEY_MESSAGE_NAME = 'Good Sell Outcome (GSO)' THEN '12212'\n\t\t\t    ELSE \"KM\".KEY_MESSAGE_NAME END AS \"QUESTION_ID\",\n\t\t\t    \"PC\".PRODUCT_NAME,\n\t\t\t    \"CM\".CALL_DATE_ID as \"CALL_DATE\",\n\t\t\t    \"CM\".TERRITORY_ID  \n\t\t\t\n\t\t\tFROM \n\t\t\t\tLATAMCRMFBICNTRYBRVW.F_CALL_MESSAGE as \"CM\"\n\n\t\t\tLEFT JOIN (\n\t\t\t\t\t\tSELECT DISTINCT\n\t\t\t\t\t\t    KEY_MESSAGE_ID \tas \"MESSAGE_ID\",\n\t\t\t\t\t\t    KEY_MESSAGE_ID,\n\t\t\t\t\t\t    KEY_MESSAGE_NAME\n\t\t\t\t\t\t\n\t\t\t\t\t\tFROM \n\t\t\t\t\t\t\tLATAMCRMFBICNTRYBRVW.D_KEY_MESSAGE\n\t\t\t\t\t\tWHERE \t\n\t\t\t\t\t\t\t(KEY_MESSAGE_NAME = 'Visita não promocional' OR\n\t\t\t\t\t\t\t KEY_MESSAGE_NAME = 'Lembrança da marca' OR\n\t\t\t\t\t\t     KEY_MESSAGE_NAME LIKE '*GSO*')\n\t\t\t\t\t \t) AS \"KM\" ON \"CM\".KEY_MESSAGE_ID = \"KM\".KEY_MESSAGE_ID\n        \n\t\t\tLEFT JOIN (\n\t\t\t\t\t\tSELECT \n\t\t\t\t\t\t\tPRODUCT_CATALOG_ID,\n\t\t\t\t \t\t\tPRODUCT_NAME\n\t\t\t\t\t\tFROM \n\t\t\t\t\t\tLATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG\n\t\t\t\t\t  ) AS \"PC\" ON \"CM\".PRODUCT_CATALOG_ID = \"PC\".PRODUCT_CATALOG_ID\n\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\tWHERE \n\t\t\t\t\t\t(EXISTS (\n\t\t\t\t\t\t\t\t\tSELECT DISTINCT\n\t\t\t\t\t\t\t\t\t    KEY_MESSAGE_ID \tas \"MESSAGE_ID\",\n\t\t\t\t\t\t\t\t\t    KEY_MESSAGE_ID,\n\t\t\t\t\t\t\t\t\t    KEY_MESSAGE_NAME\n\t\t\t\t\t\t\t\t\tFROM \n\t\t\t\t\t\t\t\t\t\tLATAMCRMFBICNTRYBRVW.D_KEY_MESSAGE\n\t\t\t\t\t\t\t\t\tWHERE \t\n\t\t\t\t\t\t\t\t\t\t(KEY_MESSAGE_NAME = 'Visita não promocional' OR\n\t\t\t\t\t\t\t\t\t\t KEY_MESSAGE_NAME = 'Lembrança da marca' OR\n\t\t\t\t\t\t\t\t\t     KEY_MESSAGE_NAME LIKE '*GSO*')\n\t\t\t\t\t\t\t\t\t     AND KEY_MESSAGE_ID = \"CM\".KEY_MESSAGE_ID)\n\t\t\t\t\t\t\t\t) \n\t\t\t\t\t\tAND\n\t\t\t\t\t\t(EXISTS (\n\t\t\t\t\t\t\t\t\tSELECT \n\t\t\t\t\t\t\t\t\t\tPRODUCT_CATALOG_ID,\n\t\t\t\t\t\t\t \t\t\tPRODUCT_NAME\n\t\t\t\t\t\t\t\t\tFROM \n\t\t\t\t\t\t\t\t\t\tLATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG\n\t\t\t\t\t\t      \t\tWHERE PRODUCT_CATALOG_ID =\t\"CM\".PRODUCT_CATALOG_ID)\n\t\t\t\t\t\t \t\t)\n\t\t\t\t\t\t AND\n\t\t\t\t\t\t LEFT(CAST(CALL_DATE_ID as CHAR(8)),6) > '201901'\n\t\t) AS \"KEY\" ON \"CM\".CALL_SUMMARY_ID = \"KEY\".CALL_SUMMARY_ID\n  \nWHERE \n\tLEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6)>= '201901' AND\n\t\"CM\".COUNTRY_CODE = 'BR' AND \n  \t\"CM\".CALL_STATUS = 'Submitted_vod' AND \n  \t\"CM\".DELETED_IND = 0;",
+								"query": " SELECT \n\t\"CM\".CALL_SUMMARY_ID,\n\t \"CM\".PARENT_CALL_AID,\n\t \"CM\".LOCAL_CALL_DATE_ID,\n\t \"CM\".CALL_DATE_ID,\n\t \"CM\".TERRITORY_ID,\n\t LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6) \t\tAS \"CYCLE\",\n\t ((LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6)||'-')||TRIM(\"CM\".TERRITORY_ID))\tAS \"SALES_FORCE_KEY\",\n\t LEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6)\tAS \"DATE\",\n\t \"CM\".LOCAL_CALL_TIME_ID,\n\t \"CM\".ACCOUNT_ID,\n\t \"CM\".CALL_NAME,\n\t \"CM\".RX_CALL_TYPE,\n\t \"CM\".CALL_STATUS,\n\t \"CM\".ATTENDEE_TYPE,\n\t \"CM\".CLM_IND,\n\t \"CM\".SAMPLE_CALL_IND,\n\t \"CM\".CALL_TYPE,\n\t \"CM\".DETAILED_PRODUCTS,\n\t \"CM\".DURATION,\n\t \"CM\".CREATED_DATE_ID,\n\t \"CM\".CREATED_DATE_TIME_ID,\n\t \"CM\".LAST_MODIFIED_DATE_ID,\n\t \"CM\".LAST_MODIFIED_DATE_TIME_ID,\n\t \"CM\".PRE_CALL_NOTES,\n\t \"CM\".NEXT_CALL_NOTES,\n\t 'Completed_vod'\t\t\t\t\t\t\t\t\t\tAS \"REVIEW_STATUS\",\n\t \"AC\".ACCOUNT_NAME,\n\t \"AC\".RX_LEGAL_ID,\n\t \"KEY\".KEY_MESSAGE_NAME,\n\t \"KEY\".QUESTION_ID,\n\t COALESCE(\"KEY\".PRODUCT_NAME,'NOT INFORMED') AS \"PRODUCT\",\n\t \"KEY\".CALL_DATE,\n\t 'CALLS'\t\t\t\tAS \"ORIGEM\"\n\nFROM  \n\tLATAMCRMFBICNTRYBRVW.F_CALL_SUMMARY \"CM\"\n\nLEFT JOIN (\n\t\t\tSELECT \n\t\t\t\tACCOUNT_ID,\n\t \t\t\tNAME AS \"ACCOUNT_NAME\",\n     \t\t\tRX_LEGAL_ID\n\t\t\tFROM \n\t\t\t\tLATAMCRMFBICNTRYBRVW.D_ACCOUNT\n\t\t\tWHERE\n\t\t\t\tCOUNTRY_CODE = 'BR'\n  \t\t\t\tAND DELETED_IND = 0\n  \t\t\t) as \"AC\" ON \"CM\".ACCOUNT_ID = \"AC\".ACCOUNT_ID\n\nLEFT JOIN (\n\t\t\tSELECT\n\t\t\t\t\"CM\".CALL_SUMMARY_ID,\n\t\t\t\t\"KM\".KEY_MESSAGE_NAME,\n\t\t\t\tCASE\n\t\t\t\tWHEN \"KM\".KEY_MESSAGE_NAME = 'Tentativa de GSO - Expositiva' THEN '12209'\n\t\t\t    WHEN \"KM\".KEY_MESSAGE_NAME = 'Tentativa de GSO - Interativa' THEN '12213'\n\t\t\t    WHEN \"KM\".KEY_MESSAGE_NAME = 'Lembrança da marca' THEN '12210'\n\t\t\t    WHEN \"KM\".KEY_MESSAGE_NAME = 'Good Sell Outcome (GSO)' THEN '12212'\n\t\t\t    ELSE \"KM\".KEY_MESSAGE_NAME END AS \"QUESTION_ID\",\n\t\t\t    \"PC\".PRODUCT_NAME,\n\t\t\t    \"CM\".CALL_DATE_ID as \"CALL_DATE\",\n\t\t\t    \"CM\".TERRITORY_ID  \n\t\t\t\n\t\t\tFROM \n\t\t\t\tLATAMCRMFBICNTRYBRVW.F_CALL_MESSAGE as \"CM\"\n\n\t\t\tLEFT JOIN (\n\t\t\t\t\t\tSELECT DISTINCT\n\t\t\t\t\t\t    KEY_MESSAGE_ID \tas \"MESSAGE_ID\",\n\t\t\t\t\t\t    KEY_MESSAGE_ID,\n\t\t\t\t\t\t    KEY_MESSAGE_NAME\n\t\t\t\t\t\t\n\t\t\t\t\t\tFROM \n\t\t\t\t\t\t\tLATAMCRMFBICNTRYBRVW.D_KEY_MESSAGE\n\t\t\t\t\t\tWHERE \t\n\t\t\t\t\t\t\t(KEY_MESSAGE_NAME = 'Visita não promocional' OR\n\t\t\t\t\t\t\t KEY_MESSAGE_NAME = 'Lembrança da marca' OR\n\t\t\t\t\t\t     KEY_MESSAGE_NAME LIKE '%GSO%')\n\t\t\t\t\t \t) AS \"KM\" ON \"CM\".KEY_MESSAGE_ID = \"KM\".KEY_MESSAGE_ID\n        \n\t\t\tLEFT JOIN (\n\t\t\t\t\t\tSELECT \n\t\t\t\t\t\t\tPRODUCT_CATALOG_ID,\n\t\t\t\t \t\t\tPRODUCT_NAME\n\t\t\t\t\t\tFROM \n\t\t\t\t\t\tLATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG\n\t\t\t\t\t  ) AS \"PC\" ON \"CM\".PRODUCT_CATALOG_ID = \"PC\".PRODUCT_CATALOG_ID\n\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\tWHERE \n\t\t\t\t\t\t(EXISTS (\n\t\t\t\t\t\t\t\t\tSELECT DISTINCT\n\t\t\t\t\t\t\t\t\t    KEY_MESSAGE_ID \tas \"MESSAGE_ID\",\n\t\t\t\t\t\t\t\t\t    KEY_MESSAGE_ID,\n\t\t\t\t\t\t\t\t\t    KEY_MESSAGE_NAME\n\t\t\t\t\t\t\t\t\tFROM \n\t\t\t\t\t\t\t\t\t\tLATAMCRMFBICNTRYBRVW.D_KEY_MESSAGE\n\t\t\t\t\t\t\t\t\tWHERE \t\n\t\t\t\t\t\t\t\t\t\t(KEY_MESSAGE_NAME = 'Visita não promocional' OR\n\t\t\t\t\t\t\t\t\t\t KEY_MESSAGE_NAME = 'Lembrança da marca' OR\n\t\t\t\t\t\t\t\t\t     KEY_MESSAGE_NAME LIKE '%GSO%')\n\t\t\t\t\t\t\t\t\t     AND KEY_MESSAGE_ID = \"CM\".KEY_MESSAGE_ID)\n\t\t\t\t\t\t\t\t) \n\t\t\t\t\t\tAND\n\t\t\t\t\t\t(EXISTS (\n\t\t\t\t\t\t\t\t\tSELECT \n\t\t\t\t\t\t\t\t\t\tPRODUCT_CATALOG_ID,\n\t\t\t\t\t\t\t \t\t\tPRODUCT_NAME\n\t\t\t\t\t\t\t\t\tFROM \n\t\t\t\t\t\t\t\t\t\tLATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG\n\t\t\t\t\t\t      \t\tWHERE PRODUCT_CATALOG_ID =\t\"CM\".PRODUCT_CATALOG_ID)\n\t\t\t\t\t\t \t\t)\n\t\t\t\t\t\t AND\n\t\t\t\t\t\t LEFT(CAST(CALL_DATE_ID as CHAR(8)),6) > '201901'\n\t\t) AS \"KEY\" ON \"CM\".CALL_SUMMARY_ID = \"KEY\".CALL_SUMMARY_ID\n  \nWHERE \n\tLEFT(CAST(\"CM\".CALL_DATE_ID as CHAR(8)),6)>= '201901' AND\n\t\"CM\".COUNTRY_CODE = 'BR' AND \n  \t\"CM\".CALL_STATUS = 'Submitted_vod' AND \n  \t\"CM\".DELETED_IND = 0\n ORDER BY \"SALES_FORCE_KEY\";",
 								"partitionOption": "None"
 							},
 							"sink": {
@@ -3398,6 +3398,3040 @@
 				"[concat(variables('workspaceId'), '/datasets/Fact_GSO_Aux_Regiao')]",
 				"[concat(variables('workspaceId'), '/datasets/Arquivo_Em_TxT_3')]",
 				"[concat(variables('workspaceId'), '/datasets/Arquivos_Em_Parquet_3')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Carga-Diaria')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "STG_Cad_Usuarios_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Cad_Hierarquia_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT \n\tTRIM(COALESCE(A.TERRITORY_ID,'')) AS \"TERRITORY_ID\"\n\t,TRIM(COALESCE(C.TERRITORY_NAME,'')) as \"TERRITORY_NAME\"\n\t,TRIM(COALESCE(B.NAME,'')) as \"USER_NAME\"\n\t,TRIM(COALESCE(B.EMAIL,'')) as \"EMAIL\"\n\t,TRIM(COALESCE(B.ALIAS_NAME,'')) as \"MUDID\"\n\t,TRIM(COALESCE(A.ACTIVE_IND,'')) as \"USR_TERR_ACTIVE_IND\"\n\t,TRIM(COALESCE(B.ACTIVE_IND,'')) as \"USR_ACTIVE_IND\"\n\t,TRIM(COALESCE(B.DELETED_IND,'')) AS \"USR_DELETED_ID\"\n\t,TRIM(COALESCE(A.USER_ID,'')) AS \"USER_ID\"\n\t,A.START_DATE as \"START_DATE\"\n\t,A.END_DATE (TITLE'') as \"END_DATE\"\n FROM \n\tLATAMCRMFBICNTRYBRVW.SCD_USER_TERRITORY A LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_USER B\n    \tON A.USER_ID = B.USER_ID\n    LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_TERRITORY C\n    ON\tA.TERRITORY_ID = C.TERRITORY_ID;",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "TERRITORY_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TERRITORY_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORY_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TERRITORY_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "USER_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "USER_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EMAIL",
+											"type": "String"
+										},
+										"sink": {
+											"name": "EMAIL",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MUDID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MUDID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "USR_TERR_ACTIVE_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "USR_TERR_ACTIVE_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "USR_ACTIVE_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "USR_ACTIVE_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "USR_DELETED_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "USR_DELETED_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "USER_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "USER_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "START_DATE",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "START_DATE",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "END_DATE",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "END_DATE",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Cad_Usuarios_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Cad_Hierarquia_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Fato_Amostras_Entregues_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT\n\tTRIM(COALESCE(TR.FIELD_FORCE_NAME,'')) as \"DIVISAO\"\n \t,TRIM(COALESCE(TE.TERRITORY_ID,'')) as \"TERRITORY_ID\"\n \t,TRIM(COALESCE(TR.TERRITORY_NAME,'')) as \"TERRITORIO\"\n \t,TRIM(COALESCE(TE.LEVEL_4_TERRITORY_NAME,'')) as \"TERRITORIO_GD\"\n \t,TRIM(COALESCE(TE.LEVEL_5_TERRITORY_NAME,'')) as \"TERRITORIO_GR\"\n \t,TRIM(COALESCE(TE.LEVEL_6_TERRITORY_NAME,'')) as \"BU\"\n \t,TRIM(COALESCE(CAST(TR.END_DATE AS VARCHAR(100)),''))\t(TITLE'') as \"DATA_FIM_TERRITORIO\"\n FROM   LATAMCRMFBICNTRYBRVW.SCD_HIERARCHY_TERRITORY TE LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_TERRITORY TR\n\t\tON TE.TERRITORY_ID = TR.TERRITORY_ID\n WHERE \n\tTE.DELETED_IND = 0 AND TE.CURRENT_IND = '1'\n\tAND EXISTS (SELECT A.* FROM LATAMCRMFBICNTRYBRVW.D_TERRITORY A WHERE TE.TERRITORY_ID = A.TERRITORY_ID AND A.ACTIVE_IND = '1');",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "DIVISAO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DIVISAO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORY_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TERRITORY_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TERRITORIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORIO_GD",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TERRITORIO_GD",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORIO_GR",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TERRITORIO_GR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BU",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BU",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DATA_FIM_TERRITORIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DATA_FIM_TERRITORIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Cad_Hierarquia_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Fato_Amostras_Entregues_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Fato_Campos_Espec_Territorio_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT\n     TRIM(SAMPLE_TRANSACTION_NAME)  as \"ROW_ID\"\n     ,''                   as \"EQUIPE\"\n     ,''                   as \"REGIONAL\"\n     , TRIM(A.TERRITORY_ID)      as \"SETOR\"\n     , TRIM(A.USER_ID)            as \"USER_ID\"\n     , ''                   as \"NUM_CRM\"\n     , TRIM(A.SIGNATURE_DATE_ID)       as \"ASSINATURA\"\n     , ''                   as \"NOME\"\n     , TRIM(A.CALL_NAME)          as \"ID_VISITA\"\n     , TRIM(A.TRANSACTION_DATE_ID)     as \"DATA_DA_VISITA\"\n     , TRIM(A.PRODUCT_CATALOG_ID)  as \"ID_MATERIAL_AMOSTRA\"\n     , TRIM(A.TRANSACTION_SAMPLE) as \"AMOSTRA_MATERIAL_ME_MERCHANDISING\"\n     , TRIM(A.SAMPLE_LOT_ID)      as \"LOTE\"\n     , TRIM(A.QUANTITY)     as \"QUANTIDADE\"\n     , TRIM(A.ACCOUNT_ID)       as \"PROF_ID\" \n     , ''                   (TITLE'')       as \"CATEGORIA\"     \n FROM \n     LATAMCRMFBICNTRYBRVW.F_SAMPLE_TRANSACTION A \n WHERE \n     A.TYPE_CD = 'Disbursement_vod' AND \n     A.DELETED_IND = '0'\n AND\n     \n     ((SUBSTR(CAST(A.SUBMITTED_DATE_ID as VARCHAR(8)),1,4) = EXTRACT (YEAR FROM CURRENT_DATE) AND \n      SUBSTR(CAST(A.SUBMITTED_DATE_ID as VARCHAR(8)),5,2) = EXTRACT (MONTH FROM CURRENT_DATE))\n     OR\n     (SUBSTR(CAST(A.SUBMITTED_DATE_ID as VARCHAR(8)),1,4) = EXTRACT ( YEAR FROM ADD_MONTHS (CURRENT_DATE , -1) ) AND \n      SUBSTR(CAST(A.SUBMITTED_DATE_ID as VARCHAR(8)),5,2) = EXTRACT ( MONTH FROM ADD_MONTHS (CURRENT_DATE , -1) ) ));",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ROW_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EQUIPE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "EQUIPE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "REGIONAL",
+											"type": "String"
+										},
+										"sink": {
+											"name": "REGIONAL",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SETOR",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SETOR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "USER_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "USER_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NUM_CRM",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NUM_CRM",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ASSINATURA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ASSINATURA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NOME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NOME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_VISITA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ID_VISITA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DATA_DA_VISITA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DATA_DA_VISITA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_MATERIAL_AMOSTRA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ID_MATERIAL_AMOSTRA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AMOSTRA_MATERIAL_ME_MERCHANDISING",
+											"type": "String"
+										},
+										"sink": {
+											"name": "AMOSTRA_MATERIAL_ME_MERCHANDISING",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LOTE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LOTE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "QUANTIDADE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "QUANTIDADE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PROF_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PROF_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CATEGORIA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CATEGORIA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Fato_Amostras_Entregues_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Fato_Campos_Espec_Territorio_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Fato_Eventos_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT\n\tTRIM(TERRITORY_ID)\tas \"ROW_ID_TERRITORIO\" \n\t,TRIM(ACCOUNT_ID)\tas \"ROW_ID_CONTATO\"\n\t,TRIM(ADDRESS_ID) as \"ROW_ID_ENDERECO\"\t\n\t,TRIM(MY_TARGET_IND)\t(TITLE'') as \"TARGET_IND\"\n FROM \n\tLATAMCRMFBICNTRYBRVW.H_TERR_SPECIFIC_FIELDS\n WHERE\n     SOURCE_DELETED_IND = '0';",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ROW_ID_TERRITORIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_TERRITORIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_CONTATO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_CONTATO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_ENDERECO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_ENDERECO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TARGET_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TARGET_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Fato_Campos_Espec_Territorio_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Fato_Eventos_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Fato_MC_Activity_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT\n     TRIM(COALESCE(A.MEDICAL_EVENT_ID,'')) as \"ID_EVENTO\"\n     , TRIM(COALESCE(A.LOCATION,'')) as \"LOCALIZACAO\"\n     , TRIM(COALESCE(A.EVENT_TYPE,''))  as \"TIPO_EVENTO\"\n     , TRIM(COALESCE(OREPLACE(A.EVENT_NAME,'~','-'),'')) as \"NOME_EVENTO\" \n     , TRIM(COALESCE(CAST(A.START_DATE AS VARCHAR(100)),'')) as \"DATA_INICIO\"\n     , TRIM(COALESCE(CAST(A.END_DATE AS VARCHAR(100)),'')) as \"DATA_FIM\"\n     , TRIM(COALESCE(C.PRODUCT_NAME,'')) as \"PRODUTO_PRIMARIO\"\n     , TRIM(COALESCE(D.PRODUCT_NAME,'')) as \"PRODUTO_SECUNDARIO\"\n     , TRIM(COALESCE(B.TERRITORY_ID,'')) as \"ROW_ID_TERRITORIO\"\n     , TRIM(COALESCE(B.ATTENDEE_ID,'')) as \"ROW_ID_CONTATO\" \n     , TRIM(COALESCE(E.RX_LEGAL_ID,'')) as \"DOCUMENTO\"\n     , TRIM(COALESCE(B.ATTENDEE_TYPE,'')) as \"TIPO_CONTA\"\n     , TRIM(COALESCE(B.RX_ROLE,'')) as \"TIPO_PARTICIPACAO\"\n     , TRIM(COALESCE(B.ATTENDEE_STATUS,'')) \"STATUS_CONVIDADO\"\n     , TRIM(COALESCE(U.NAME,'')) as \"CRIADO_POR\"\n     , TRIM(COALESCE(U.ALIAS_NAME,'')) as \"CRIADO_POR_MUDID\"\n     , TRIM(COALESCE(B.ATTENDEE,'')) (TITLE'') as \"PARTICIPANTE\"\n          \n FROM \n     LATAMCRMFBICNTRYBRVW.D_MEDICAL_EVENT A LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.F_MEDICAL_EVENT_ATTENDEE B\n     ON A.MEDICAL_EVENT_ID = B.MEDICAL_EVENT_ID\n     \n     LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG C\n     ON A.RX_PRIMARY_PRODUCT = C.SOURCE_PRODUCT_CATALOG_AID\n     \n     LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG D\n     ON A.RX_SECONDARY_PRODUCT = D.SOURCE_PRODUCT_CATALOG_AID\n     \n     LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_ACCOUNT E\n     ON B.ATTENDEE_ID = E.ACCOUNT_ID\n     \n     LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_USER U\n     ON A.OWNER_AID = U.SOURCE_USER_AID\n     \n WHERE\n     A.DELETED_IND = 0 AND B.DELETED_IND = 0\n     AND\n     ((EXTRACT(YEAR FROM END_DATE) = EXTRACT (YEAR FROM CURRENT_DATE) AND \n      EXTRACT(MONTH FROM END_DATE) = EXTRACT (MONTH FROM CURRENT_DATE))\n     OR\n     (EXTRACT(YEAR FROM END_DATE) = EXTRACT ( YEAR FROM ADD_MONTHS (CURRENT_DATE , -1) ) AND \n      EXTRACT(MONTH FROM END_DATE) = EXTRACT ( MONTH FROM ADD_MONTHS (CURRENT_DATE , -1) )));",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ID_EVENTO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ID_EVENTO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LOCALIZACAO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LOCALIZACAO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TIPO_EVENTO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TIPO_EVENTO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NOME_EVENTO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NOME_EVENTO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DATA_INICIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DATA_INICIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DATA_FIM",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DATA_FIM",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRODUTO_PRIMARIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRODUTO_PRIMARIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRODUTO_SECUNDARIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRODUTO_SECUNDARIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_TERRITORIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_TERRITORIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_CONTATO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_CONTATO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DOCUMENTO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DOCUMENTO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TIPO_CONTA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TIPO_CONTA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TIPO_PARTICIPACAO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TIPO_PARTICIPACAO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "STATUS_CONVIDADO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "STATUS_CONVIDADO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CRIADO_POR",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CRIADO_POR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CRIADO_POR_MUDID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CRIADO_POR_MUDID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PARTICIPANTE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PARTICIPANTE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Fato_Eventos_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Fato_MC_Activity_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Fato_Painel_Medico_Associado_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT \n\tTRIM(COALESCE(A.ACCOUNT_ID,'')) as \"ROW_ID_CONTATO\"\t\n\t, TRIM(COALESCE(CAST(A.START_DATE_ID AS VARCHAR(100)),'')) as \"START_DATE\"\n\t, TRIM(COALESCE(A.PRODUCT_CATALOG_ID,'')) as \"ROW_ID_PRODUTO\"\t\n\t, TRIM(COALESCE(B.PRODUCT_NAME,''))\tas \"PRODUCT_NAME\"\n\t, TRIM(COALESCE(CAST(A.RX_ACTIVITY_END_TIME AS VARCHAR(100)),'')) as \"END_DATE_TIME\" \t\n\t, TRIM(COALESCE(A.RX_ACTIVITY_TYPE,'')) as \"ACTIVITY_TYPE\"\n\t, TRIM(COALESCE(A.RX_ACTIVITY_OWNER,'')) \tas \"ACTIVITY_OWNER\"\n\t, TRIM(COALESCE(A.RX_TRIGGER_SOURCE_TYPE,''))  as \"TRIGGER_SOURCE_TYPE\"\t\n\t, TRIM(COALESCE(A.RX_DATASOURCE_CODE,'')) as \"DATASOURCE_CODE\"\t\n\t, TRIM(COALESCE(A.MC_ACTIVITY_NAME,''))\t\tas \"ACTIVITY_ID\"\n\t, TRIM(COALESCE(A.URL,''))\t(TITLE'') as \"URL\"\n FROM \n\tLATAMCRMFBICNTRYBRVW.F_MC_ACTIVITY A LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG B\n\tON\tA.PRODUCT_CATALOG_ID = B.PRODUCT_CATALOG_ID\n WHERE\n\tA.DELETED_IND = '0';",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ROW_ID_CONTATO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_CONTATO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "START_DATE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "START_DATE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_PRODUTO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_PRODUTO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRODUCT_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRODUCT_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "END_DATE_TIME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "END_DATE_TIME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ACTIVITY_TYPE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ACTIVITY_TYPE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ACTIVITY_OWNER",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ACTIVITY_OWNER",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TRIGGER_SOURCE_TYPE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TRIGGER_SOURCE_TYPE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DATASOURCE_CODE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DATASOURCE_CODE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ACTIVITY_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ACTIVITY_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "URL",
+											"type": "String"
+										},
+										"sink": {
+											"name": "URL",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Fato_MC_Activity_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Fato_Painel_Medico_Associado_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Cad_Promo_Items_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": " SELECT DISTINCT \n\tTRIM(COALESCE(TERRITORY_ID,'')) as \"ROW_ID_TERRITORIO\"\t\n\t, TRIM(COALESCE(ACCOUNT_ID,'')) \tas \"ROW_ID_CONTATO\"\n\t, TRIM(COALESCE(ACCOUNT_ACCESS,''))  as \"TIPO_ACESSO\"\t\n\t, TRIM(COALESCE(ROW_CAUSE,''))\tas \"ROW_CAUSE\"\n\t, TRIM(COALESCE(SOURCE_DELETED_IND,''))\t(TITLE'') as \"DELETED_IND\"\n FROM \n\tLATAMCRMFBICNTRYBRVW.V_ACCOUNT_TERRITORY\n WHERE\n\tSOURCE_DELETED_IND = '0'\n\tAND TERRITORY_ID <> '-1';",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ROW_ID_TERRITORIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_TERRITORIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_CONTATO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_CONTATO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TIPO_ACESSO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TIPO_ACESSO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_CAUSE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_CAUSE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DELETED_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DELETED_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Fato_Painel_Medico_Associado_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Cad_Promo_Items_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Fato_Survey_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT  \n\tTRIM(COALESCE(PRICING_BOUND_IND,''))  as \"PRICING_BOUND_IND\"\n\t,TRIM(COALESCE(DELETED_IND,''))  as \"DELETED_IND\"\n\t,TRIM(COALESCE(PRODUCT_NAME,''))  as \"PRODUCT_NAME\"\n\t,TRIM(COALESCE(PARENT_PRODUCT_AID,''))  as \"PARENT_PRODUCT_AID\"\n\t,TRIM(COALESCE(INVENTORY_QUANTITY_PER_CASE,''))  as \"INVENTORY_QUANTITY_PER_CASE\"\n\t,TRIM(COALESCE(EXTERNAL_AID,''))  as \"EXTERNAL_AID\"\n\t,TRIM(COALESCE(PRODUCT_TYPE,''))  as \"PRODUCT_TYPE\"\n\t,TRIM(COALESCE(COMPANY_PRODUCT_IND,''))  as \"COMPANY_PRODUCT_IND\"\n\t,TRIM(COALESCE(CONSUMER_SITE,''))  as \"CONSUMER_SITE\"\n\t,TRIM(COALESCE(QUANTITY_PER_CASE,''))  as \"QUANTITY_PER_CASE\"\n\t,TRIM(COALESCE(CURRENCY_CODE,''))  as \"CURRENCY_CODE\"\n\t,TRIM(COALESCE(CAST(LAST_MODIFIED_DATE_TS AS VARCHAR(100)),'')) as \"LAST_MODIFIED_DATE_TS\"   \n\t,TRIM(COALESCE(COST,''))  as \"COST\"\n\t,TRIM(COALESCE(NO_METRICS_IND,'')) as \"NO_METRIC_IND\" \n\t,TRIM(COALESCE(REQUIRE_KEY_MSG_ON_DTL_IND,''))  as \"REQUIRE_KEY_MSG_ON_DTL_IND\"\n\t,TRIM(COALESCE(SAMPLE_QUANTITY_BOUND_IND,''))  as \"SAMPLE_QUANTITY_BOUND_IND\"\n\t,TRIM(COALESCE(INSTANCE_ID,''))  as \"INSTANCE_ID\"\n\t,TRIM(COALESCE(SCHEDULE,''))  as \"SCHEDULE\"\n\t,TRIM(COALESCE(SAMPLE_UOM,''))  as \"SAMPLE_UOM\"\n\t,TRIM(COALESCE(DISPLAY_ORDER,''))  as \"DISPLAY_ORDER\"\n\t,TRIM(COALESCE(PRODUCT_DESCRIPTION,''))  as \"PRODUCT_DESCRIPTION\"\n\t,TRIM(COALESCE(SOURCE_PRODUCT_CATALOG_AID,''))  as \"SOURCE_PRODUCT_CATALOG_AID\"\n\t,TRIM(COALESCE(COUNTRY_CODE,''))  as \"COUNTRY_CODE\"\n\t,TRIM(COALESCE(RESTRICTED_IND,''))  as \"RESTRICTED_IND\"\n\t,TRIM(COALESCE(NO_CYCLE_PLANS_IND,''))  as \"NO_CYCLE_PLANS_IND\"\n\t,TRIM(COALESCE(VEEVA_EXTERNAL_AID,''))  as \"VEEVA_EXTERNAL_AID\"\n\t,TRIM(COALESCE(SORT_CODE,''))  as \"SORT_CODE\"\n\t,TRIM(COALESCE(THERAPEUTIC_AREA,''))  as \"THERAPEUTIC_AREA\"\n\t,TRIM(COALESCE(USER_ALIGNED_IND,''))  as \"USER_ALIGNED_IND\"\n\t,TRIM(COALESCE(PRODUCT_INFO,''))  as \"PRODUCT_INFO\"\n\t,TRIM(COALESCE(LAST_MODIFIED_BY_AID,''))  as \"LAST_MODIFIED_BY_AID\"\n\t,TRIM(COALESCE(THERAPEUTIC_CLASS,''))  as \"THERAPEUTIC_CLASS\"\n\t,TRIM(COALESCE(MANUFACTURER,''))  as \"MANUFACTURER\"\n\t,TRIM(COALESCE(LOCKED_IND,''))  as \"LOCKED_IND\"\n\t,TRIM(COALESCE(CONTROLLED_SUBSTANCE_IND,''))   as \"CONTROLLED_SUBSTANCE_IND\"\n\t,TRIM(COALESCE(PRODUCT_CATALOG_ID,''))  as \"PRODUCT_CATALOG_ID\"\n\t,TRIM(COALESCE(RESTRICTED_STATES,'')) as \"RESTRICTED_STATES\"\n\t,TRIM(COALESCE(DISTRIBUTOR,''))  as \"DISTRIBUTOR\"\n\t,TRIM(COALESCE(PRICING_RULE_QTY_BOUND_IND,''))  as \"PRICING_RULE_QTY_BOUND_IND\"\n\t,TRIM(COALESCE(BATCH_ID,''))  as \"BATCH_ID\"\n\t,TRIM(COALESCE(OWNER_AID,'')) as \"OWNER_AID\"\n\t,TRIM(COALESCE(RX_EXTERNAL_ID,''))  as \"RX_EXTERNAL_ID\"\n\t,TRIM(COALESCE(NO_DETAILS_IND,''))  as \"NO_DETAILS_IND\"\n\t,TRIM(COALESCE(INVENTORY_ORDER_UOM,''))  as \"INVENTORY_ORDER_UOM\"\n\t,TRIM(COALESCE(GSK_INACTIVE_IND,''))  (TITLE'')  as \"GSK_INACTIVE_IND\"\n FROM \n\tLATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG;",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "PRICING_BOUND_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRICING_BOUND_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DELETED_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DELETED_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRODUCT_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRODUCT_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PARENT_PRODUCT_AID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PARENT_PRODUCT_AID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "INVENTORY_QUANTITY_PER_CASE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "INVENTORY_QUANTITY_PER_CASE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EXTERNAL_AID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "EXTERNAL_AID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRODUCT_TYPE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRODUCT_TYPE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "COMPANY_PRODUCT_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "COMPANY_PRODUCT_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CONSUMER_SITE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CONSUMER_SITE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "QUANTITY_PER_CASE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "QUANTITY_PER_CASE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CURRENCY_CODE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CURRENCY_CODE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LAST_MODIFIED_DATE_TS",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LAST_MODIFIED_DATE_TS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "COST",
+											"type": "String"
+										},
+										"sink": {
+											"name": "COST",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NO_METRIC_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NO_METRIC_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "REQUIRE_KEY_MSG_ON_DTL_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "REQUIRE_KEY_MSG_ON_DTL_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SAMPLE_QUANTITY_BOUND_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SAMPLE_QUANTITY_BOUND_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "INSTANCE_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "INSTANCE_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SCHEDULE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SCHEDULE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SAMPLE_UOM",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SAMPLE_UOM",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DISPLAY_ORDER",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DISPLAY_ORDER",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRODUCT_DESCRIPTION",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRODUCT_DESCRIPTION",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SOURCE_PRODUCT_CATALOG_AID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SOURCE_PRODUCT_CATALOG_AID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "COUNTRY_CODE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "COUNTRY_CODE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RESTRICTED_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RESTRICTED_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NO_CYCLE_PLANS_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NO_CYCLE_PLANS_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "VEEVA_EXTERNAL_AID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "VEEVA_EXTERNAL_AID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SORT_CODE",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SORT_CODE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "THERAPEUTIC_AREA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "THERAPEUTIC_AREA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "USER_ALIGNED_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "USER_ALIGNED_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRODUCT_INFO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRODUCT_INFO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LAST_MODIFIED_BY_AID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LAST_MODIFIED_BY_AID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "THERAPEUTIC_CLASS",
+											"type": "String"
+										},
+										"sink": {
+											"name": "THERAPEUTIC_CLASS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MANUFACTURER",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MANUFACTURER",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LOCKED_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LOCKED_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CONTROLLED_SUBSTANCE_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CONTROLLED_SUBSTANCE_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRODUCT_CATALOG_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRODUCT_CATALOG_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RESTRICTED_STATES",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RESTRICTED_STATES",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DISTRIBUTOR",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DISTRIBUTOR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRICING_RULE_QTY_BOUND_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRICING_RULE_QTY_BOUND_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BATCH_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BATCH_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OWNER_AID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "OWNER_AID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RX_EXTERNAL_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RX_EXTERNAL_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NO_DETAILS_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NO_DETAILS_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "INVENTORY_ORDER_UOM",
+											"type": "String"
+										},
+										"sink": {
+											"name": "INVENTORY_ORDER_UOM",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "GSK_INACTIVE_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "GSK_INACTIVE_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Cad_Promo_Items_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Fato_Survey_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Fato_Atividades_TFT_Territorio_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT \n     TRIM(COALESCE(B.SURVEY_TARGET_NAME,''))   as \"NOME_SURVEY\"\n     , TRIM(COALESCE(CAST(A.SOURCE_CREATED_TS AS VARCHAR(100)),'')) as \"DATA_CRIACAO\"   \n     , TRIM(COALESCE(CAST(A.SOURCE_LAST_MODIFIED_TS AS VARCHAR(100)),''))  as \"DATA_MODIFICACAO\" \n     , TRIM(COALESCE(B.ACCOUNT_ID,''))   as \"ROW_ID_CONTATO\"\n     , TRIM(COALESCE(D.ALIAS_NAME,''))   as \"ROW_ID_TERRITORIO\"\n     , TRIM(COALESCE(A.QUESTION_ID,''))  as \"ROW_ID_PERGUNTA\" \n     , TRIM(COALESCE(A.RESPONSE_NAME,''))   as \"ROW_ID_RESPOSTA\"\n     , TRIM(COALESCE(E.QUESTION_TEXT,''))   as \"PERGUNTA\"\n     , ''   as \"PESO\"\n     , TRIM(COALESCE(A.RESPONSE_NUMBER,'')) as \"RESPOSTA_NUMERICA\"   \n     , TRIM(COALESCE(A.RESPONSE,''))   as \"RESPOSTA\"\n     , TRIM(COALESCE(A.RESPONSE_TEXT,''))   as \"RESPOSTA_TEXTO\"\n     , TRIM(COALESCE(A.RESPONSE_DECIMAL_VALUE,''))   as \"RESPOSTA_DECIMAL\"\n     , TRIM(COALESCE(B.STATUS,''))  as \"STATUS\"\n     , ''  as \"RESPOSTA_FINAL\"\n     , TRIM(COALESCE(A.SURVEY_TARGET_ID,''))  (TITLE'') as \"SURVEY_ID\"\n FROM\n     LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES A LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.F_SURVEY_TARGETS B\n     ON   A.SURVEY_TARGET_ID = B.SURVEY_TARGET_ID\n     \n     LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_SURVEY_QUESTION E\n     ON   A.QUESTION_ID = E.QUESTION_ID\n     \n     LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_USER D\n     ON   A.SOURCE_CREATED_BY_AID = D.SOURCE_USER_AID\n WHERE\n       \n      ((EXTRACT(YEAR FROM A.SOURCE_CREATED_TS) = EXTRACT (YEAR FROM CURRENT_DATE) AND \n      EXTRACT(MONTH FROM A.SOURCE_CREATED_TS) = EXTRACT (MONTH FROM CURRENT_DATE))\n     OR\n     (EXTRACT(YEAR FROM A.SOURCE_CREATED_TS) = EXTRACT ( YEAR FROM ADD_MONTHS (CURRENT_DATE , -1) ) AND \n      EXTRACT(MONTH FROM A.SOURCE_CREATED_TS) = EXTRACT ( MONTH FROM ADD_MONTHS (CURRENT_DATE , -1) ))\n     OR\n     (EXTRACT(YEAR FROM A.SOURCE_CREATED_TS) = EXTRACT ( YEAR FROM ADD_MONTHS (CURRENT_DATE , -1) ) AND \n      EXTRACT(MONTH FROM A.SOURCE_CREATED_TS) = EXTRACT ( MONTH FROM ADD_MONTHS (CURRENT_DATE , -2) )));",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "NOME_SURVEY",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NOME_SURVEY",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DATA_CRIACAO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DATA_CRIACAO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DATA_MODIFICACAO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DATA_MODIFICACAO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_CONTATO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_CONTATO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_TERRITORIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_TERRITORIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_PERGUNTA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_PERGUNTA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_RESPOSTA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_RESPOSTA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PERGUNTA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PERGUNTA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PESO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PESO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RESPOSTA_NUMERICA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RESPOSTA_NUMERICA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RESPOSTA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RESPOSTA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RESPOSTA_TEXTO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RESPOSTA_TEXTO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RESPOSTA_DECIMAL",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RESPOSTA_DECIMAL",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "STATUS",
+											"type": "String"
+										},
+										"sink": {
+											"name": "STATUS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RESPOSTA_FINAL",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RESPOSTA_FINAL",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SURVEY_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SURVEY_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Fato_Survey_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Fato_Atividades_TFT_Territorio_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Fato_Visitas_Realizadas_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT \n     TRIM(COALESCE(NAME,''))   as \"ROW_ID\"\n     , ''    as \"TERRITORIO\"\n     , TRIM(COALESCE(USER_ID,''))   as \"ROW_ID_FUNCIONARIO\"\n     , TRIM(COALESCE(TERRITORY_ID,''))   AS \"ROW_ID_POSICAO\"\n     , TRIM(COALESCE(CAST(START_DATE_ID AS VARCHAR(100)),''))   as \"DATATOT\"\n     , TRIM(COALESCE(REASON,''))   as \"DESCRICAO\"\n     , TRIM(COALESCE(HOURS,''))  (TITLE'') as \"TEMPO\"\n FROM \n     LATAMCRMFBICNTRYBRVW.F_TIME_OFF_TERRITORY\n WHERE\n     DELETED_IND = 0 AND\n     \n     ((SUBSTR(CAST(START_DATE_ID as VARCHAR(8)),1,4) = EXTRACT (YEAR FROM CURRENT_DATE) AND \n      SUBSTR(CAST(START_DATE_ID as VARCHAR(8)),5,2) = EXTRACT (MONTH FROM CURRENT_DATE))\n     OR\n     (SUBSTR(CAST(START_DATE_ID as VARCHAR(8)),1,4) = EXTRACT ( YEAR FROM ADD_MONTHS (CURRENT_DATE , -1) ) AND \n      SUBSTR(CAST(START_DATE_ID as VARCHAR(8)),5,2) = EXTRACT ( MONTH FROM ADD_MONTHS (CURRENT_DATE , -1) )));",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ROW_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TERRITORIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_FUNCIONARIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_FUNCIONARIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_POSICAO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_POSICAO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DATATOT",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DATATOT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DESCRICAO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DESCRICAO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TEMPO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TEMPO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Fato_Atividades_TFT_Territorio_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Fato_Visitas_Realizadas_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Key_Message_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT\n     TRIM(COALESCE(A.DELETED_IND,'')) as \"DELETED_IND\"\n     ,TRIM(COALESCE(A.CALL_STATUS,'')) as \"CALL_STATUS\"\n     ,''   as \"TERRITORIO\"\n     ,''   as \"ROW_ID_FUNCIONARIO\"\n     ,TRIM(COALESCE(A.TERRITORY_ID,''))  as \"ROW_ID_POSICAO\"   \n     ,TRIM(COALESCE(A.CALL_NAME,''))   as \"ACTIVITY_UID\"    \n     ,TRIM(COALESCE(A.ATTENDEE_TYPE,''))    as \"TIPO\"\n     ,TRIM(COALESCE(A.LOCAL_CALL_DATE_ID,''))  as \"TODO_PLAN_START_DT\"  \n     ,TRIM(COALESCE(A.LOCAL_CALL_TIME_ID,''))  as  \"HORA\"\n     ,''   as \"NOMECONTATOCONTA\"\n     ,TRIM(COALESCE(A.OWNER_ID,'')) as \"OWNER_PER_ID\"   \n     ,''  as \"OWNER_POSTN_ID\"\n     ,''   as \"DIVISAO\"\n     ,''   as \"ROW_ID_DIVISAO\"\n     ,TRIM(COALESCE(A.CALL_TYPE,'')) as \"TODO_CD\"       \n     ,TRIM(COALESCE(A.ACCOUNT_ID,'')) as \"TARGET_PER_ID\"\n     ,TRIM(COALESCE(A.RX_CALL_TYPE,''))  as \"TARGET_OU_ID\"   \n     ,TRIM(COALESCE(A.DETAILED_PRODUCTS,'')) as \"COMENTARIOS\"\n     ,''   as \"UFDOCUMENTO\"\n     ,''   as \"NUMERODOCUMENTO\"\n     ,TRIM(COALESCE(B.ADDRESS_ID,'')) as \"ROW_ID_ENDERECO\" \n     ,TRIM(COALESCE(A.CLM_IND,''))    as \"CLM_IND\"\n     ,TRIM(COALESCE(A.NEXT_CALL_NOTES,'')) as \"NEXT_CALL_NOTES\"\n     ,TRIM(COALESCE(A.RECORD_TYPE_ID,'')) as \"RECORD_TYPE_ID\"\n     ,TRIM(COALESCE(R.RECORD_TYPE_NAME,'')) (TITLE'') as \"RECORD_TYPE_NAME\"\n FROM LATAMCRMFBICNTRYBRVW.F_CALL_SUMMARY A LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_ADDRESS B\n          ON A.PARENT_ADDRESS_ID = B.ADDRESS_ID,\n      LATAMCRMFBICNTRYBRVW.D_RECORD_TYPE R\n WHERE\n     A.CALL_STATUS = 'Submitted_vod' AND\n     A.DELETED_IND = 0 AND\n     \n     ((SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),1,4) = EXTRACT (YEAR FROM CURRENT_DATE) AND \n      SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),5,2) = EXTRACT (MONTH FROM CURRENT_DATE))\n     OR\n     (SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),1,4) = EXTRACT ( YEAR FROM ADD_MONTHS (CURRENT_DATE , -1) ) AND \n      SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),5,2) = EXTRACT ( MONTH FROM ADD_MONTHS (CURRENT_DATE , -1) )))\n     \n     AND (A.CALL_TYPE <> 'Event Detail' AND A.CALL_TYPE <> 'Event Only' AND A.CALL_TYPE <> 'Sample Only' AND A.CALL_TYPE <> oreplace('Item drop#only', '#', ' '))\n     AND A.PARENT_CALL_AID IS NULL\n     AND  A.RECORD_TYPE_ID = R.RECORD_TYPE_ID;",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "DELETED_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DELETED_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CALL_STATUS",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CALL_STATUS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TERRITORIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_FUNCIONARIO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_FUNCIONARIO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_POSICAO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_POSICAO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ACTIVITY_UID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ACTIVITY_UID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TIPO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TIPO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TODO_PLAN_START_DT",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TODO_PLAN_START_DT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "HORA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "HORA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NOMECONTATOCONTA",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NOMECONTATOCONTA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OWNER_PER_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "OWNER_PER_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OWNER_POSTN_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "OWNER_POSTN_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DIVISAO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DIVISAO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_DIVISAO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_DIVISAO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TODO_CD",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TODO_CD",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TARGET_PER_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TARGET_PER_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TARGET_OU_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TARGET_OU_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "COMENTARIOS",
+											"type": "String"
+										},
+										"sink": {
+											"name": "COMENTARIOS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "UFDOCUMENTO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "UFDOCUMENTO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NUMERODOCUMENTO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NUMERODOCUMENTO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ROW_ID_ENDERECO",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ROW_ID_ENDERECO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CLM_IND",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CLM_IND",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NEXT_CALL_NOTES",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NEXT_CALL_NOTES",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RECORD_TYPE_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RECORD_TYPE_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RECORD_TYPE_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "RECORD_TYPE_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Fato_Visitas_Realizadas_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Key_Message_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Key_Message_Visitas_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": " SELECT DISTINCT \n\t\t\tTRIM(COALESCE(E.CALL_SUMMARY_ID,'')) as \"CALL_SUMMARY_ID\"\n           , TRIM(COALESCE(D.KEY_MESSAGE_ID,'')) as \"KEY_MESSAGE_ID\"\n\t        , TRIM(COALESCE(D.CATEGORY,'')) as \"CATEGORY\"\n\t        , TRIM(COALESCE(CASE WHEN (D.KEY_MESSAGE_NAME IN ('QUALIFICAÇÃO','QUALIFICAÇ?O')) THEN ('QUALIFICACAO') \n\t                 WHEN (D.KEY_MESSAGE_NAME IN ('PROSPECÇÃO','PROSPECÇ?O')) THEN ('PROSPECCAO') ELSE D.KEY_MESSAGE_NAME END,'')) as \"KEY_MESSAGE_NAME\"\n\t        , TRIM(COALESCE(E.PRODUCT_CATALOG_ID,'')) (TITLE'') as \"PRODUCT_CATALOG_ID\"\n  FROM LATAMCRMFBICNTRYBRVW.F_CALL_MESSAGE E LEFT OUTER JOIN\n                 LATAMCRMFBICNTRYBRVW.D_KEY_MESSAGE D    \n              ON E.KEY_MESSAGE_ID = D.KEY_MESSAGE_ID \n  WHERE D.CATEGORY = 'Key Message';",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CALL_SUMMARY_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CALL_SUMMARY_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "KEY_MESSAGE_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "KEY_MESSAGE_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CATEGORY",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CATEGORY",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "KEY_MESSAGE_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "KEY_MESSAGE_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PRODUCT_CATALOG_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PRODUCT_CATALOG_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Key_Message_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Key_Message_Visitas_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Key_Message_Visitas_PAI_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT TRIM(COALESCE(A.CALL_SUMMARY_ID,'')) as \"CALL_SUMMARY_ID\"\n                , TRIM(COALESCE(B.CALL_NAME,'')) as \"CALL_NAME\"\n                , TRIM(COALESCE(A.ACCOUNT_ID,'')) as \"ACCOUNT_ID\"\n                , TRIM(COALESCE(A.TERRITORY_ID,'')) as \"TERRITORY_ID\"\n                , TRIM(COALESCE(A.LOCAL_CALL_DATE_ID,'')) as \"LOCAL_CALL_DATE_ID\"\n             , TRIM(COALESCE(A.SOURCE_CALL_SUMMARY_AID,'')) (TITLE'')  as \"SOURCE_CALL_SUMMARY_AID\"          \n FROM LATAMCRMFBICNTRYBRVW.F_CALL_SUMMARY A INNER JOIN\n     LATAMCRMFBICNTRYBRVW.F_CALL_SUMMARY B\n   ON A.PARENT_CALL_AID = B.SOURCE_CALL_SUMMARY_AID \n WHERE A.PARENT_CALL_AID IS NOT NULL AND\n\n ((SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),1,4) = EXTRACT (YEAR FROM CURRENT_DATE) AND \n      SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),5,2) = EXTRACT (MONTH FROM CURRENT_DATE))\n     OR\n     (SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),1,4) = EXTRACT ( YEAR FROM ADD_MONTHS (CURRENT_DATE , -1) ) AND \n      SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),5,2) = EXTRACT ( MONTH FROM ADD_MONTHS (CURRENT_DATE , -1) )))\n\n AND (A.CALL_TYPE <> 'Event Detail' AND A.CALL_TYPE <> 'Event Only' AND A.CALL_TYPE <> 'Sample Only');",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CALL_SUMMARY_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CALL_SUMMARY_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "CALL_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CALL_NAME",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCOUNT_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ACCOUNT_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TERRITORY_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "TERRITORY_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LOCAL_CALL_DATE_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LOCAL_CALL_DATE_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SOURCE_CALL_SUMMARY_AID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SOURCE_CALL_SUMMARY_AID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Key_Message_Visitas_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Key_Message_Visitas_PAI_Veeva",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "STG_Valid_Espec_Favorita_Veeva",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT \n\t\t\t\tTRIM(COALESCE(A.CALL_SUMMARY_ID,'')) as \"CALL_SUMMARY_ID\"\n                , TRIM(COALESCE(B.ACCOUNT_ID,'')) (TITLE'')     as \"ACCOUNT_ID\"       \n FROM LATAMCRMFBICNTRYBRVW.F_CALL_SUMMARY A INNER JOIN\n     LATAMCRMFBICNTRYBRVW.F_CALL_SUMMARY B\n   ON A.PARENT_CALL_AID = B.SOURCE_CALL_SUMMARY_AID \n WHERE A.PARENT_CALL_AID IS NOT NULL AND\n\n (SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),1,4) = EXTRACT (YEAR FROM CURRENT_DATE) AND \n      SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),5,2) = EXTRACT (MONTH FROM CURRENT_DATE))\n     OR\n     (SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),1,4) = EXTRACT ( YEAR FROM ADD_MONTHS (CURRENT_DATE , -1) ) AND \n      SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),5,2) = EXTRACT ( MONTH FROM ADD_MONTHS (CURRENT_DATE , -1) ))\n\n AND (A.CALL_TYPE <> 'Event Detail' AND A.CALL_TYPE <> 'Event Only' AND A.CALL_TYPE <> 'Sample Only');",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CALL_SUMMARY_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CALL_SUMMARY_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCOUNT_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ACCOUNT_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Key_Message_Visitas_PAI_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Key_Message_Visitas_PAI_Veeva_copy1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT \n\t\t\t\tTRIM(COALESCE(A.CALL_SUMMARY_ID,'')) as \"CALL_SUMMARY_ID\"\n                , TRIM(COALESCE(B.ACCOUNT_ID,'')) (TITLE'')     as \"ACCOUNT_ID\"       \n FROM LATAMCRMFBICNTRYBRVW.F_CALL_SUMMARY A INNER JOIN\n     LATAMCRMFBICNTRYBRVW.F_CALL_SUMMARY B\n   ON A.PARENT_CALL_AID = B.SOURCE_CALL_SUMMARY_AID \n WHERE A.PARENT_CALL_AID IS NOT NULL AND\n\n (SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),1,4) = EXTRACT (YEAR FROM CURRENT_DATE) AND \n      SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),5,2) = EXTRACT (MONTH FROM CURRENT_DATE))\n     OR\n     (SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),1,4) = EXTRACT ( YEAR FROM ADD_MONTHS (CURRENT_DATE , -1) ) AND \n      SUBSTR(CAST(A.LOCAL_CALL_DATE_ID as VARCHAR(8)),5,2) = EXTRACT ( MONTH FROM ADD_MONTHS (CURRENT_DATE , -1) ))\n\n AND (A.CALL_TYPE <> 'Event Detail' AND A.CALL_TYPE <> 'Event Only' AND A.CALL_TYPE <> 'Sample Only');",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CALL_SUMMARY_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CALL_SUMMARY_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCOUNT_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ACCOUNT_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Key_Message_Visitas_PAI_Veeva.txt"
+								}
+							}
+						]
+					},
+					{
+						"name": "STG_Valid_Espec_Favorita_Veeva",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "TeradataSource",
+								"query": "SELECT DISTINCT\n       TRIM(COALESCE(TERRITORY_ID,''))  as \"TERRITORY_ID\"                \n       , TRIM(COALESCE(ACCOUNT_ID,''))  as   \"ACCOUNT_ID\"                \n       , TRIM(COALESCE(BR_GSK_MY_SPECIALTY,''))   as \"BR_GSK_MY_SPECIALTY\"       \n       , TRIM(COALESCE(ADDRESS_ID,'')) as \"ADDRESS_ID\"                  \n       , TRIM(COALESCE(oreplace(TSF_NAME,'BR_',''),'')) (TITLE'')  as \"TSF_NAME\"\n FROM \n            LATAMCRMFBICNTRYBRVW.H_TERR_SPECIFIC_FIELDS\n WHERE  SOURCE_DELETED_IND = '0'\n   AND    BR_GSK_MY_SPECIALTY IS NOT NULL;  ",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CALL_SUMMARY_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CALL_SUMMARY_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ACCOUNT_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "ACCOUNT_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TeradataTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Staging_Area_txt",
+								"type": "DatasetReference",
+								"parameters": {
+									"nome_arquivo": "STG_Valid_Espec_Favorita_Veeva.txt"
+								}
+							}
+						]
+					}
+				],
+				"folder": {
+					"name": "Extract - Teradata"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/TeradataTable1')]",
+				"[concat(variables('workspaceId'), '/datasets/Staging_Area_txt')]"
 			]
 		},
 		{
@@ -5560,6 +8594,68 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Staging_Area')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/staging_area",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Staging_Area_txt')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"nome_arquivo": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().nome_arquivo",
+							"type": "Expression"
+						},
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/staging_area",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"columnDelimiter": "<",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/TeradataTable1')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -6165,14 +9261,14 @@
 						},
 						{
 							"dataset": {
-								"referenceName": "Dim_KPI_Vis_Parquet",
+								"referenceName": "Dim_Email_1_1_Parquet",
 								"type": "DatasetReference"
 							},
 							"name": "dCoaching"
 						},
 						{
 							"dataset": {
-								"referenceName": "Dim_KPI_Vis_Parquet",
+								"referenceName": "Dim_Email_1_1_Parquet",
 								"type": "DatasetReference"
 							},
 							"name": "dMSLDivision"
@@ -6368,9 +9464,6 @@
 							"name": "SelecaoTempMSLDivision"
 						},
 						{
-							"name": "ChaveamentoMSLDivision"
-						},
-						{
 							"name": "SelecaoTempCadTargetSRO"
 						},
 						{
@@ -6432,7 +9525,7 @@
 							"name": "SelecaoPainelMedico"
 						}
 					],
-					"script": "source(output(\n\t\tID as string,\n\t\tID_VISITA as string,\n\t\tTIPO_VISITA as string,\n\t\tTIPO_VISITA_PTBR as string,\n\t\tTIPO_VISITA_ORDER as string,\n\t\tCLM_IND as string,\n\t\tRECORD_TYPE_ID as string,\n\t\tRECORD_TYPE_NAME as string,\n\t\tDATA as string,\n\t\tCICLO as string,\n\t\tTARGET_PER_ID as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tSEMANA as string,\n\t\tFLAG_VISITA as string,\n\t\tTIPO_INTERACAO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_visitas_realizadas.parquet']) ~> dIntVisitasRealizadas\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tROW_ID_CONTATO as string,\n\t\tVP as string,\n\t\tVR as string,\n\t\tVRE as string,\n\t\tVRT as string,\n\t\tPLANEJUN as string,\n\t\tREALUN as string,\n\t\tEFFECTIVE_CALLS as string,\n\t\tUNDER_CALLS as string,\n\t\tOVER_CALLS as string,\n\t\tOFF_TARGET_CALLS as string,\n\t\tTARGET_CUST as string,\n\t\tUNDER_TARGET as string,\n\t\tON_TARGET as string,\n\t\tOVER_TARGET as string,\n\t\tEMAIL_CONSENT_KPI as string,\n\t\tAT_DESIRED_FREQUENCY as string,\n\t\tOVER_DESIRED_FREQUENCY as string,\n\t\tTIPO_INTERACAO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_visitas_medicos.parquet']) ~> dIntVisitasMedico\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tID_ENVIO_EMAIL as string,\n\t\tID_ATIV_EMAIL as string,\n\t\tTIPO_ATIV_EMAIL as string,\n\t\tDATA_ATIV_EMAIL as string,\n\t\tPRODUTO as string,\n\t\tROW_ID_CONTATO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tDOCUMENTO_EMAIL as string,\n\t\tDESC_DOCUMENTO_EMAIL as string,\n\t\tASSUNTO_EMAIL as string,\n\t\tTIPO_INTERACAO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_email.parquet']) ~> dIntEmail\nsource(output(\n\t\tID as string,\n\t\tROW_ID_CONTATO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tCICLO as string,\n\t\tPRODUTO_FRANCHISE as string,\n\t\tFRANCHISE as string,\n\t\tSUB_CAT_FRANCHISE as string,\n\t\tPESO_FRANCHISE as string,\n\t\tTIPO_INTERACAO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_visitas_franchise.parquet']) ~> dIntVisitasFranchise\nsource(output(\n\t\tEVENTO as string,\n\t\tID_EVENTO as string,\n\t\tEV_CICLO as string,\n\t\tDATA_EVENTO as string,\n\t\tDATA_EVENTO_2 as string,\n\t\tEV_CICLO_TERRITORIO as string,\n\t\tEV_CICLO_CONTATO as string,\n\t\tKEY_TERR_CONT_CICLO as string,\n\t\tID_PARTICIPANTE as string,\n\t\tNOME_PARTICIPANTE as string,\n\t\tEV_ROW_ID_TERRITORIO as string,\n\t\tNOME_USUARIO as string,\n\t\tEV_ROW_ID_CONTATO as string,\n\t\tDOCUMENTO as string,\n\t\tEV_ESPECIALIDADE_ENG as string,\n\t\tSTATUS_CONVIDADO_GR as string,\n\t\tSTATUS_CONVIDADO as string,\n\t\tSTATUS_CONVIDADO_ENG as string,\n\t\tPRODUTO_PRIMARIO as string,\n\t\tPRODUTO_SECUNDARIO as string,\n\t\tTIPO_PARTICIPACAO as string,\n\t\tTIPO_PARTICIPACAO_ENG as string,\n\t\tTIPO_CONTA as string,\n\t\tTIPO_CONTA_ENG as string,\n\t\tVISITADO_SETOR as string,\n\t\tNOME_SETOR_VISITANTE as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_eventos.parquet']) ~> dIntEventos\nsource(output(\n\t\tUF as string,\n\t\t{Cidade Base} as string,\n\t\tCHAVE as string,\n\t\tTotal_Reps_OneFarma as short,\n\t\t{2020-05-26} as string,\n\t\t{2020-05-29} as string,\n\t\t{2020-06-01} as string,\n\t\t{2020-06-02} as string,\n\t\t{2020-06-03} as string,\n\t\t{2020-06-08} as string,\n\t\t{2020-06-09} as string,\n\t\t{2020-06-10} as string,\n\t\t{2020-06-11} as string,\n\t\t{2020-06-15} as string,\n\t\t{2020-06-17} as string,\n\t\t{2020-06-18} as string,\n\t\t{2020-06-19} as string,\n\t\t{2020-06-22} as string,\n\t\t{2020-06-24} as string,\n\t\t{2020-06-25} as string,\n\t\t{2020-06-26} as string,\n\t\t{2020-06-29} as string,\n\t\t{2020-06-30} as string,\n\t\t{2020-07-01} as string,\n\t\t{2020-07-06} as string,\n\t\t{2020-07-07} as string,\n\t\t{2020-07-10} as string,\n\t\t{2020-07-13} as string,\n\t\t{2020-07-14} as string,\n\t\t{2020-07-15} as string,\n\t\t{2020-07-20} as string,\n\t\t{2020-07-21} as string,\n\t\t{2020-07-27} as string,\n\t\t{2020-07-28} as string,\n\t\t{2020-08-04} as string,\n\t\t{2020-08-05} as string,\n\t\t{2020-08-06} as string,\n\t\t{2020-08-07} as string,\n\t\t{2020-08-10} as string,\n\t\t{2020-08-11} as string,\n\t\t{2020-09-04} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tinferDriftedColumnTypes: true,\n\tformat: 'excel',\n\tcontainer: 'gsksynapsestorage',\n\tfolderPath: 'synapse/workspaces/gsk-synapse/warehouse/aux.tabelas_auxiliares',\n\tfileName: 'BASE CIDADES REPS - 04_09_2020.xlsx',\n\tsheetName: 'ZONAS CIDADES - HISTORICO',\n\tfirstRowAsHeader: true) ~> HistZona\nsource(output(\n\t\tMudid as string,\n\t\tCIDADE as string,\n\t\tUF as string,\n\t\tCHAVE as string,\n\t\tZONA as string,\n\t\t{_c5} as string,\n\t\t{_c6} as string,\n\t\t{_c7} as string,\n\t\t{_c8} as string,\n\t\t{_c9} as string,\n\t\t{_c10} as string,\n\t\t{_c11} as string,\n\t\t{_c12} as string,\n\t\t{_c13} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'excel',\n\tcontainer: 'gsksynapsestorage',\n\tfolderPath: 'synapse/workspaces/gsk-synapse/warehouse/aux.tabelas_auxiliares',\n\tfileName: 'BASE CIDADES REPS - 04_09_2020.xlsx',\n\tsheetName: 'REPS_ZONAS',\n\tfirstRowAsHeader: true) ~> RepsZona\nsource(output(\n\t\tID as string,\n\t\tBU as string,\n\t\tDIVISAO as string,\n\t\tNOME_GD as string,\n\t\tNOME_GR as string,\n\t\tNOME_REPRESENTANTE as string,\n\t\tMUDID as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tTERRITORIO as string,\n\t\tTERRITORIO_GD as string,\n\t\tTERRITORIO_GR as string,\n\t\tCICLO_FV as string,\n\t\tROW_ID_FUNCIONARIO as string,\n\t\tFLAG_PROJETO as string,\n\t\tFLAG_TARGET as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_forca_vendas.parquet']) ~> dForcaVendas\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tTFT as string,\n\t\tDIAS_UTEIS as string,\n\t\tVISITAS_ABATER as string,\n\t\tOBJETIVO_VISITA_DIA as string,\n\t\tDIAS_VISITACAO as string,\n\t\tVR_CLM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao/dim_kpi_territorio.parquet']) ~> dKPITerritorio\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tTERRITORIO_GD as string,\n\t\tTOTAL_COACHING as string,\n\t\tTOTAL_ABATER as string,\n\t\tDIAS_UTEIS_COACHING as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao/dim_coaching.parquet']) ~> dCoaching\nsource(output(\n\t\tID as string,\n\t\tKEY_DIVISAO_CICLO as string,\n\t\tFUNC_TOTAL as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.kpi_visitacao/dim_msl_division.parquet']) ~> dMSLDivision\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tDIVISAO as string,\n\t\tTARGET_SRO_CRM as string,\n\t\tTARGET_SRO_VISITA as string,\n\t\tTARGET_SRO_MEDIA_DIA as string,\n\t\tTARGET_SRO_COACHING as string,\n\t\tTARGET_SRO_COB as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_cad_target_sro.parquet']) ~> dTargetSRO\nsource(output(\n\t\tID as string,\n\t\tCICLO_QUAD as string,\n\t\tCRM_QUAD as string,\n\t\tMERCADO_QUAD as string,\n\t\tCATEGORIA_QUAD as string,\n\t\tMKT_SHARE_QUAD as string,\n\t\tQUADRANTE_QUAD as string,\n\t\tJORNADA_QUAD as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_quadrante_medico.parquet']) ~> dQuadranteMedico\nsource(output(\n\t\tID as string,\n\t\tCRM_GP as string,\n\t\tMERCADO_GP as string,\n\t\tCATEGORIA_GP as string,\n\t\tJORNADA_GP as string,\n\t\tQUADRANTE_GP as string,\n\t\tROW_ID_TERRITORIO_GP as string,\n\t\tROW_ID_CONTATO_GP as string,\n\t\tCICLO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_quadrante_medico_gp.parquet']) ~> dQuadranteMedicoGP\nsource(output(\n\t\tID as string,\n\t\tCRM_UNIV as string,\n\t\tMEDICO_UNIV as string,\n\t\tESPECIALIDADE_UNIV as string,\n\t\tLOGRADOURO_UNIV as string,\n\t\tBAIRRO_UNIV as string,\n\t\tCIDADE_UNIV as string,\n\t\tCEP_UNIV as string,\n\t\tORIGEM_UNIV as string,\n\t\tUF_UNIV as string,\n\t\tBRICK_UNIV as string,\n\t\tTELEFONE_UNIV as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_audit_end.parquet']) ~> dAuditEnd\nsource(output(\n\t\tCRM_CICLO as string,\n\t\tMES as string,\n\t\tCICLO as string,\n\t\tCRM as string,\n\t\tMEDICO as string,\n\t\tTIPO as string,\n\t\tTIPOCONTATO as string,\n\t\tGRUPOPROMOCIONAL as string,\n\t\tESPECIALIDADE as string,\n\t\tLOGRADOURO as string,\n\t\tCOMPLEMENTO as string,\n\t\tBAIRRO as string,\n\t\tCIDADE as string,\n\t\tUF as string,\n\t\tCEP as string,\n\t\tBRICK as string,\n\t\tTELEFONEMEDICO as string,\n\t\tCELULARMEDICO as string,\n\t\tEMAIL_1_1 as string,\n\t\tROW_ID_FUNCIONARIO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tROW_ID_CONTATO as string,\n\t\tSTATUS as string,\n\t\tQTD_VISITA_PLANEJADA_PAINEL as string,\n\t\tQTD_VISITA_REALIZADA_PAINEL as string,\n\t\tESPECIALIDADE_02 as string,\n\t\tESPECIALIDADE_03 as string,\n\t\tVP_PROX as string,\n\t\tSTATUS_MEDICO as string,\n\t\tEMAIL_1_1_CONSENT as string,\n\t\tNETWORK_ID as string,\n\t\tRX_GIGYA_ID as string,\n\t\tVEEVA_ID as string,\n\t\tROW_ID_CONTATO_EXT as string,\n\t\tEMAIL_MASS as string,\n\t\tEMAIL_MASS_CONSENT as string,\n\t\tCYCLE_PLAN as string,\n\t\tMERCADO as string,\n\t\tPRODUTO_PAINEL as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_painel_medico.parquet']) ~> dPainelMedico\nsource(output(\n\t\tEN as string,\n\t\tPT_BR as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'excel',\n\tfileSystem: 'gsksynapsestorage',\n\tfolderPath: 'synapse/workspaces/gsk-synapse/warehouse/aux.tabelas_auxiliares',\n\tfileName: 'Aux_Veeva_Especialidade_Traducao.xlsx',\n\tsheetName: 'Sheet3',\n\tfirstRowAsHeader: true) ~> TraducaoEspecialidadeEventos\nConcatChave select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tID_VISITA,\n\t\tTIPO_VISITA,\n\t\tTIPO_VISITA_PTBR,\n\t\tTIPO_VISITA_ORDER,\n\t\tCLM_IND,\n\t\tRECORD_TYPE_ID,\n\t\tRECORD_TYPE_NAME,\n\t\tDATA,\n\t\tCICLO,\n\t\tTARGET_PER_ID,\n\t\tROW_ID_TERRITORIO,\n\t\tSEMANA,\n\t\tFLAG_VISITA,\n\t\tTIPO_INTERACAO\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChavemamentoVisitasRealizadas\ndIntVisitasRealizadas derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO, TARGET_PER_ID, CICLO)) ~> ConcatChave\ndIntVisitasMedico derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO,ROW_ID_CONTATO,CICLO)) ~> ConcatChave2\nConcatChave2 select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tCICLO,\n\t\tROW_ID_TERRITORIO,\n\t\tROW_ID_CONTATO,\n\t\tVP,\n\t\tVR,\n\t\tVRE,\n\t\tVRT,\n\t\tPLANEJUN,\n\t\tREALUN,\n\t\tEFFECTIVE_CALLS,\n\t\tUNDER_CALLS,\n\t\tOVER_CALLS,\n\t\tOFF_TARGET_CALLS,\n\t\tTARGET_CUST,\n\t\tUNDER_TARGET,\n\t\tON_TARGET,\n\t\tOVER_TARGET,\n\t\tEMAIL_CONSENT_KPI,\n\t\tAT_DESIRED_FREQUENCY,\n\t\tOVER_DESIRED_FREQUENCY,\n\t\tTIPO_INTERACAO\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChaveamentoVisitasMedicos\ndIntEmail derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO,ROW_ID_CONTATO,CICLO)) ~> ConcatChave3\nConcatChave3 select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tCICLO,\n\t\tID_ENVIO_EMAIL,\n\t\tID_ATIV_EMAIL,\n\t\tTIPO_ATIV_EMAIL,\n\t\tDATA_ATIV_EMAIL,\n\t\tPRODUTO,\n\t\tROW_ID_CONTATO,\n\t\tROW_ID_TERRITORIO,\n\t\tDOCUMENTO_EMAIL,\n\t\tDESC_DOCUMENTO_EMAIL,\n\t\tASSUNTO_EMAIL,\n\t\tTIPO_INTERACAO\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChaveamentoEmail\ndIntVisitasFranchise derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO,ROW_ID_CONTATO,CICLO)) ~> ConcatChave4\nConcatChave4 select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tROW_ID_CONTATO,\n\t\tROW_ID_TERRITORIO,\n\t\tCICLO,\n\t\tPRODUTO_FRANCHISE,\n\t\tFRANCHISE,\n\t\tSUB_CAT_FRANCHISE,\n\t\tPESO_FRANCHISE,\n\t\tTIPO_INTERACAO\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChaveamentoVisitasFranchise\nHistZona unpivot(output(\n\t\tDATA_ZONA as string,\n\t\t{2020-05-26} as string,\n\t\t{2020-05-29} as string,\n\t\t{2020-06-01} as string,\n\t\t{2020-06-02} as string,\n\t\t{2020-06-03} as string,\n\t\t{2020-06-08} as string,\n\t\t{2020-06-09} as string,\n\t\t{2020-06-10} as string,\n\t\t{2020-06-11} as string,\n\t\t{2020-06-15} as string,\n\t\t{2020-06-17} as string,\n\t\t{2020-06-18} as string,\n\t\t{2020-06-19} as string,\n\t\t{2020-06-22} as string,\n\t\t{2020-06-24} as string,\n\t\t{2020-06-25} as string,\n\t\t{2020-06-26} as string,\n\t\t{2020-06-29} as string,\n\t\t{2020-06-30} as string,\n\t\t{2020-07-01} as string,\n\t\t{2020-07-06} as string,\n\t\t{2020-07-07} as string,\n\t\t{2020-07-10} as string,\n\t\t{2020-07-13} as string,\n\t\t{2020-07-14} as string,\n\t\t{2020-07-15} as string,\n\t\t{2020-07-20} as string,\n\t\t{2020-07-21} as string,\n\t\t{2020-07-27} as string,\n\t\t{2020-07-28} as string,\n\t\t{2020-08-04} as string,\n\t\t{2020-08-05} as string,\n\t\t{2020-08-06} as string,\n\t\t{2020-08-07} as string,\n\t\t{2020-08-10} as string,\n\t\t{2020-08-11} as string,\n\t\t{2020-09-04} as string\n\t),\n\tungroupBy(UF,\n\t\t{Cidade Base},\n\t\tCHAVE,\n\t\tTotal_Reps_OneFarma),\n\tlateral: true,\n\tignoreNullPivots: true) ~> UnpivotHistZona\nUnpivotHistZona select(mapColumn(\n\t\tCHAVE_ZONA = CHAVE,\n\t\tDATA_ZONA,\n\t\tSTATUS_ZONA = {2020-05-26}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempHistZona\nSelecaoTempHistZona derive(DATA_ZONA = toDate(DATA_ZONA),\n\t\tNUM_DATA_ZONA = minus(toDate(DATA_ZONA),toDate('1900-01-01'))+2,\n\t\tMES_ZONA = toString(toDate(DATA_ZONA), 'MMM')) ~> ChaveamentoHistZona\nRepsZona select(mapColumn(\n\t\tMUDID = Mudid,\n\t\tCIDADE_ZONA = CIDADE,\n\t\tUF_ZONA = UF,\n\t\tCHAVE,\n\t\tZONA_COMPLETA = ZONA\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempRepsZona\nSelecaoTempRepsZona derive(CHAVE_ZONA = concat(CIDADE_ZONA,'-',UF_ZONA),\n\t\tZONA = trim(split(ZONA_COMPLETA,' - ')[1])) ~> ChaveamentoRepsZona\ndForcaVendas select(mapColumn(\n\t\tBU,\n\t\tDIVISAO,\n\t\tNOME_GD,\n\t\tNOME_GR,\n\t\tNOME_REPRESENTANTE,\n\t\tMUDID,\n\t\tROW_ID_TERRITORIO,\n\t\tTERRITORIO,\n\t\tTERRITORIO_GD,\n\t\tTERRITORIO_GR,\n\t\tCICLO_FV,\n\t\tROW_ID_FUNCIONARIO,\n\t\tFLAG_PROJETO,\n\t\tFLAG_TARGET\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempForcaVendas\nSelecaoTempForcaVendas derive(KEY_TERR_CICLO = concat(ROW_ID_TERRITORIO,CICLO_FV),\n\t\tKEY_CICLO_TERR_GD = concat(CICLO_FV,right(TERRITORIO_GD,6)),\n\t\tKEY_DIVISAO_CICLO = concat(DIVISAO, CICLO_FV),\n\t\tKEY_MUDID_TERR = concat(MUDID, TERRITORIO),\n\t\tKEY_TERR = trim(concat(ROW_ID_TERRITORIO,''))) ~> ChaveamentoForcaVendas\nChaveamentoForcaVendas, ChaveamentoRepsZona join(SelecaoTempForcaVendas@MUDID == SelecaoTempRepsZona@MUDID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> LeftJoinRepsZonaFV\ndKPITerritorio select(mapColumn(\n\t\tCICLO,\n\t\tROW_ID_TERRITORIO,\n\t\tTFT,\n\t\tDIAS_UTEIS,\n\t\tVISITAS_ABATER,\n\t\tOBJETIVO_VISITA_DIA,\n\t\tDIAS_VISITACAO,\n\t\tVR_CLM\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempKPITerr\nSelecaoTempKPITerr derive(KEY_TERR_CICLO = concat(ROW_ID_TERRITORIO,CICLO)) ~> ChaveamentoKPITerr\ndCoaching select(mapColumn(\n\t\tCICLO,\n\t\tTERRITORIO_GD,\n\t\tTOTAL_COACHING,\n\t\tTOTAL_ABATER,\n\t\tDIAS_UTEIS_COACHING\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempCoaching\nSelecaoTempCoaching derive(KEY_CICLO_TERR_GD = concat(CICLO, right(TERRITORIO_GD, 6))) ~> ChaveamentoCoching\ndMSLDivision select(mapColumn(\n\t\tKEY_DIVISAO_CICLO,\n\t\tFUNC_TOTAL\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempMSLDivision\nSelecaoTempMSLDivision derive(KEY_DIVISAO_CICLO = replace(KEY_DIVISAO_CICLO, ' - ', '')) ~> ChaveamentoMSLDivision\ndTargetSRO select(mapColumn(\n\t\tCICLO,\n\t\tDIVISAO,\n\t\tTARGET_SRO_CRM,\n\t\tTARGET_SRO_VISITA,\n\t\tTARGET_SRO_MEDIA_DIA,\n\t\tTARGET_SRO_COACHING,\n\t\tTARGET_SRO_COB\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempCadTargetSRO\nSelecaoTempCadTargetSRO derive(KEY_DIVISAO_CICLO = concat(DIVISAO, CICLO)) ~> ChaveamentoTargetSRO\ndQuadranteMedico select(mapColumn(\n\t\tCICLO_QUAD,\n\t\tCRM_QUAD,\n\t\tMERCADO_QUAD,\n\t\tCATEGORIA_QUAD,\n\t\tMKT_SHARE_QUAD,\n\t\tQUADRANTE_QUAD,\n\t\tJORNADA_QUAD\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempQM\nSelecaoTempQM derive(KEY_CRM_UNIV = trim(concat(CRM_QUAD,'')),\n\t\tKEY_CICLO_CRM = concat(CICLO_QUAD,CRM_QUAD)) ~> ChaveamentoQuadranteMedico\ndQuadranteMedicoGP select(mapColumn(\n\t\tCRM_GP,\n\t\tMERCADO_GP,\n\t\tCATEGORIA_GP,\n\t\tJORNADA_GP,\n\t\tQUADRANTE_GP,\n\t\tROW_ID_TERRITORIO_GP,\n\t\tROW_ID_CONTATO_GP,\n\t\tCICLO\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaotTempQDGP\nSelecaotTempQDGP derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO_GP, ROW_ID_CONTATO_GP, CICLO)) ~> ChaveamentoQuadranteMedicoGP\ndAuditEnd select(mapColumn(\n\t\tCRM_UNIV,\n\t\tMEDICO_UNIV,\n\t\tESPECIALIDADE_UNIV,\n\t\tLOGRADOURO_UNIV,\n\t\tBAIRRO_UNIV,\n\t\tCIDADE_UNIV,\n\t\tCEP_UNIV,\n\t\tORIGEM_UNIV,\n\t\tUF_UNIV,\n\t\tBRICK_UNIV,\n\t\tTELEFONE_UNIV\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempAuditEnd\nSelecaoTempAuditEnd derive(KEY_CRM_UNIV = trim(concat(CRM_UNIV,''))) ~> ChaveamentoAuditEnd\ndPainelMedico derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO, ROW_ID_CONTATO,CICLO),\n\t\tKEY_TERR_CICLO = concat(ROW_ID_TERRITORIO, CICLO),\n\t\tKEY_CICLO_CRM = concat(CICLO, CRM),\n\t\t{% Date Key} = toDate(toString(CICLO, 'yyyyMM'),'yyyyMM')) ~> ChaveamentoPainelMedico\ndIntEventos filter(EV_CICLO != '43590') ~> RemoverErros1\nRemoverErros1 filter(EVENTO != 'rio') ~> RemoverErros2\nRemoverErros2 filter(ID_EVENTO != '33825') ~> RemoverErros3\nTraducaoEspecialidadeEventos derive(PT_BR = upper(PT_BR)) ~> UpperEspecialidadeBR\nUpperEspecialidadeBR select(mapColumn(\n\t\tEN,\n\t\tEV_ESPECIALIDADE = PT_BR\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> TraducaoEspecialidadePTBR\nRemoverErros3, TraducaoEspecialidadePTBR join(EV_ESPECIALIDADE_ENG == EN,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> LeftJoinTraducaoEspecialidadeEventos\nLeftJoinTraducaoEspecialidadeEventos select(mapColumn(\n\t\tEVENTO,\n\t\tID_EVENTO,\n\t\tEV_CICLO,\n\t\tDATA_EVENTO,\n\t\tDATA_EVENTO_2,\n\t\tEV_CICLO_TERRITORIO,\n\t\tEV_CICLO_CONTATO,\n\t\tKEY_TERR_CONT_CICLO,\n\t\tID_PARTICIPANTE,\n\t\tNOME_PARTICIPANTE,\n\t\tEV_ROW_ID_TERRITORIO,\n\t\tNOME_USUARIO,\n\t\tEV_ROW_ID_CONTATO,\n\t\tDOCUMENTO,\n\t\tEV_ESPECIALIDADE_ENG,\n\t\tSTATUS_CONVIDADO_GR,\n\t\tSTATUS_CONVIDADO,\n\t\tSTATUS_CONVIDADO_ENG,\n\t\tPRODUTO_PRIMARIO,\n\t\tPRODUTO_SECUNDARIO,\n\t\tTIPO_PARTICIPACAO,\n\t\tTIPO_PARTICIPACAO_ENG,\n\t\tTIPO_CONTA,\n\t\tTIPO_CONTA_ENG,\n\t\tVISITADO_SETOR,\n\t\tNOME_SETOR_VISITANTE,\n\t\tEV_ESPECIALIDADE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChaveamentoEventos\nChavemamentoVisitasRealizadas, ChaveamentoVisitasMedicos, ChaveamentoEmail, ChaveamentoVisitasFranchise, ChaveamentoEventos union(byName: true)~> UnionVisitasMedico\nUnionVisitasMedico select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tID_VISITA,\n\t\tTIPO_VISITA,\n\t\tTIPO_VISITA_PTBR,\n\t\tTIPO_VISITA_ORDER,\n\t\tCLM_IND,\n\t\tRECORD_TYPE_ID,\n\t\tRECORD_TYPE_NAME,\n\t\tDATA,\n\t\tCICLO,\n\t\tTARGET_PER_ID,\n\t\tROW_ID_TERRITORIO,\n\t\tSEMANA,\n\t\tFLAG_VISITA,\n\t\tTIPO_INTERACAO,\n\t\tROW_ID_CONTATO,\n\t\tVP,\n\t\tVR,\n\t\tVRE,\n\t\tVRT,\n\t\tPLANEJUN,\n\t\tREALUN,\n\t\tEFFECTIVE_CALLS,\n\t\tUNDER_CALLS,\n\t\tOVER_CALLS,\n\t\tOFF_TARGET_CALLS,\n\t\tTARGET_CUST,\n\t\tUNDER_TARGET,\n\t\tON_TARGET,\n\t\tOVER_TARGET,\n\t\tEMAIL_CONSENT_KPI,\n\t\tAT_DESIRED_FREQUENCY,\n\t\tOVER_DESIRED_FREQUENCY,\n\t\tID_ENVIO_EMAIL,\n\t\tID_ATIV_EMAIL,\n\t\tTIPO_ATIV_EMAIL,\n\t\tDATA_ATIV_EMAIL,\n\t\tPRODUTO,\n\t\tDOCUMENTO_EMAIL,\n\t\tDESC_DOCUMENTO_EMAIL,\n\t\tASSUNTO_EMAIL,\n\t\tPRODUTO_FRANCHISE,\n\t\tFRANCHISE,\n\t\tSUB_CAT_FRANCHISE,\n\t\tPESO_FRANCHISE,\n\t\tEVENTO,\n\t\tID_EVENTO,\n\t\tEV_CICLO,\n\t\tDATA_EVENTO,\n\t\tDATA_EVENTO_2,\n\t\tEV_CICLO_TERRITORIO,\n\t\tEV_CICLO_CONTATO,\n\t\tID_PARTICIPANTE,\n\t\tNOME_PARTICIPANTE,\n\t\tEV_ROW_ID_TERRITORIO,\n\t\tNOME_USUARIO,\n\t\tEV_ROW_ID_CONTATO,\n\t\tDOCUMENTO,\n\t\tEV_ESPECIALIDADE_ENG,\n\t\tSTATUS_CONVIDADO_GR,\n\t\tSTATUS_CONVIDADO,\n\t\tSTATUS_CONVIDADO_ENG,\n\t\tPRODUTO_PRIMARIO,\n\t\tPRODUTO_SECUNDARIO,\n\t\tTIPO_PARTICIPACAO,\n\t\tTIPO_PARTICIPACAO_ENG,\n\t\tTIPO_CONTA,\n\t\tTIPO_CONTA_ENG,\n\t\tVISITADO_SETOR,\n\t\tNOME_SETOR_VISITANTE,\n\t\tEV_ESPECIALIDADE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoFatoInteracao\nLeftJoinRepsZonaFV select(mapColumn(\n\t\tBU,\n\t\tDIVISAO,\n\t\tNOME_GD,\n\t\tNOME_GR,\n\t\tNOME_REPRESENTANTE,\n\t\tMUDID = SelecaoTempForcaVendas@MUDID,\n\t\tROW_ID_TERRITORIO,\n\t\tTERRITORIO,\n\t\tTERRITORIO_GD,\n\t\tTERRITORIO_GR,\n\t\tCICLO_FV,\n\t\tROW_ID_FUNCIONARIO,\n\t\tFLAG_PROJETO,\n\t\tFLAG_TARGET,\n\t\tKEY_TERR_CICLO,\n\t\tKEY_CICLO_TERR_GD,\n\t\tKEY_DIVISAO_CICLO,\n\t\tKEY_MUDID_TERR,\n\t\tKEY_TERR,\n\t\tMUDID = SelecaoTempRepsZona@MUDID,\n\t\tCIDADE_ZONA,\n\t\tUF_ZONA,\n\t\tCHAVE,\n\t\tZONA_COMPLETA,\n\t\tCHAVE_ZONA,\n\t\tZONA\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DimForcaVendas\nChaveamentoPainelMedico select(mapColumn(\n\t\tCRM_CICLO,\n\t\tMES,\n\t\tCICLO,\n\t\tCRM,\n\t\tMEDICO,\n\t\tTIPO,\n\t\tTIPOCONTATO,\n\t\tGRUPOPROMOCIONAL,\n\t\tESPECIALIDADE,\n\t\tLOGRADOURO,\n\t\tCOMPLEMENTO,\n\t\tBAIRRO,\n\t\tCIDADE,\n\t\tUF,\n\t\tCEP,\n\t\tBRICK,\n\t\tTELEFONEMEDICO,\n\t\tCELULARMEDICO,\n\t\tEMAIL_1_1,\n\t\tROW_ID_FUNCIONARIO,\n\t\tROW_ID_TERRITORIO,\n\t\tROW_ID_CONTATO,\n\t\tSTATUS,\n\t\tQTD_VISITA_PLANEJADA_PAINEL,\n\t\tQTD_VISITA_REALIZADA_PAINEL,\n\t\tESPECIALIDADE_02,\n\t\tESPECIALIDADE_03,\n\t\tVP_PROX,\n\t\tSTATUS_MEDICO,\n\t\tEMAIL_1_1_CONSENT,\n\t\tNETWORK_ID,\n\t\tRX_GIGYA_ID,\n\t\tVEEVA_ID,\n\t\tROW_ID_CONTATO_EXT,\n\t\tEMAIL_MASS,\n\t\tEMAIL_MASS_CONSENT,\n\t\tCYCLE_PLAN,\n\t\tMERCADO,\n\t\tPRODUTO_PAINEL,\n\t\tKEY_TERR_CONT_CICLO,\n\t\tKEY_TERR_CICLO,\n\t\tKEY_CICLO_CRM,\n\t\tDATE_KEY = {% Date Key}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoPainelMedico\nSelecaoFatoInteracao sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'fato_interacoes_[n].parquet',\n\ttruncate: true,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> SinkFatoInteracoes\nDimForcaVendas sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_forca_vendas.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimForcaVendas\nChaveamentoHistZona sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_historico_zonas.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimHistoricoZonas\nChaveamentoKPITerr sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_kpi_territorio.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimKpiTerritorio\nChaveamentoCoching sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_coaching.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkCoaching\nChaveamentoMSLDivision sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_msl_division.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimMslDivision\nChaveamentoTargetSRO sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_target_sro.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimTargetSro\nChaveamentoQuadranteMedico sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_quadrante_medico_p_[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimQuadranteMedico\nChaveamentoQuadranteMedicoGP sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_quadrante_medico_gp_[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimQuadranteMedicoGp\nChaveamentoAuditEnd sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_audit_end.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimAuditEnd\nSelecaoPainelMedico sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_painel_medico_[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimPainelMedico"
+					"script": "source(output(\n\t\tID as string,\n\t\tID_VISITA as string,\n\t\tTIPO_VISITA as string,\n\t\tTIPO_VISITA_PTBR as string,\n\t\tTIPO_VISITA_ORDER as string,\n\t\tCLM_IND as string,\n\t\tRECORD_TYPE_ID as string,\n\t\tRECORD_TYPE_NAME as string,\n\t\tDATA as string,\n\t\tCICLO as string,\n\t\tTARGET_PER_ID as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tSEMANA as string,\n\t\tFLAG_VISITA as string,\n\t\tTIPO_INTERACAO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_visitas_realizadas.parquet']) ~> dIntVisitasRealizadas\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tROW_ID_CONTATO as string,\n\t\tVP as string,\n\t\tVR as string,\n\t\tVRE as string,\n\t\tVRT as string,\n\t\tPLANEJUN as string,\n\t\tREALUN as string,\n\t\tEFFECTIVE_CALLS as string,\n\t\tUNDER_CALLS as string,\n\t\tOVER_CALLS as string,\n\t\tOFF_TARGET_CALLS as string,\n\t\tTARGET_CUST as string,\n\t\tUNDER_TARGET as string,\n\t\tON_TARGET as string,\n\t\tOVER_TARGET as string,\n\t\tEMAIL_CONSENT_KPI as string,\n\t\tAT_DESIRED_FREQUENCY as string,\n\t\tOVER_DESIRED_FREQUENCY as string,\n\t\tTIPO_INTERACAO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_visitas_medicos.parquet']) ~> dIntVisitasMedico\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tID_ENVIO_EMAIL as string,\n\t\tID_ATIV_EMAIL as string,\n\t\tTIPO_ATIV_EMAIL as string,\n\t\tDATA_ATIV_EMAIL as string,\n\t\tPRODUTO as string,\n\t\tROW_ID_CONTATO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tDOCUMENTO_EMAIL as string,\n\t\tDESC_DOCUMENTO_EMAIL as string,\n\t\tASSUNTO_EMAIL as string,\n\t\tTIPO_INTERACAO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_email.parquet']) ~> dIntEmail\nsource(output(\n\t\tID as string,\n\t\tROW_ID_CONTATO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tCICLO as string,\n\t\tPRODUTO_FRANCHISE as string,\n\t\tFRANCHISE as string,\n\t\tSUB_CAT_FRANCHISE as string,\n\t\tPESO_FRANCHISE as string,\n\t\tTIPO_INTERACAO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_visitas_franchise.parquet']) ~> dIntVisitasFranchise\nsource(output(\n\t\tEVENTO as string,\n\t\tID_EVENTO as string,\n\t\tEV_CICLO as string,\n\t\tDATA_EVENTO as string,\n\t\tDATA_EVENTO_2 as string,\n\t\tEV_CICLO_TERRITORIO as string,\n\t\tEV_CICLO_CONTATO as string,\n\t\tKEY_TERR_CONT_CICLO as string,\n\t\tID_PARTICIPANTE as string,\n\t\tNOME_PARTICIPANTE as string,\n\t\tEV_ROW_ID_TERRITORIO as string,\n\t\tNOME_USUARIO as string,\n\t\tEV_ROW_ID_CONTATO as string,\n\t\tDOCUMENTO as string,\n\t\tEV_ESPECIALIDADE_ENG as string,\n\t\tSTATUS_CONVIDADO_GR as string,\n\t\tSTATUS_CONVIDADO as string,\n\t\tSTATUS_CONVIDADO_ENG as string,\n\t\tPRODUTO_PRIMARIO as string,\n\t\tPRODUTO_SECUNDARIO as string,\n\t\tTIPO_PARTICIPACAO as string,\n\t\tTIPO_PARTICIPACAO_ENG as string,\n\t\tTIPO_CONTA as string,\n\t\tTIPO_CONTA_ENG as string,\n\t\tVISITADO_SETOR as string,\n\t\tNOME_SETOR_VISITANTE as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_interacao_eventos.parquet']) ~> dIntEventos\nsource(output(\n\t\tUF as string,\n\t\t{Cidade Base} as string,\n\t\tCHAVE as string,\n\t\tTotal_Reps_OneFarma as short,\n\t\t{2020-05-26} as string,\n\t\t{2020-05-29} as string,\n\t\t{2020-06-01} as string,\n\t\t{2020-06-02} as string,\n\t\t{2020-06-03} as string,\n\t\t{2020-06-08} as string,\n\t\t{2020-06-09} as string,\n\t\t{2020-06-10} as string,\n\t\t{2020-06-11} as string,\n\t\t{2020-06-15} as string,\n\t\t{2020-06-17} as string,\n\t\t{2020-06-18} as string,\n\t\t{2020-06-19} as string,\n\t\t{2020-06-22} as string,\n\t\t{2020-06-24} as string,\n\t\t{2020-06-25} as string,\n\t\t{2020-06-26} as string,\n\t\t{2020-06-29} as string,\n\t\t{2020-06-30} as string,\n\t\t{2020-07-01} as string,\n\t\t{2020-07-06} as string,\n\t\t{2020-07-07} as string,\n\t\t{2020-07-10} as string,\n\t\t{2020-07-13} as string,\n\t\t{2020-07-14} as string,\n\t\t{2020-07-15} as string,\n\t\t{2020-07-20} as string,\n\t\t{2020-07-21} as string,\n\t\t{2020-07-27} as string,\n\t\t{2020-07-28} as string,\n\t\t{2020-08-04} as string,\n\t\t{2020-08-05} as string,\n\t\t{2020-08-06} as string,\n\t\t{2020-08-07} as string,\n\t\t{2020-08-10} as string,\n\t\t{2020-08-11} as string,\n\t\t{2020-09-04} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tinferDriftedColumnTypes: true,\n\tformat: 'excel',\n\tcontainer: 'gsksynapsestorage',\n\tfolderPath: 'synapse/workspaces/gsk-synapse/warehouse/aux.tabelas_auxiliares',\n\tfileName: 'BASE CIDADES REPS - 04_09_2020.xlsx',\n\tsheetName: 'ZONAS CIDADES - HISTORICO',\n\tfirstRowAsHeader: true) ~> HistZona\nsource(output(\n\t\tMudid as string,\n\t\tCIDADE as string,\n\t\tUF as string,\n\t\tCHAVE as string,\n\t\tZONA as string,\n\t\t{_c5} as string,\n\t\t{_c6} as string,\n\t\t{_c7} as string,\n\t\t{_c8} as string,\n\t\t{_c9} as string,\n\t\t{_c10} as string,\n\t\t{_c11} as string,\n\t\t{_c12} as string,\n\t\t{_c13} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'excel',\n\tcontainer: 'gsksynapsestorage',\n\tfolderPath: 'synapse/workspaces/gsk-synapse/warehouse/aux.tabelas_auxiliares',\n\tfileName: 'BASE CIDADES REPS - 04_09_2020.xlsx',\n\tsheetName: 'REPS_ZONAS',\n\tfirstRowAsHeader: true) ~> RepsZona\nsource(output(\n\t\tID as string,\n\t\tBU as string,\n\t\tDIVISAO as string,\n\t\tNOME_GD as string,\n\t\tNOME_GR as string,\n\t\tNOME_REPRESENTANTE as string,\n\t\tMUDID as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tTERRITORIO as string,\n\t\tTERRITORIO_GD as string,\n\t\tTERRITORIO_GR as string,\n\t\tCICLO_FV as string,\n\t\tROW_ID_FUNCIONARIO as string,\n\t\tFLAG_PROJETO as string,\n\t\tFLAG_TARGET as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_forca_vendas.parquet']) ~> dForcaVendas\nsource(output(\n\t\tCICLO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tTFT as string,\n\t\tDIAS_UTEIS as string,\n\t\tVISITAS_ABATER as string,\n\t\tOBJETIVO_VISITA_DIA as string,\n\t\tDIAS_VISITACAO as string,\n\t\tVR_CLM as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_kpi_territorio.parquet']) ~> dKPITerritorio\nsource(output(\n\t\tCICLO as string,\n\t\tTERRITORIO_GD as string,\n\t\tTOTAL_COACHING as string,\n\t\tTOTAL_ABATER as string,\n\t\tDIAS_UTEIS_COACHING as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_coaching.parquet']) ~> dCoaching\nsource(output(\n\t\tKEY_DIVISAO_CICLO as string,\n\t\tFUNC_TOTAL as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_msl_division.parquet']) ~> dMSLDivision\nsource(output(\n\t\tID as string,\n\t\tCICLO as string,\n\t\tDIVISAO as string,\n\t\tTARGET_SRO_CRM as string,\n\t\tTARGET_SRO_VISITA as string,\n\t\tTARGET_SRO_MEDIA_DIA as string,\n\t\tTARGET_SRO_COACHING as string,\n\t\tTARGET_SRO_COB as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_cad_target_sro.parquet']) ~> dTargetSRO\nsource(output(\n\t\tID as string,\n\t\tCICLO_QUAD as string,\n\t\tCRM_QUAD as string,\n\t\tMERCADO_QUAD as string,\n\t\tCATEGORIA_QUAD as string,\n\t\tMKT_SHARE_QUAD as string,\n\t\tQUADRANTE_QUAD as string,\n\t\tJORNADA_QUAD as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_quadrante_medico.parquet']) ~> dQuadranteMedico\nsource(output(\n\t\tID as string,\n\t\tCRM_GP as string,\n\t\tMERCADO_GP as string,\n\t\tCATEGORIA_GP as string,\n\t\tJORNADA_GP as string,\n\t\tQUADRANTE_GP as string,\n\t\tROW_ID_TERRITORIO_GP as string,\n\t\tROW_ID_CONTATO_GP as string,\n\t\tCICLO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_quadrante_medico_gp.parquet']) ~> dQuadranteMedicoGP\nsource(output(\n\t\tID as string,\n\t\tCRM_UNIV as string,\n\t\tMEDICO_UNIV as string,\n\t\tESPECIALIDADE_UNIV as string,\n\t\tLOGRADOURO_UNIV as string,\n\t\tBAIRRO_UNIV as string,\n\t\tCIDADE_UNIV as string,\n\t\tCEP_UNIV as string,\n\t\tORIGEM_UNIV as string,\n\t\tUF_UNIV as string,\n\t\tBRICK_UNIV as string,\n\t\tTELEFONE_UNIV as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_audit_end.parquet']) ~> dAuditEnd\nsource(output(\n\t\tCRM_CICLO as string,\n\t\tMES as string,\n\t\tCICLO as string,\n\t\tCRM as string,\n\t\tMEDICO as string,\n\t\tTIPO as string,\n\t\tTIPOCONTATO as string,\n\t\tGRUPOPROMOCIONAL as string,\n\t\tESPECIALIDADE as string,\n\t\tLOGRADOURO as string,\n\t\tCOMPLEMENTO as string,\n\t\tBAIRRO as string,\n\t\tCIDADE as string,\n\t\tUF as string,\n\t\tCEP as string,\n\t\tBRICK as string,\n\t\tTELEFONEMEDICO as string,\n\t\tCELULARMEDICO as string,\n\t\tEMAIL_1_1 as string,\n\t\tROW_ID_FUNCIONARIO as string,\n\t\tROW_ID_TERRITORIO as string,\n\t\tROW_ID_CONTATO as string,\n\t\tSTATUS as string,\n\t\tQTD_VISITA_PLANEJADA_PAINEL as string,\n\t\tQTD_VISITA_REALIZADA_PAINEL as string,\n\t\tESPECIALIDADE_02 as string,\n\t\tESPECIALIDADE_03 as string,\n\t\tVP_PROX as string,\n\t\tSTATUS_MEDICO as string,\n\t\tEMAIL_1_1_CONSENT as string,\n\t\tNETWORK_ID as string,\n\t\tRX_GIGYA_ID as string,\n\t\tVEEVA_ID as string,\n\t\tROW_ID_CONTATO_EXT as string,\n\t\tEMAIL_MASS as string,\n\t\tEMAIL_MASS_CONSENT as string,\n\t\tCYCLE_PLAN as string,\n\t\tMERCADO as string,\n\t\tPRODUTO_PAINEL as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_painel_medico.parquet']) ~> dPainelMedico\nsource(output(\n\t\tEN as string,\n\t\tPT_BR as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'excel',\n\tfileSystem: 'gsksynapsestorage',\n\tfolderPath: 'synapse/workspaces/gsk-synapse/warehouse/aux.tabelas_auxiliares',\n\tfileName: 'Aux_Veeva_Especialidade_Traducao.xlsx',\n\tsheetName: 'Sheet3',\n\tfirstRowAsHeader: true) ~> TraducaoEspecialidadeEventos\nConcatChave select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tID_VISITA,\n\t\tTIPO_VISITA,\n\t\tTIPO_VISITA_PTBR,\n\t\tTIPO_VISITA_ORDER,\n\t\tCLM_IND,\n\t\tRECORD_TYPE_ID,\n\t\tRECORD_TYPE_NAME,\n\t\tDATA,\n\t\tCICLO,\n\t\tTARGET_PER_ID,\n\t\tROW_ID_TERRITORIO,\n\t\tSEMANA,\n\t\tFLAG_VISITA,\n\t\tTIPO_INTERACAO\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChavemamentoVisitasRealizadas\ndIntVisitasRealizadas derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO, TARGET_PER_ID, CICLO)) ~> ConcatChave\ndIntVisitasMedico derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO,ROW_ID_CONTATO,CICLO)) ~> ConcatChave2\nConcatChave2 select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tCICLO,\n\t\tROW_ID_TERRITORIO,\n\t\tROW_ID_CONTATO,\n\t\tVP,\n\t\tVR,\n\t\tVRE,\n\t\tVRT,\n\t\tPLANEJUN,\n\t\tREALUN,\n\t\tEFFECTIVE_CALLS,\n\t\tUNDER_CALLS,\n\t\tOVER_CALLS,\n\t\tOFF_TARGET_CALLS,\n\t\tTARGET_CUST,\n\t\tUNDER_TARGET,\n\t\tON_TARGET,\n\t\tOVER_TARGET,\n\t\tEMAIL_CONSENT_KPI,\n\t\tAT_DESIRED_FREQUENCY,\n\t\tOVER_DESIRED_FREQUENCY,\n\t\tTIPO_INTERACAO\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChaveamentoVisitasMedicos\ndIntEmail derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO,ROW_ID_CONTATO,CICLO)) ~> ConcatChave3\nConcatChave3 select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tCICLO,\n\t\tID_ENVIO_EMAIL,\n\t\tID_ATIV_EMAIL,\n\t\tTIPO_ATIV_EMAIL,\n\t\tDATA_ATIV_EMAIL,\n\t\tPRODUTO,\n\t\tROW_ID_CONTATO,\n\t\tROW_ID_TERRITORIO,\n\t\tDOCUMENTO_EMAIL,\n\t\tDESC_DOCUMENTO_EMAIL,\n\t\tASSUNTO_EMAIL,\n\t\tTIPO_INTERACAO\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChaveamentoEmail\ndIntVisitasFranchise derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO,ROW_ID_CONTATO,CICLO)) ~> ConcatChave4\nConcatChave4 select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tROW_ID_CONTATO,\n\t\tROW_ID_TERRITORIO,\n\t\tCICLO,\n\t\tPRODUTO_FRANCHISE,\n\t\tFRANCHISE,\n\t\tSUB_CAT_FRANCHISE,\n\t\tPESO_FRANCHISE,\n\t\tTIPO_INTERACAO\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChaveamentoVisitasFranchise\nHistZona unpivot(output(\n\t\tDATA_ZONA as string,\n\t\t{2020-05-26} as string,\n\t\t{2020-05-29} as string,\n\t\t{2020-06-01} as string,\n\t\t{2020-06-02} as string,\n\t\t{2020-06-03} as string,\n\t\t{2020-06-08} as string,\n\t\t{2020-06-09} as string,\n\t\t{2020-06-10} as string,\n\t\t{2020-06-11} as string,\n\t\t{2020-06-15} as string,\n\t\t{2020-06-17} as string,\n\t\t{2020-06-18} as string,\n\t\t{2020-06-19} as string,\n\t\t{2020-06-22} as string,\n\t\t{2020-06-24} as string,\n\t\t{2020-06-25} as string,\n\t\t{2020-06-26} as string,\n\t\t{2020-06-29} as string,\n\t\t{2020-06-30} as string,\n\t\t{2020-07-01} as string,\n\t\t{2020-07-06} as string,\n\t\t{2020-07-07} as string,\n\t\t{2020-07-10} as string,\n\t\t{2020-07-13} as string,\n\t\t{2020-07-14} as string,\n\t\t{2020-07-15} as string,\n\t\t{2020-07-20} as string,\n\t\t{2020-07-21} as string,\n\t\t{2020-07-27} as string,\n\t\t{2020-07-28} as string,\n\t\t{2020-08-04} as string,\n\t\t{2020-08-05} as string,\n\t\t{2020-08-06} as string,\n\t\t{2020-08-07} as string,\n\t\t{2020-08-10} as string,\n\t\t{2020-08-11} as string,\n\t\t{2020-09-04} as string\n\t),\n\tungroupBy(UF,\n\t\t{Cidade Base},\n\t\tCHAVE,\n\t\tTotal_Reps_OneFarma),\n\tlateral: true,\n\tignoreNullPivots: true) ~> UnpivotHistZona\nUnpivotHistZona select(mapColumn(\n\t\tCHAVE_ZONA = CHAVE,\n\t\tDATA_ZONA,\n\t\tSTATUS_ZONA = {2020-05-26}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempHistZona\nSelecaoTempHistZona derive(DATA_ZONA = toDate(DATA_ZONA),\n\t\tNUM_DATA_ZONA = minus(toDate(DATA_ZONA),toDate('1900-01-01'))+2,\n\t\tMES_ZONA = toString(toDate(DATA_ZONA), 'MMM')) ~> ChaveamentoHistZona\nRepsZona select(mapColumn(\n\t\tMUDID = Mudid,\n\t\tCIDADE_ZONA = CIDADE,\n\t\tUF_ZONA = UF,\n\t\tCHAVE,\n\t\tZONA_COMPLETA = ZONA\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempRepsZona\nSelecaoTempRepsZona derive(CHAVE_ZONA = concat(CIDADE_ZONA,'-',UF_ZONA),\n\t\tZONA = trim(split(ZONA_COMPLETA,' - ')[1])) ~> ChaveamentoRepsZona\ndForcaVendas select(mapColumn(\n\t\tBU,\n\t\tDIVISAO,\n\t\tNOME_GD,\n\t\tNOME_GR,\n\t\tNOME_REPRESENTANTE,\n\t\tMUDID,\n\t\tROW_ID_TERRITORIO,\n\t\tTERRITORIO,\n\t\tTERRITORIO_GD,\n\t\tTERRITORIO_GR,\n\t\tCICLO_FV,\n\t\tROW_ID_FUNCIONARIO,\n\t\tFLAG_PROJETO,\n\t\tFLAG_TARGET\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempForcaVendas\nSelecaoTempForcaVendas derive(KEY_TERR_CICLO = concat(ROW_ID_TERRITORIO,CICLO_FV),\n\t\tKEY_CICLO_TERR_GD = concat(CICLO_FV,right(TERRITORIO_GD,6)),\n\t\tKEY_DIVISAO_CICLO = concat(DIVISAO, CICLO_FV),\n\t\tKEY_MUDID_TERR = concat(MUDID, TERRITORIO),\n\t\tKEY_TERR = trim(concat(ROW_ID_TERRITORIO,''))) ~> ChaveamentoForcaVendas\nChaveamentoForcaVendas, ChaveamentoRepsZona join(SelecaoTempForcaVendas@MUDID == SelecaoTempRepsZona@MUDID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> LeftJoinRepsZonaFV\ndKPITerritorio select(mapColumn(\n\t\tCICLO,\n\t\tROW_ID_TERRITORIO,\n\t\tTFT,\n\t\tDIAS_UTEIS,\n\t\tVISITAS_ABATER,\n\t\tOBJETIVO_VISITA_DIA,\n\t\tDIAS_VISITACAO,\n\t\tVR_CLM\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempKPITerr\nSelecaoTempKPITerr derive(KEY_TERR_CICLO = concat(ROW_ID_TERRITORIO,CICLO)) ~> ChaveamentoKPITerr\ndCoaching select(mapColumn(\n\t\tCICLO,\n\t\tTERRITORIO_GD,\n\t\tTOTAL_COACHING,\n\t\tTOTAL_ABATER,\n\t\tDIAS_UTEIS_COACHING\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempCoaching\nSelecaoTempCoaching derive(KEY_CICLO_TERR_GD = concat(CICLO, right(TERRITORIO_GD, 6))) ~> ChaveamentoCoching\ndMSLDivision select(mapColumn(\n\t\tKEY_DIVISAO_CICLO,\n\t\tFUNC_TOTAL\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempMSLDivision\ndTargetSRO select(mapColumn(\n\t\tCICLO,\n\t\tDIVISAO,\n\t\tTARGET_SRO_CRM,\n\t\tTARGET_SRO_VISITA,\n\t\tTARGET_SRO_MEDIA_DIA,\n\t\tTARGET_SRO_COACHING,\n\t\tTARGET_SRO_COB\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempCadTargetSRO\nSelecaoTempCadTargetSRO derive(KEY_DIVISAO_CICLO = concat(DIVISAO, CICLO)) ~> ChaveamentoTargetSRO\ndQuadranteMedico select(mapColumn(\n\t\tCICLO_QUAD,\n\t\tCRM_QUAD,\n\t\tMERCADO_QUAD,\n\t\tCATEGORIA_QUAD,\n\t\tMKT_SHARE_QUAD,\n\t\tQUADRANTE_QUAD,\n\t\tJORNADA_QUAD\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempQM\nSelecaoTempQM derive(KEY_CRM_UNIV = trim(concat(CRM_QUAD,'')),\n\t\tKEY_CICLO_CRM = concat(CICLO_QUAD,CRM_QUAD)) ~> ChaveamentoQuadranteMedico\ndQuadranteMedicoGP select(mapColumn(\n\t\tCRM_GP,\n\t\tMERCADO_GP,\n\t\tCATEGORIA_GP,\n\t\tJORNADA_GP,\n\t\tQUADRANTE_GP,\n\t\tROW_ID_TERRITORIO_GP,\n\t\tROW_ID_CONTATO_GP,\n\t\tCICLO\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaotTempQDGP\nSelecaotTempQDGP derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO_GP, ROW_ID_CONTATO_GP, CICLO)) ~> ChaveamentoQuadranteMedicoGP\ndAuditEnd select(mapColumn(\n\t\tCRM_UNIV,\n\t\tMEDICO_UNIV,\n\t\tESPECIALIDADE_UNIV,\n\t\tLOGRADOURO_UNIV,\n\t\tBAIRRO_UNIV,\n\t\tCIDADE_UNIV,\n\t\tCEP_UNIV,\n\t\tORIGEM_UNIV,\n\t\tUF_UNIV,\n\t\tBRICK_UNIV,\n\t\tTELEFONE_UNIV\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoTempAuditEnd\nSelecaoTempAuditEnd derive(KEY_CRM_UNIV = trim(concat(CRM_UNIV,''))) ~> ChaveamentoAuditEnd\ndPainelMedico derive(KEY_TERR_CONT_CICLO = concat(ROW_ID_TERRITORIO, ROW_ID_CONTATO,CICLO),\n\t\tKEY_TERR_CICLO = concat(ROW_ID_TERRITORIO, CICLO),\n\t\tKEY_CICLO_CRM = concat(CICLO, CRM),\n\t\t{% Date Key} = toDate(toString(CICLO, 'yyyyMM'),'yyyyMM')) ~> ChaveamentoPainelMedico\ndIntEventos filter(EV_CICLO != '43590') ~> RemoverErros1\nRemoverErros1 filter(EVENTO != 'rio') ~> RemoverErros2\nRemoverErros2 filter(ID_EVENTO != '33825') ~> RemoverErros3\nTraducaoEspecialidadeEventos derive(PT_BR = upper(PT_BR)) ~> UpperEspecialidadeBR\nUpperEspecialidadeBR select(mapColumn(\n\t\tEN,\n\t\tEV_ESPECIALIDADE = PT_BR\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> TraducaoEspecialidadePTBR\nRemoverErros3, TraducaoEspecialidadePTBR join(EV_ESPECIALIDADE_ENG == EN,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> LeftJoinTraducaoEspecialidadeEventos\nLeftJoinTraducaoEspecialidadeEventos select(mapColumn(\n\t\tEVENTO,\n\t\tID_EVENTO,\n\t\tEV_CICLO,\n\t\tDATA_EVENTO,\n\t\tDATA_EVENTO_2,\n\t\tEV_CICLO_TERRITORIO,\n\t\tEV_CICLO_CONTATO,\n\t\tKEY_TERR_CONT_CICLO,\n\t\tID_PARTICIPANTE,\n\t\tNOME_PARTICIPANTE,\n\t\tEV_ROW_ID_TERRITORIO,\n\t\tNOME_USUARIO,\n\t\tEV_ROW_ID_CONTATO,\n\t\tDOCUMENTO,\n\t\tEV_ESPECIALIDADE_ENG,\n\t\tSTATUS_CONVIDADO_GR,\n\t\tSTATUS_CONVIDADO,\n\t\tSTATUS_CONVIDADO_ENG,\n\t\tPRODUTO_PRIMARIO,\n\t\tPRODUTO_SECUNDARIO,\n\t\tTIPO_PARTICIPACAO,\n\t\tTIPO_PARTICIPACAO_ENG,\n\t\tTIPO_CONTA,\n\t\tTIPO_CONTA_ENG,\n\t\tVISITADO_SETOR,\n\t\tNOME_SETOR_VISITANTE,\n\t\tEV_ESPECIALIDADE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ChaveamentoEventos\nChavemamentoVisitasRealizadas, ChaveamentoVisitasMedicos, ChaveamentoEmail, ChaveamentoVisitasFranchise, ChaveamentoEventos union(byName: true)~> UnionVisitasMedico\nUnionVisitasMedico select(mapColumn(\n\t\tKEY_TERR_CONT_CICLO,\n\t\tID_VISITA,\n\t\tTIPO_VISITA,\n\t\tTIPO_VISITA_PTBR,\n\t\tTIPO_VISITA_ORDER,\n\t\tCLM_IND,\n\t\tRECORD_TYPE_ID,\n\t\tRECORD_TYPE_NAME,\n\t\tDATA,\n\t\tCICLO,\n\t\tTARGET_PER_ID,\n\t\tROW_ID_TERRITORIO,\n\t\tSEMANA,\n\t\tFLAG_VISITA,\n\t\tTIPO_INTERACAO,\n\t\tROW_ID_CONTATO,\n\t\tVP,\n\t\tVR,\n\t\tVRE,\n\t\tVRT,\n\t\tPLANEJUN,\n\t\tREALUN,\n\t\tEFFECTIVE_CALLS,\n\t\tUNDER_CALLS,\n\t\tOVER_CALLS,\n\t\tOFF_TARGET_CALLS,\n\t\tTARGET_CUST,\n\t\tUNDER_TARGET,\n\t\tON_TARGET,\n\t\tOVER_TARGET,\n\t\tEMAIL_CONSENT_KPI,\n\t\tAT_DESIRED_FREQUENCY,\n\t\tOVER_DESIRED_FREQUENCY,\n\t\tID_ENVIO_EMAIL,\n\t\tID_ATIV_EMAIL,\n\t\tTIPO_ATIV_EMAIL,\n\t\tDATA_ATIV_EMAIL,\n\t\tPRODUTO,\n\t\tDOCUMENTO_EMAIL,\n\t\tDESC_DOCUMENTO_EMAIL,\n\t\tASSUNTO_EMAIL,\n\t\tPRODUTO_FRANCHISE,\n\t\tFRANCHISE,\n\t\tSUB_CAT_FRANCHISE,\n\t\tPESO_FRANCHISE,\n\t\tEVENTO,\n\t\tID_EVENTO,\n\t\tEV_CICLO,\n\t\tDATA_EVENTO,\n\t\tDATA_EVENTO_2,\n\t\tEV_CICLO_TERRITORIO,\n\t\tEV_CICLO_CONTATO,\n\t\tID_PARTICIPANTE,\n\t\tNOME_PARTICIPANTE,\n\t\tEV_ROW_ID_TERRITORIO,\n\t\tNOME_USUARIO,\n\t\tEV_ROW_ID_CONTATO,\n\t\tDOCUMENTO,\n\t\tEV_ESPECIALIDADE_ENG,\n\t\tSTATUS_CONVIDADO_GR,\n\t\tSTATUS_CONVIDADO,\n\t\tSTATUS_CONVIDADO_ENG,\n\t\tPRODUTO_PRIMARIO,\n\t\tPRODUTO_SECUNDARIO,\n\t\tTIPO_PARTICIPACAO,\n\t\tTIPO_PARTICIPACAO_ENG,\n\t\tTIPO_CONTA,\n\t\tTIPO_CONTA_ENG,\n\t\tVISITADO_SETOR,\n\t\tNOME_SETOR_VISITANTE,\n\t\tEV_ESPECIALIDADE\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoFatoInteracao\nLeftJoinRepsZonaFV select(mapColumn(\n\t\tBU,\n\t\tDIVISAO,\n\t\tNOME_GD,\n\t\tNOME_GR,\n\t\tNOME_REPRESENTANTE,\n\t\tMUDID = SelecaoTempForcaVendas@MUDID,\n\t\tROW_ID_TERRITORIO,\n\t\tTERRITORIO,\n\t\tTERRITORIO_GD,\n\t\tTERRITORIO_GR,\n\t\tCICLO_FV,\n\t\tROW_ID_FUNCIONARIO,\n\t\tFLAG_PROJETO,\n\t\tFLAG_TARGET,\n\t\tKEY_TERR_CICLO,\n\t\tKEY_CICLO_TERR_GD,\n\t\tKEY_DIVISAO_CICLO,\n\t\tKEY_MUDID_TERR,\n\t\tKEY_TERR,\n\t\tMUDID = SelecaoTempRepsZona@MUDID,\n\t\tCIDADE_ZONA,\n\t\tUF_ZONA,\n\t\tCHAVE,\n\t\tZONA_COMPLETA,\n\t\tCHAVE_ZONA,\n\t\tZONA\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DimForcaVendas\nChaveamentoPainelMedico select(mapColumn(\n\t\tCRM_CICLO,\n\t\tMES,\n\t\tCICLO,\n\t\tCRM,\n\t\tMEDICO,\n\t\tTIPO,\n\t\tTIPOCONTATO,\n\t\tGRUPOPROMOCIONAL,\n\t\tESPECIALIDADE,\n\t\tLOGRADOURO,\n\t\tCOMPLEMENTO,\n\t\tBAIRRO,\n\t\tCIDADE,\n\t\tUF,\n\t\tCEP,\n\t\tBRICK,\n\t\tTELEFONEMEDICO,\n\t\tCELULARMEDICO,\n\t\tEMAIL_1_1,\n\t\tROW_ID_FUNCIONARIO,\n\t\tROW_ID_TERRITORIO,\n\t\tROW_ID_CONTATO,\n\t\tSTATUS,\n\t\tQTD_VISITA_PLANEJADA_PAINEL,\n\t\tQTD_VISITA_REALIZADA_PAINEL,\n\t\tESPECIALIDADE_02,\n\t\tESPECIALIDADE_03,\n\t\tVP_PROX,\n\t\tSTATUS_MEDICO,\n\t\tEMAIL_1_1_CONSENT,\n\t\tNETWORK_ID,\n\t\tRX_GIGYA_ID,\n\t\tVEEVA_ID,\n\t\tROW_ID_CONTATO_EXT,\n\t\tEMAIL_MASS,\n\t\tEMAIL_MASS_CONSENT,\n\t\tCYCLE_PLAN,\n\t\tMERCADO,\n\t\tPRODUTO_PAINEL,\n\t\tKEY_TERR_CONT_CICLO,\n\t\tKEY_TERR_CICLO,\n\t\tKEY_CICLO_CRM,\n\t\tDATE_KEY = {% Date Key}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecaoPainelMedico\nSelecaoFatoInteracao sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'fato_interacoes_[n].parquet',\n\ttruncate: true,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1) ~> SinkFatoInteracoes\nDimForcaVendas sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_forca_vendas.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimForcaVendas\nChaveamentoHistZona sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_historico_zonas.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 3) ~> SinkDimHistoricoZonas\nChaveamentoKPITerr sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_kpi_territorio.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 3) ~> SinkDimKpiTerritorio\nChaveamentoCoching sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_coaching.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 3) ~> SinkCoaching\nSelecaoTempMSLDivision sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_msl_division.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimMslDivision\nChaveamentoTargetSRO sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_target_sro.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimTargetSro\nChaveamentoQuadranteMedico sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_quadrante_medico_p_[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimQuadranteMedico\nChaveamentoQuadranteMedicoGP sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_quadrante_medico_gp_[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimQuadranteMedicoGp\nChaveamentoAuditEnd sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_audit_end.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimAuditEnd\nSelecaoPainelMedico sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_painel_medico_[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2) ~> SinkDimPainelMedico"
 				}
 			},
 			"dependsOn": [
@@ -7222,6 +10315,44 @@
 				},
 				"content": {
 					"query": "-- ALTER VIEW kpivis.fato_visitas_realizadas\n-- AS\nSELECT\n[VISITA]\n,[CICLO_TERRITORIO_CONTATO]\n,[CICLO_TERRITORIO_DIVISAO]\n,[DATA]\n,[DATA_VISITA]\n,[VISITA_ID]\n,[CICLO]\n,[VR_TIPO]\n,[QTD_VISITA_REALIZADA]\n,[ORIGEM]\n,[MUDID]\n,[ID_PROPRIETARIO]\n,[POSICAO_PROPRIETARIO]\n,[TODO_CD]\n,[ROW_ID_CONTATO]\n,[TIPO_VISITA]\n,[GP]\n,[FLAG_CLM]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/fato_visitas_realizadas*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[VISITA]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO_TERRITORIO_CONTATO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO_TERRITORIO_DIVISAO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DATA]\t\t\t\t\t\t\t\tDATE\n,[DATA_VISITA]\t\t\t\t\t\tDATE\n,[VISITA_ID]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VR_TIPO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[QTD_VISITA_REALIZADA]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ORIGEM]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MUDID]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ID_PROPRIETARIO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[POSICAO_PROPRIETARIO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TODO_CD]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_CONTATO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPO_VISITA]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[GP]\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[FLAG_CLM]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8) AS ROW\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"name": "GSK",
+						"type": "SqlOnDemand"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 1')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"name": "master",
+						"type": "SqlOnDemand"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 2')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT \n[KEY_TERR_CICLO]\n FROM [kpiemail].[dim_forca_vendas]\n where [KEY_TERR_CICLO] is not null",
 					"metadata": {
 						"language": "sql"
 					},
