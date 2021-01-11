@@ -571,7 +571,14 @@
 			{
 				"name": "STG_Fato_Campos_Espec_Territorio_Veeva",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "STG_Fato_Eventos_Veeva",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -665,6 +672,250 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"nome_arquivo": "STG_Fato_Campos_Espec_Territorio_Veeva.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "STG_Fato_Eventos_Veeva",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "TeradataSource",
+						"query": "SELECT DISTINCT\n     TRIM(COALESCE(A.MEDICAL_EVENT_ID,'')) as \"ID_EVENTO\"\n     , TRIM(COALESCE(A.LOCATION,'')) as \"LOCALIZACAO\"\n     , TRIM(COALESCE(A.EVENT_TYPE,''))  as \"TIPO_EVENTO\"\n     , TRIM(COALESCE(OREPLACE(A.EVENT_NAME,'~','-'),'')) as \"NOME_EVENTO\" \n     , TRIM(COALESCE(CAST(A.START_DATE AS VARCHAR(100)),'')) as \"DATA_INICIO\"\n     , TRIM(COALESCE(CAST(A.END_DATE AS VARCHAR(100)),'')) as \"DATA_FIM\"\n     , TRIM(COALESCE(C.PRODUCT_NAME,'')) as \"PRODUTO_PRIMARIO\"\n     , TRIM(COALESCE(D.PRODUCT_NAME,'')) as \"PRODUTO_SECUNDARIO\"\n     , TRIM(COALESCE(B.TERRITORY_ID,'')) as \"ROW_ID_TERRITORIO\"\n     , TRIM(COALESCE(B.ATTENDEE_ID,'')) as \"ROW_ID_CONTATO\" \n     , TRIM(COALESCE(E.RX_LEGAL_ID,'')) as \"DOCUMENTO\"\n     , TRIM(COALESCE(B.ATTENDEE_TYPE,'')) as \"TIPO_CONTA\"\n     , TRIM(COALESCE(B.RX_ROLE,'')) as \"TIPO_PARTICIPACAO\"\n     , TRIM(COALESCE(B.ATTENDEE_STATUS,'')) \"STATUS_CONVIDADO\"\n     , TRIM(COALESCE(U.NAME,'')) as \"CRIADO_POR\"\n     , TRIM(COALESCE(U.ALIAS_NAME,'')) as \"CRIADO_POR_MUDID\"\n     , TRIM(COALESCE(B.ATTENDEE,'')) (TITLE'') as \"PARTICIPANTE\"\n          \n FROM \n     LATAMCRMFBICNTRYBRVW.D_MEDICAL_EVENT A LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.F_MEDICAL_EVENT_ATTENDEE B\n     ON A.MEDICAL_EVENT_ID = B.MEDICAL_EVENT_ID\n     \n     LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG C\n     ON A.RX_PRIMARY_PRODUCT = C.SOURCE_PRODUCT_CATALOG_AID\n     \n     LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG D\n     ON A.RX_SECONDARY_PRODUCT = D.SOURCE_PRODUCT_CATALOG_AID\n     \n     LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_ACCOUNT E\n     ON B.ATTENDEE_ID = E.ACCOUNT_ID\n     \n     LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_USER U\n     ON A.OWNER_AID = U.SOURCE_USER_AID\n     \n WHERE\n     A.DELETED_IND = 0 AND B.DELETED_IND = 0\n     AND\n     ((EXTRACT(YEAR FROM END_DATE) = EXTRACT (YEAR FROM CURRENT_DATE) AND \n      EXTRACT(MONTH FROM END_DATE) = EXTRACT (MONTH FROM CURRENT_DATE))\n     OR\n     (EXTRACT(YEAR FROM END_DATE) = EXTRACT ( YEAR FROM ADD_MONTHS (CURRENT_DATE , -1) ) AND \n      EXTRACT(MONTH FROM END_DATE) = EXTRACT ( MONTH FROM ADD_MONTHS (CURRENT_DATE , -1) )));",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ID_EVENTO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LOCALIZACAO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LOCALIZACAO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_EVENTO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TIPO_EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME_EVENTO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NOME_EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DATA_INICIO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DATA_INICIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DATA_FIM",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DATA_FIM",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PRODUTO_PRIMARIO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PRODUTO_PRIMARIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PRODUTO_SECUNDARIO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PRODUTO_SECUNDARIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_CONTATO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_CONTATO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DOCUMENTO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DOCUMENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_CONTA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TIPO_CONTA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_PARTICIPACAO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TIPO_PARTICIPACAO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "STATUS_CONVIDADO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "STATUS_CONVIDADO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CRIADO_POR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CRIADO_POR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CRIADO_POR_MUDID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CRIADO_POR_MUDID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PARTICIPANTE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PARTICIPANTE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TeradataTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Staging_Area_txt",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "STG_Fato_Eventos_Veeva.txt"
 						}
 					}
 				]
