@@ -4369,7 +4369,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "STG_Cad_Contas_Veeva_copy1",
+						"activity": "STG_Cad_Enderecos_Veeva",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -4825,7 +4825,7 @@
 				]
 			},
 			{
-				"name": "STG_Cad_Contas_Veeva_copy1",
+				"name": "STG_Cad_Enderecos_Veeva",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -4839,7 +4839,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "TeradataSource",
-						"query": "SELECT DISTINCT\n                TRIM(COALESCE(PERSON_EMAIL,''))                       as \"EMAIL\"\n                ,TRIM(COALESCE(PERSON_OTHER_PHONE,''))                as \"OUTRO_TELEFONE\"\n                ,TRIM(COALESCE(RX_LEGAL_ID,''))                       as \"DOCUMENTO\"\n                ,TRIM(COALESCE(RX_OTHER_EMAIL,''))                    as \"OUTRO_EMAIL\"\n                ,TRIM(COALESCE(RX_CONSENT_TO_VISIT_HCO,''))           as \"RX_CONSENT_TO_VISIT_HCO\"\n                ,TRIM(COALESCE(RX_OTHER_ID,''))                       as \"OUTRO_ID\"\n                ,TRIM(COALESCE(RX_HCP_ACCOUNT_TYPE,''))               as \"TIPO_HCP\"\n                ,TRIM(COALESCE(RX_HCO_TYPE,''))                       as \"TIPO_HCO\"\n                ,TRIM(COALESCE(RX_BUSINESS_TYPE,''))                  as \"TIPO_NEGOCIO\"\n                ,TRIM(COALESCE(RX_HCO_SUBTYPE,''))                    as \"SUBTIPO_HCO\"\n                ,TRIM(COALESCE(RX_HCO_EMAIL,''))                      as \"EMAIL_HCO\"\n                ,TRIM(COALESCE(SPECIALTY_1,''))                       as \"ESPECIALIDADE\"\n                ,TRIM(COALESCE(SPECIALTY_2,''))                       as \"ESPECIALIDADE2\"\n                ,TRIM(COALESCE(APPROVED_EMAIL_OPT_TYPE,''))           as \"APROVACAO_EMAIL_OPT\"\n                ,TRIM(COALESCE(RECORD_TYPE,''))                       as \"TIPO_REGISTRO\"\n                ,TRIM(COALESCE(PHONE,''))                             as \"TELEFONE\"\n                ,TRIM(COALESCE(PRIMARY_PARENT_ACCOUNT,''))            as \"CONTA_PAI\"\n                ,TRIM(COALESCE(PERSON_MOBILE_PHONE,''))               as \"CELULAR\"\n                ,TRIM(COALESCE(FIRST_NAME,''))                        as \"PRIMEIRO_NOME\"\n                ,TRIM(COALESCE(MIDDLE_NAME,''))                       as \"NOME_MEIO\"\n                ,TRIM(COALESCE(LAST_NAME,''))                         as \"ULTIMO_NOME\"\n                ,TRIM(COALESCE(DELETED_IND,''))                       as \"DELETED_IND\"\n                ,TRIM(COALESCE(GENDER,''))                            as \"SEXO\"\n                ,TRIM(COALESCE(ACCOUNT_IS_PERSON_IND,''))             as \"HCP_IND\"\n                ,TRIM(COALESCE(RX_GSK_VIIV_ACCOUNT_IND,''))           as \"CONTA_VIIV_IND\"\n                ,TRIM(COALESCE(CUSTOMER_MASTER_STATUS,''))            as \"STATUS\"\n                ,TRIM(COALESCE(SOURCE_ACCOUNT_AID,''))                as \"ROW_ID_CONTATO_EXT\"\n                ,TRIM(COALESCE(ACCOUNT_ID,''))                        as \"ROW_ID_CONTATO\"\n                ,TRIM(COALESCE(CAST(BIRTH_DATE AS VARCHAR(100)),''))  as \"ANIVERSARIO\"\n                ,TRIM(COALESCE(NAME,''))                              as \"NOME\"\n                ,TRIM(COALESCE(RX_LEGACY_ID,''))                      as \"RX_LEGACY_ID\"\n                ,TRIM(COALESCE(RX_NETWORK_AID,''))                    as \"RX_NETWORK_ID\"\n                ,TRIM(COALESCE(RX_GOVERNMENT_OFFICIAL_IND,''))        as \"OFIC_GOV\"\n                ,TRIM(COALESCE(BR_LEGAL_ID,''))                       as \"DOCUMENTO2\"\n                ,TRIM(COALESCE(EXTERNAL_AID,''))                      as \"EXTERNAL_AID\"\n                ,TRIM(COALESCE(RX_GIGYA_ID,'')) (TITLE'')             as \"RX_GIGYA_ID\"\n FROM LATAMCRMFBICNTRYBRVW.D_ACCOUNT;",
+						"query": {
+							"value": "SELECT DISTINCT\n\tTRIM(COALESCE(DELETED_IND,'')) \t\t\t\t\t\tAS \"DELETED_IND\"\n\t, TRIM(COALESCE(INACTIVE_IND,''))\t\t\t\t\tAS \"INACTIVE_IND\"\n\t, TRIM(COALESCE(ACCOUNT_AID,''))                    AS \"ROW_ID_CONTATO_EXT\"\n\t, TRIM(COALESCE(ADDRESS_LINE_1,''))                 AS \"LOGRADOURO\"\n\t, TRIM(COALESCE(ADDRESS_ID,''))                     AS \"ROW_ID_ENDERECO\"\n\t, TRIM(COALESCE(CUSTOMER_MASTER_STATUS,''))         AS \"STATUS_ENDERECO\"\n\t, TRIM(COALESCE(RX_TYPE,''))                        AS \"TIPO\"\n\t, TRIM(COALESCE(ADDRESS_LINE_2,''))                 AS \"BAIRRO\"\n\t, TRIM(COALESCE(CITY,''))                           AS \"CIDADE\"\n\t, TRIM(COALESCE(ZIP,''))                            AS \"CEP\"\n\t, TRIM(COALESCE(PRIMARY_ADDRESS_IND,''))            AS \"ENDERECO_PRIMARIO\"\n\t, TRIM(COALESCE(STATE,''))                          AS \"UF\"\n\t, TRIM(COALESCE(PHONE,''))                          AS \"TELEFONE\"\n\t, TRIM(COALESCE(PHONE_2,''))                        AS \"TELEFONE2\"\n\t, TRIM(COALESCE(SOURCE_ADDRESS_AID,'')) (TITLE'')   AS \"ROW_ID_END_EXT\"\n FROM LATAMCRMFBICNTRYBRVW.D_ADDRESS;",
+							"type": "Expression"
+						},
 						"partitionOption": "None"
 					},
 					"sink": {
@@ -4859,237 +4862,6 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "EMAIL",
-									"type": "String"
-								},
-								"sink": {
-									"name": "EMAIL",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "OUTRO_TELEFONE",
-									"type": "String"
-								},
-								"sink": {
-									"name": "OUTRO_TELEFONE",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "DOCUMENTO",
-									"type": "String"
-								},
-								"sink": {
-									"name": "DOCUMENTO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "OUTRO_EMAIL",
-									"type": "String"
-								},
-								"sink": {
-									"name": "OUTRO_EMAIL",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "RX_CONSENT_TO_VISIT_HCO",
-									"type": "String"
-								},
-								"sink": {
-									"name": "RX_CONSENT_TO_VISIT_HCO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "OUTRO_ID",
-									"type": "String"
-								},
-								"sink": {
-									"name": "OUTRO_ID",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TIPO_HCP",
-									"type": "String"
-								},
-								"sink": {
-									"name": "TIPO_HCP",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TIPO_HCO",
-									"type": "String"
-								},
-								"sink": {
-									"name": "TIPO_HCO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TIPO_NEGOCIO",
-									"type": "String"
-								},
-								"sink": {
-									"name": "TIPO_NEGOCIO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "SUBTIPO_HCO",
-									"type": "String"
-								},
-								"sink": {
-									"name": "SUBTIPO_HCO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "EMAIL_HCO",
-									"type": "String"
-								},
-								"sink": {
-									"name": "EMAIL_HCO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ESPECIALIDADE",
-									"type": "String"
-								},
-								"sink": {
-									"name": "ESPECIALIDADE",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ESPECIALIDADE2",
-									"type": "String"
-								},
-								"sink": {
-									"name": "ESPECIALIDADE2",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "APROVACAO_EMAIL_OPT",
-									"type": "String"
-								},
-								"sink": {
-									"name": "APROVACAO_EMAIL_OPT",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TIPO_REGISTRO",
-									"type": "String"
-								},
-								"sink": {
-									"name": "TIPO_REGISTRO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "TELEFONE",
-									"type": "String"
-								},
-								"sink": {
-									"name": "TELEFONE",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "CONTA_PAI",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CONTA_PAI",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "CELULAR",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CELULAR",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "PRIMEIRO_NOME",
-									"type": "String"
-								},
-								"sink": {
-									"name": "PRIMEIRO_NOME",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "NOME_MEIO",
-									"type": "String"
-								},
-								"sink": {
-									"name": "NOME_MEIO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "ULTIMO_NOME",
-									"type": "String"
-								},
-								"sink": {
-									"name": "ULTIMO_NOME",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
 									"name": "DELETED_IND",
 									"type": "String"
 								},
@@ -5101,44 +4873,11 @@
 							},
 							{
 								"source": {
-									"name": "SEXO",
+									"name": "INACTIVE_IND",
 									"type": "String"
 								},
 								"sink": {
-									"name": "SEXO",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "HCP_IND",
-									"type": "String"
-								},
-								"sink": {
-									"name": "HCP_IND",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "CONTA_VIIV_IND",
-									"type": "String"
-								},
-								"sink": {
-									"name": "CONTA_VIIV_IND",
-									"type": "String",
-									"physicalType": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "STATUS",
-									"type": "String"
-								},
-								"sink": {
-									"name": "STATUS",
+									"name": "INACTIVE_IND",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -5156,99 +4895,132 @@
 							},
 							{
 								"source": {
-									"name": "ROW_ID_CONTATO",
+									"name": "LOGRADOURO",
 									"type": "String"
 								},
 								"sink": {
-									"name": "ROW_ID_CONTATO",
+									"name": "LOGRADOURO",
 									"type": "String",
 									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "ANIVERSARIO",
+									"name": "ROW_ID_ENDERECO",
 									"type": "String"
 								},
 								"sink": {
-									"name": "ANIVERSARIO",
+									"name": "ROW_ID_ENDERECO",
 									"type": "String",
 									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "NOME",
+									"name": "STATUS_ENDERECO",
 									"type": "String"
 								},
 								"sink": {
-									"name": "NOME",
+									"name": "STATUS_ENDERECO",
 									"type": "String",
 									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "RX_LEGACY_ID",
+									"name": "TIPO",
 									"type": "String"
 								},
 								"sink": {
-									"name": "RX_LEGACY_ID",
+									"name": "TIPO",
 									"type": "String",
 									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "RX_NETWORK_ID",
+									"name": "BAIRRO",
 									"type": "String"
 								},
 								"sink": {
-									"name": "RX_NETWORK_ID",
+									"name": "BAIRRO",
 									"type": "String",
 									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "OFIC_GOV",
+									"name": "CIDADE",
 									"type": "String"
 								},
 								"sink": {
-									"name": "OFIC_GOV",
+									"name": "CIDADE",
 									"type": "String",
 									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "DOCUMENTO2",
+									"name": "CEP",
 									"type": "String"
 								},
 								"sink": {
-									"name": "DOCUMENTO2",
+									"name": "CEP",
 									"type": "String",
 									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "EXTERNAL_AID",
+									"name": "ENDERECO_PRIMARIO",
 									"type": "String"
 								},
 								"sink": {
-									"name": "EXTERNAL_AID",
+									"name": "ENDERECO_PRIMARIO",
 									"type": "String",
 									"physicalType": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "RX_GIGYA_ID",
+									"name": "UF",
 									"type": "String"
 								},
 								"sink": {
-									"name": "RX_GIGYA_ID",
+									"name": "UF",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TELEFONE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TELEFONE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TELEFONE2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TELEFONE2",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_END_EXT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_END_EXT",
 									"type": "String",
 									"physicalType": "String"
 								}
@@ -5272,7 +5044,7 @@
 						"referenceName": "Staging_Area_txt",
 						"type": "DatasetReference",
 						"parameters": {
-							"nome_arquivo": "STG_Cad_Contas_Veeva.txt"
+							"nome_arquivo": "STG_Cad_Enderecos_Veeva.txt"
 						}
 					}
 				]
