@@ -5,14 +5,7 @@
 			{
 				"name": "dim_visits",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "fato_gso_call_summary",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -838,7 +831,14 @@
 			{
 				"name": "fato_gso_call_summary",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "fato_gso_response",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
