@@ -4827,7 +4827,14 @@
 			{
 				"name": "STG_Cad_Enderecos_Veeva",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "STG_Dim_Jornada_Cliente_Veeva",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -5045,6 +5052,1481 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"nome_arquivo": "STG_Cad_Enderecos_Veeva.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "STG_Dim_Jornada_Cliente_Veeva",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "STG_D_Em_Event",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "TeradataSource",
+						"query": {
+							"value": "SELECT\n      MIN(J.CUSTOMER_JOURNEY) as \"CUSTOMER_JOURNEY\"\n      , CASE MIN(J.CUSTOMER_JOURNEY)\n        WHEN 'Reach' THEN 'COMPREENSÃO'\n        WHEN 'Acquisition' THEN 'EXPERIMENTAÇÃO'\n        WHEN 'Conversion' THEN 'EXPANSÃO'\n        WHEN 'Engagement' THEN 'ADESÃO'\n  END as \"JORNADA\"\n      , P.PRODUCT_NAME  as \"PRODUTO\"\n      , A.RX_LEGAL_ID as \"DOCUMENTO\"\n      , A.ID_2 as \"LEGAL_ID_2\"\n      , A.RX_LEGACY_ID as \"RX_LEGACY_ID\" \n      , FIRST_NAME || ' ' || MIDDLE_NAME || ' ' || LAST_NAME as \"NOME_REPRESENTANTE\"\n      , A.ACCOUNT_ID as \"ROW_ID_CONTATO\"\n      , A.RX_NETWORK_AID as \"NETWORKID\"\n      , A.RX_ACCOUNT_VEEVA_ID as \"ROW_ID_CONTATO_EXT\"\n      , J.START_DATE as \"DT_INICIO_VEEVA\"\n      , CURRENT_DATE as \"DT_INCLUSAO\"\n   FROM LATAMCRMFBICNTRYBRVW.S_CUSTOMER_JOURNEY J\n      LEFT JOIN LATAMCRMFBICNTRYBRVW.D_ACCOUNT A ON (A.ACCOUNT_ID = J.ACCOUNT_ID)\n      LEFT JOIN LATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG P ON (P.PRODUCT_CATALOG_ID = J.PRODUCT_CATALOG_ID)\n      LEFT JOIN LATAMCRMFBICNTRYBRVW.D_COUNTRY C ON (C.COUNTRY_ID = J.COUNTRY_ID)\n   WHERE CURRENT_DATE BETWEEN START_DATE AND END_DATE \n      AND C.COUNTRY_CODE = 'BR'\n      AND CUSTOMER_JOURNEY <> 'UNSPECIFIED' \n      AND A.RX_ACCOUNT_VEEVA_ID IS NOT NULL\n      AND P.COMPANY_PRODUCT_IND = '1' \n      AND P.PRODUCT_NAME IN ('BEXSERO', 'BENLYSTA', 'NUCALA', 'TIVICAY', 'NUCALA GEPA')\n   GROUP BY  \n      P.PRODUCT_NAME,\n      A.RX_LEGAL_ID,\n      A.ID_2, \n      A.RX_LEGACY_ID,\n      START_DATE, \n      FIRST_NAME || ' ' || MIDDLE_NAME || ' ' || LAST_NAME,\n      A.ACCOUNT_ID, \n      A.RX_NETWORK_AID, \n      A.RX_ACCOUNT_VEEVA_ID \n   ORDER BY START_DATE DESC;",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "CUSTOMER_JOURNEY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CUSTOMER_JOURNEY",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "JORNADA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "JORNADA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PRODUTO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PRODUTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DOCUMENTO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DOCUMENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LEGAL_ID_2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LEGAL_ID_2",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RX_LEGACY_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "RX_LEGACY_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME_REPRESENTANTE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NOME_REPRESENTANTE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_CONTATO",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "ROW_ID_CONTATO",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "NETWORKID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NETWORKID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_CONTATO_EXT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_CONTATO_EXT",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DT_INICIO_VEEVA",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "DT_INICIO_VEEVA",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "DT_INCLUSAO",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "DT_INCLUSAO",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TeradataTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Staging_Area_txt",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "STG_Dim_Jornada_Cliente_Veeva.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "STG_D_Em_Event",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "STG_Fato_Eventos_Veeva_Full",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "TeradataSource",
+						"query": " select *  \n    FROM LATAMCRMFBICNTRYBRVW.D_EM_EVENT;",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "EM_EVENT_ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "EM_EVENT_ID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "SOURCE_EM_EVENT_AID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SOURCE_EM_EVENT_AID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "OWNER_AID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "OWNER_AID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DELETED_IND",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DELETED_IND",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CURRENCY_ISO_CODE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CURRENCY_ISO_CODE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RECORD_TYPE_AID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "RECORD_TYPE_AID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CREATED_DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "CREATED_DATE",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CREATED_BY_AID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CREATED_BY_AID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_MODIFIED_DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "LAST_MODIFIED_DATE",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_MODIFIED_BY_AID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LAST_MODIFIED_BY_AID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SYSTEM_MOD_STAMP",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "SYSTEM_MOD_STAMP",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_ACTIVITY_DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "LAST_ACTIVITY_DATE",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "MAY_EDIT_IND",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MAY_EDIT_IND",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LOCKED_IND",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LOCKED_IND",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_VIEWED_DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "LAST_VIEWED_DATE",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_REFERENCED_DATE",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "LAST_REFERENCED_DATE",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ACTUAL_ATTENDANCE",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "ACTUAL_ATTENDANCE",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "ACTUAL_COST",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "ACTUAL_COST",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "ACTUAL_MEAL_COST_P_PRSON",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "ACTUAL_MEAL_COST_P_PRSON",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "ATTENDEES_REQ_MEALS",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "ATTENDEES_REQ_MEALS",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "ATTENDEES_WITH_MEALS",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "ATTENDEES_WITH_MEALS",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "CITY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CITY",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "COMMITTED_COST",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "COMMITTED_COST",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "COUNTRY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "COUNTRY",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DESCRIPTION",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DESCRIPTION",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "END_TIME",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "END_TIME",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ESTIMATED_ATTENDANCE",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "ESTIMATED_ATTENDANCE",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "ESTIMATED_COST",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "ESTIMATED_COST",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "EVENT_CONFIGURATION",
+									"type": "String"
+								},
+								"sink": {
+									"name": "EVENT_CONFIGURATION",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EXTERNAL_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "EXTERNAL_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "HCPS_WITH_MEALS",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "HCPS_WITH_MEALS",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "INVITED_ATTENDEES",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "INVITED_ATTENDEES",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "LOCATION_ADDRESS_LINE_2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LOCATION_ADDRESS_LINE_2",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LOCATION_ADDRESS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LOCATION_ADDRESS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LOCATION",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LOCATION",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LOCKED",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LOCKED",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MOBILE_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MOBILE_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "OVERRIDE_LOCK",
+									"type": "String"
+								},
+								"sink": {
+									"name": "OVERRIDE_LOCK",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PARENT_EVENT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PARENT_EVENT",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "POSTAL_CODE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "POSTAL_CODE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "START_TIME",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "START_TIME",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "STATE_PROVINCE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "STATE_PROVINCE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "STATUS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "STATUS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "STUB_MOBILE_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "STUB_MOBILE_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "STUB_SFDC_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "STUB_SFDC_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TOPIC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TOPIC",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "VENDOR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "VENDOR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "VENUE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "VENUE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ZVOD_EVENT_LAYOUT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ZVOD_EVENT_LAYOUT",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ATTENDEE_RECON_COMPLETE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ATTENDEE_RECON_COMPLETE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EVENT_DISPLAY_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "EVENT_DISPLAY_NAME",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "WALK_IN_COUNT",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "WALK_IN_COUNT",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "WALK_IN_FIELDS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "WALK_IN_FIELDS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ACCOUNT_ATTENDEE_FIELDS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ACCOUNT_ATTENDEE_FIELDS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ONLINE_REGISTRANT_COUNT",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "ONLINE_REGISTRANT_COUNT",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "ONLINE_REG_FIELDS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ONLINE_REG_FIELDS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CONTACT_ATTENDEE_FIELDS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CONTACT_ATTENDEE_FIELDS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "USER_ATTENDEE_FIELDS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "USER_ATTENDEE_FIELDS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ACTUAL_COST_PER_ATTENDEE",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "ACTUAL_COST_PER_ATTENDEE",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "ACTUAL_OTHER_COST_PER_ATTEN",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "ACTUAL_OTHER_COST_PER_ATTEN",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "ESTIMATED_COST_PER_ATTENDEE",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "ESTIMATED_COST_PER_ATTENDEE",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "EVENT_TYPE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "EVENT_TYPE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TOTAL_COST_PER_ATTENDEE",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "TOTAL_COST_PER_ATTENDEE",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_EVENT_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_EVENT_ID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_AUDIENCE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_AUDIENCE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_STARCITE_APPROVAL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_STARCITE_APPROVAL",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_AUDIENCE_OTHERS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_AUDIENCE_OTHERS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_THERAPY_AREA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_THERAPY_AREA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_THERAPY_AREA_OTHERS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_THERAPY_AREA_OTHERS",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_ACCREDITED",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_ACCREDITED",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_PRESEN_ZINC_NUM_NM1",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_PRESEN_ZINC_NUM_NM1",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_RATIONALE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_RATIONALE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_PRESEN_ZINC_NUM_NM2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_PRESEN_ZINC_NUM_NM2",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_PRESEN_ZINC_NUM_NM3",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_PRESEN_ZINC_NUM_NM3",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_NAME_OF_PRES_SPKR_1",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_NAME_OF_PRES_SPKR_1",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_NAME_OF_PRES_SPKR_2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_NAME_OF_PRES_SPKR_2",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_NAME_OF_PRES_SPKR_3",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_NAME_OF_PRES_SPKR_3",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_MSL_BRIEFINGOM_1",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_MSL_BRIEFINGOM_1",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_MSL_BRIEFINGOM_2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_MSL_BRIEFINGOM_2",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_MSL_BRIEFINGOM_3",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_MSL_BRIEFINGOM_3",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "BATCH_ID",
+									"type": "Decimal"
+								},
+								"sink": {
+									"name": "BATCH_ID",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "COUNTRY_CODE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "COUNTRY_CODE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "INSTANCE_ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "INSTANCE_ID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_APPROVAL_ID_1",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_APPROVAL_ID_1",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_APPROVAL_ID_2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_APPROVAL_ID_2",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CORE_GSK_APPROVAL_ID_3",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CORE_GSK_APPROVAL_ID_3",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TeradataTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Staging_Area_txt",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "STG_D_Em_Event.txt"
+						}
+					}
+				]
+			},
+			{
+				"name": "STG_Fato_Eventos_Veeva_Full",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "TeradataSource",
+						"query": "SELECT DISTINCT \n                TRIM(COALESCE(A.MEDICAL_EVENT_ID,''))                  AS \"ID_EVENTO\",\n                TRIM(COALESCE(A.LOCATION,''))                          AS \"LOCALIZACAO\",\n                TRIM(COALESCE(A.EVENT_TYPE,''))                        AS \"TIPO_EVENTO\",\n                TRIM(COALESCE(OREPLACE(A.EVENT_NAME,'~','-'),''))      AS \"NOME_EVENTO\",\n                TRIM(COALESCE(CAST(A.START_DATE AS VARCHAR(100)),''))  AS \"DATA_INICIO\",\n                TRIM(COALESCE(CAST(A.END_DATE AS VARCHAR(100)),''))    AS \"DATA_FIM\",\n                TRIM(COALESCE(C.PRODUCT_NAME,''))                      AS \"PRODUTO_PRIMARIO\",\n                TRIM(COALESCE(D.PRODUCT_NAME,''))                      AS \"PRODUTO_SECUNDARIO\",\n                TRIM(COALESCE(B.TERRITORY_ID,''))                      AS \"ROW_ID_TERRITORIO\",\n                TRIM(COALESCE(B.ATTENDEE_ID,''))                       AS \"ROW_ID_CONTATO\",\n                TRIM(COALESCE(E.RX_LEGAL_ID,''))                       AS \"DOCUMENTO\",\n                TRIM(COALESCE(B.ATTENDEE_TYPE,''))                     AS \"TIPO_CONTA\",\n                TRIM(COALESCE(B.RX_ROLE,''))                           AS \"TIPO_PARTICIPACAO\",\n                TRIM(COALESCE(B.ATTENDEE_STATUS,''))                   AS \"STATUS_CONVIDADO\",\n                TRIM(COALESCE(U.NAME,''))                              AS \"CRIADO_POR\",\n                TRIM(COALESCE(U.ALIAS_NAME,''))                        AS \"CRIADO_POR_MUDID\",\n                TRIM(COALESCE(B.ATTENDEE,''))                          AS \"PARTICIPANTE\",\n                TRIM(COALESCE(B.RX_ATTENDEE_SPECIALTY,''))             AS \"ESPECIALIDADE\" \n                               \n    FROM  \n                LATAMCRMFBICNTRYBRVW.D_MEDICAL_EVENT A LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.F_MEDICAL_EVENT_ATTENDEE B\n                ON A.MEDICAL_EVENT_ID = B.MEDICAL_EVENT_ID\n                \n                LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG C\n                ON A.RX_PRIMARY_PRODUCT = C.SOURCE_PRODUCT_CATALOG_AID\n                \n                LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_PRODUCT_CATALOG D\n                ON A.RX_SECONDARY_PRODUCT = D.SOURCE_PRODUCT_CATALOG_AID\n                \n                LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_ACCOUNT E\n                ON B.ATTENDEE_ID = E.ACCOUNT_ID\n                \n                LEFT OUTER JOIN LATAMCRMFBICNTRYBRVW.D_USER U\n                ON A.OWNER_AID = U.SOURCE_USER_AID\n                \n    WHERE  \n       A.DELETED_IND = 0 AND B.DELETED_IND = 0\n       AND\n          EXTRACT(YEAR FROM END_DATE) >= EXTRACT ( YEAR FROM ADD_MONTHS (CURRENT_DATE , -8)) \n       AND\n          EXTRACT(MONTH FROM END_DATE) >= EXTRACT ( MONTH FROM ADD_MONTHS (CURRENT_DATE , -8));",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ID_EVENTO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LOCALIZACAO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LOCALIZACAO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_EVENTO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TIPO_EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NOME_EVENTO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NOME_EVENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DATA_INICIO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DATA_INICIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DATA_FIM",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DATA_FIM",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PRODUTO_PRIMARIO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PRODUTO_PRIMARIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PRODUTO_SECUNDARIO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PRODUTO_SECUNDARIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_TERRITORIO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ROW_ID_CONTATO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ROW_ID_CONTATO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DOCUMENTO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DOCUMENTO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_CONTA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TIPO_CONTA",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TIPO_PARTICIPACAO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TIPO_PARTICIPACAO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "STATUS_CONVIDADO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "STATUS_CONVIDADO",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CRIADO_POR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CRIADO_POR",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CRIADO_POR_MUDID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CRIADO_POR_MUDID",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PARTICIPANTE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PARTICIPANTE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ESPECIALIDADE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ESPECIALIDADE",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TeradataTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Staging_Area_txt",
+						"type": "DatasetReference",
+						"parameters": {
+							"nome_arquivo": "STG_Fato_Eventos_Veeva_Full.txt"
 						}
 					}
 				]
