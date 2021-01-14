@@ -13899,13 +13899,13 @@
 					"name": "KPI VISITACAO"
 				},
 				"content": {
-					"query": "-- ALTER VIEW kpivis.dim_visitas_realizadas_detail\n-- AS\nSELECT\n[VISITA]\n,[COD_PRODUTO]\n,[HORA_DET_VISITA]\n,[PRIORIDADE]\n,[QTD_PRODUTO]\n,[PRODUTO]\n,[TIPO_PRODUTO]\n,[COMPANY_PRODUCT_IND]\n,[MOEDA]\n,[DATA_MODIFICACAO]\n,[COD_PAIS]\n,[VEEVA_EXTERNAL_AID]\n,[CLASSE_TERAPEUTICA]\n,[RX_EXTERNAL_ID]\n,[NO_DETAILS_IND]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_visitas_realizadas_detail.parquet',\n        FORMAT='PARQUET'\n    ) WITH(\n[VISITA]\t\t        VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COD_PRODUTO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[HORA_DET_VISITA]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PRIORIDADE]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[QTD_PRODUTO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PRODUTO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPO_PRODUTO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COMPANY_PRODUCT_IND]\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MOEDA]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DATA_MODIFICACAO]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COD_PAIS]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VEEVA_EXTERNAL_AID]\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CLASSE_TERAPEUTICA]\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[RX_EXTERNAL_ID]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NO_DETAILS_IND]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
+					"query": "-- ALTER VIEW kpivis.dim_visitas_realizadas_detail\n-- AS\nSELECT\n[VISITA]\n,[COD_PRODUTO]\n,[HORA_DET_VISITA]\n,[PRIORIDADE]\n,Cast([QTD_PRODUTO] as int) as 'QTD_PRODUTO'\n,[PRODUTO]\n,[TIPO_PRODUTO]\n,[COMPANY_PRODUCT_IND]\n,[MOEDA]\n,[DATA_MODIFICACAO]\n,[COD_PAIS]\n,[VEEVA_EXTERNAL_AID]\n,[CLASSE_TERAPEUTICA]\n,[RX_EXTERNAL_ID]\n,[NO_DETAILS_IND]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_visitas_realizadas_detail.parquet',\n        FORMAT='PARQUET'\n    ) WITH(\n[VISITA]\t\t        VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COD_PRODUTO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[HORA_DET_VISITA]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PRIORIDADE]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[QTD_PRODUTO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PRODUTO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPO_PRODUTO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COMPANY_PRODUCT_IND]\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MOEDA]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DATA_MODIFICACAO]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COD_PAIS]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VEEVA_EXTERNAL_AID]\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CLASSE_TERAPEUTICA]\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[RX_EXTERNAL_ID]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NO_DETAILS_IND]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"name": "GSK",
-						"type": "SqlOnDemand"
+						"poolName": "Built-in",
+						"databaseName": "GSK"
 					}
 				},
 				"type": "SqlQuery"
@@ -14003,13 +14003,13 @@
 					"name": "SYSTEM_TOOLS"
 				},
 				"content": {
-					"query": "select \n\tc.name as 'Column Name',\n\tt.name as 'Data Type',\n\tc.max_length as 'Max Length',\n\tc.precision,\n\tc.scale,\n\tc.is_nullable,\n\tISNULL(i.is_primary_key,0)\tas 'Primary Key'\nfrom \n\tsys.columns c\nINNER JOIN\n\tsys.types t on c.user_type_id = t.user_type_id\nLEFT OUTER JOIN\n\tsys.index_columns ic ON ic.object_id = c.object_id and ic.column_id = c.column_id\nLEFT OUTER JOIN\n\tsys.indexes i ON ic.object_id = i.object_id and ic.index_id = i.index_id\nwhere\n\tc.object_id = OBJECT_ID('kpiemail.dim_quadrante_medico_gp')",
+					"query": "select \n\tc.name as 'Column Name',\n\tt.name as 'Data Type',\n\tc.max_length as 'Max Length',\n\tc.precision,\n\tc.scale,\n\tc.is_nullable,\n\tISNULL(i.is_primary_key,0)\tas 'Primary Key'\nfrom \n\tsys.columns c\nINNER JOIN\n\tsys.types t on c.user_type_id = t.user_type_id\nLEFT OUTER JOIN\n\tsys.index_columns ic ON ic.object_id = c.object_id and ic.column_id = c.column_id\nLEFT OUTER JOIN\n\tsys.indexes i ON ic.object_id = i.object_id and ic.index_id = i.index_id\nwhere\n\tc.object_id = OBJECT_ID('kpivis.dim_visitas_realizadas_detail')",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"name": "GSK",
-						"type": "SqlOnDemand"
+						"poolName": "Built-in",
+						"databaseName": "GSK"
 					}
 				},
 				"type": "SqlQuery"
