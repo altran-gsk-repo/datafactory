@@ -1427,14 +1427,7 @@
 					{
 						"name": "dim_visits",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "fato_gso_call_summary",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -2265,7 +2258,14 @@
 					{
 						"name": "fato_gso_call_summary",
 						"type": "Copy",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "fato_gso_response",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -2706,7 +2706,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "TeradataSource",
-								"query": "SELECT \n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n    \"P\".QUESTION_ID,\t\t\t\t\t\n    \"P\".SOURCE_CREATED_TS,\n    \"P\".SOURCE_LAST_MODIFIED_TS\t\t\tAS \"RESPONSE_LAST_MODIFIED_TS\",\n    \"P\".SOURCE_CREATED_BY_AID AS \"SOURCE_USER_AID\",\n    \"P\".QUESTION_RESPONSE_ID,          \n    \"P\".RESPONSE_NAME,\n    \"P\".RESPONSE_NUMBER,\n    \"P\".RESPONSE,\n    COALESCE(\"PRD\".SURVEY_KEY,'NOT INFORMED') AS \"PRODUCT\",\n    \"P\".QUESTION_ORDER\t\t\t\tAS \"RESPONSE_QUESTION_ORDER\",\n\t\"ST\".\"DATE\",\n\t\"ST\".TARGET_LAST_MODIFIED_TS,\n\t\"ST\".MODIFIED_DATE,\n\t\"ST\".START_DATE_ID,\n\t\"ST\".END_DATE_ID,\n\t\"ST\".REVIEW_DATE_ID,\n\t\"ST\".REVIEW_STATUS,\n\t\"ST\".MANAGER_TERRITORY_ID,\n\t\"ST\".EMPLOYEE_TERRITORY_ID,\n\t\"ST\".TERRITORY_ID,\n \t(\"ST\".MODIFIED_DATE - \"ST\".\"DATE\" ) AS \"DATE_DIFF\",\n \tCASE\n \tWHEN (\"ST\".MODIFIED_DATE - ADD_MONTHS(\"ST\".\"DATE\" - EXTRACT(DAY FROM \"ST\".\"DATE\")+1,6)) > 7 THEN 'N'\n \tELSE 'S' END AS \"FLAG_PREMIO\",\n \tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6)||'-'||TRIM(\"ST\".EMPLOYEE_TERRITORY_ID) AS \"SALES_FORCE_KEY\",\n \tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6)||'-'||TRIM(\"ST\".EMPLOYEE_TERRITORY_ID) AS \"RESPONSES_KEY\",\n\t'SURVEYS'\t\t\t\tAS \"ORIGEM\"\n    \n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n \n LEFT JOIN (SELECT DISTINCT\n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n    \"P\".RESPONSE\n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n WHERE \"P\".QUESTION_ORDER = 0  AND \"P\".RESPONSE IS NOT NULL) AS \"PRD\" ON \"P\".SURVEY_TARGET_ID = \"PRD\".SURVEY_KEY\n \n INNER JOIN (SELECT \n\t  \"ST\".SURVEY_TARGET_ID as \"SURVEY_KEY\",\n\t  CAST(TRIM(CAST(LEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),4)||'-'||\n\t  SUBSTRING(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)) FROM 5 FOR 2) ||'-'||\n\t  RIGHT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),2) AS VARCHAR(10))) AS DATE FORMAT 'yyyy-mm-dd') AS \"DATE\",\n\t  \"ST\".SOURCE_LAST_MODIFIED_TS as \"TARGET_LAST_MODIFIED_TS\",\n\t  CAST(\"ST\".SOURCE_LAST_MODIFIED_TS AS DATE FORMAT 'YYYYMMDD') AS \"MODIFIED_DATE\",\n\t  \"ST\".START_DATE_ID,\n\t  \"ST\".END_DATE_ID,\n\t  \"ST\".REVIEW_DATE_ID,\n\t  \"ST\".REVIEW_STATUS,\n\t  \"ST\".MANAGER_TERRITORY_ID,\n\t  \"ST\".EMPLOYEE_TERRITORY_ID,\n\t  \"ST\".TERRITORY_ID\nFROM LATAMCRMFBICNTRYBRVW.F_SURVEY_TARGETS AS \"ST\"\nWHERE \"ST\".COUNTRY_CODE = 'BR'  AND \n\t\"ST\".SURVEY_TARGET_NAME LIKE '%GSO U%' AND\n\tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6) > '201901') AS \"ST\" ON \"P\".SURVEY_TARGET_ID = \"ST\".SURVEY_KEY;",
+								"query": "SELECT \n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n    \"P\".QUESTION_ID,\t\t\t\t\t\n    \"P\".SOURCE_CREATED_TS,\n    \"P\".SOURCE_LAST_MODIFIED_TS\t\t\tAS \"RESPONSE_LAST_MODIFIED_TS\",\n    \"P\".SOURCE_CREATED_BY_AID AS \"SOURCE_USER_AID\",\n    \"P\".QUESTION_RESPONSE_ID,          \n    \"P\".RESPONSE_NAME,\n    \"P\".RESPONSE_NUMBER,\n    \"P\".RESPONSE,\n    TRIM(COALESCE(\"PRD\".RESPONSE,'NOT INFORMED')) AS \"PRODUCT\",\n    \"P\".QUESTION_ORDER\t\t\t\tAS \"RESPONSE_QUESTION_ORDER\",\n\t\"ST\".\"DATE\",\n\t\"ST\".TARGET_LAST_MODIFIED_TS,\n\t\"ST\".MODIFIED_DATE,\n\t\"ST\".START_DATE_ID,\n\t\"ST\".END_DATE_ID,\n\t\"ST\".REVIEW_DATE_ID,\n\t\"ST\".REVIEW_STATUS,\n\t\"ST\".MANAGER_TERRITORY_ID,\n\t\"ST\".EMPLOYEE_TERRITORY_ID,\n\t\"ST\".TERRITORY_ID,\n \t(\"ST\".MODIFIED_DATE - \"ST\".\"DATE\" ) AS \"DATE_DIFF\",\n \tCASE\n \tWHEN (\"ST\".MODIFIED_DATE - ADD_MONTHS(\"ST\".\"DATE\" - EXTRACT(DAY FROM \"ST\".\"DATE\")+1,6)) > 7 THEN 'N'\n \tELSE 'S' END AS \"FLAG_PREMIO\",\n \tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6)||'-'||TRIM(\"ST\".EMPLOYEE_TERRITORY_ID) AS \"SALES_FORCE_KEY\",\n \tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6)||'-'||TRIM(\"ST\".EMPLOYEE_TERRITORY_ID) AS \"RESPONSES_KEY\",\n\t'SURVEYS'\t\t\t\tAS \"ORIGEM\"\n    \n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n \n LEFT JOIN (SELECT DISTINCT\n\t\"P\".SURVEY_TARGET_ID \t\t\t\t\tAS \"SURVEY_KEY\",\n    \"P\".RESPONSE\n FROM LATAMCRMFBICNTRYBRVW.F_SURVEY_RESPONSES AS \"P\"\n WHERE \"P\".QUESTION_ORDER = 0  AND \"P\".RESPONSE IS NOT NULL) AS \"PRD\" ON \"P\".SURVEY_TARGET_ID = \"PRD\".SURVEY_KEY\n \n INNER JOIN (SELECT \n\t  \"ST\".SURVEY_TARGET_ID as \"SURVEY_KEY\",\n\t  CAST(TRIM(CAST(LEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),4)||'-'||\n\t  SUBSTRING(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)) FROM 5 FOR 2) ||'-'||\n\t  RIGHT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),2) AS VARCHAR(10))) AS DATE FORMAT 'yyyy-mm-dd') AS \"DATE\",\n\t  \"ST\".SOURCE_LAST_MODIFIED_TS as \"TARGET_LAST_MODIFIED_TS\",\n\t  CAST(\"ST\".SOURCE_LAST_MODIFIED_TS AS DATE FORMAT 'YYYYMMDD') AS \"MODIFIED_DATE\",\n\t  \"ST\".START_DATE_ID,\n\t  \"ST\".END_DATE_ID,\n\t  \"ST\".REVIEW_DATE_ID,\n\t  \"ST\".REVIEW_STATUS,\n\t  \"ST\".MANAGER_TERRITORY_ID,\n\t  \"ST\".EMPLOYEE_TERRITORY_ID,\n\t  \"ST\".TERRITORY_ID\nFROM LATAMCRMFBICNTRYBRVW.F_SURVEY_TARGETS AS \"ST\"\nWHERE \"ST\".COUNTRY_CODE = 'BR'  AND \n\t\"ST\".SURVEY_TARGET_NAME LIKE '%GSO U%' AND\n\tLEFT(CAST(\"ST\".REVIEW_DATE_ID AS CHAR(8)),6) > '201901') AS \"ST\" ON \"P\".SURVEY_TARGET_ID = \"ST\".SURVEY_KEY;",
 								"partitionOption": "None"
 							},
 							"sink": {
@@ -3284,7 +3284,14 @@
 					{
 						"name": "TranformRegionTxt",
 						"type": "Copy",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Extract_GSO",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -3385,6 +3392,20 @@
 								}
 							}
 						]
+					},
+					{
+						"name": "Extract_GSO",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "3 - Extract - GSO",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
 					}
 				],
 				"folder": {
@@ -3397,6 +3418,7 @@
 				"[concat(variables('workspaceId'), '/dataflows/GSO_ETL')]",
 				"[concat(variables('workspaceId'), '/datasets/Fact_GSO_Aux_Regiao')]",
 				"[concat(variables('workspaceId'), '/datasets/Arquivo_Em_TxT_3')]",
+				"[concat(variables('workspaceId'), '/pipelines/3 - Extract - GSO')]",
 				"[concat(variables('workspaceId'), '/datasets/Arquivos_Em_Parquet_3')]"
 			]
 		},
@@ -10055,7 +10077,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "KPI_ETL",
+						"name": "GSO_ETL",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -10068,15 +10090,24 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "KPI_ETL",
+								"referenceName": "GSO_ETL",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"DimTopIndependentes": {},
-									"DimPainelMedico": {},
-									"FatoVisitasRealizadas": {},
-									"SinkDimPainelMedico": {},
-									"SinkFatoVisitasRealizadas": {}
+									"fGsoCallSummarySource": {},
+									"fGsoResponseSource": {},
+									"dSalesForceTeradata": {},
+									"dSalesForceFuncionario": {},
+									"dSalesForceSqlServer": {},
+									"dSalesForceRegiao": {},
+									"dSurveyQuestion": {},
+									"dVisits": {},
+									"dGCO": {},
+									"FatoGsoDestino": {},
+									"SalesForceDestino": {},
+									"SinkDimSurveyQuestion": {},
+									"SinkDimVisits": {},
+									"SinkGCO": {}
 								}
 							},
 							"staging": {},
@@ -10094,7 +10125,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/KPI_ETL')]"
+				"[concat(variables('workspaceId'), '/dataflows/GSO_ETL')]"
 			]
 		},
 		{
@@ -12604,6 +12635,44 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/JobGSO')]",
+			"type": "Microsoft.Synapse/workspaces/triggers",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "3 - Transform - GSO",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2021-01-13T16:42:00",
+						"timeZone": "E. South America Standard Time",
+						"schedule": {
+							"minutes": [
+								0
+							],
+							"hours": [
+								6
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/pipelines/3 - Transform - GSO')]"
 			]
 		},
 		{
