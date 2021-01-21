@@ -1,0 +1,27 @@
+{
+	"name": "Listar_Arquivos_Txt_4",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Listar_Arquivos_Txt_3",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "2 - KPI Visitacao"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
+				"container": "gsksynapsestorage"
+			},
+			"columnDelimiter": "<",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
