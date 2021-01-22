@@ -1,0 +1,19 @@
+{
+	"name": "UNIV_MEDICO_CREATE_VIEW_DIM_PAINEL_MEDICO",
+	"properties": {
+		"folder": {
+			"name": "UNIVERSO MEDICO"
+		},
+		"content": {
+			"query": "-- ALTER VIEW univmed.dim_painel_medico\n-- AS\nSELECT\n[KEY_TERRITORIO_CICLO]\n,[KEY_TERRITORIO_CONTATO_CICLO]\n,[KEY_CRM]\n,[GRUPOPROMOCIONAL]\n,[QTD_VISITA_PLANEJADA]\n,[QTD_VISITA_REALIZADA]\n,[DATA_CARGA]\n,[TIPO]\n,[TIPOCONTATO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_painel_medico.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[KEY_TERRITORIO_CICLO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[KEY_TERRITORIO_CONTATO_CICLO]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[KEY_CRM]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[GRUPOPROMOCIONAL]\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[QTD_VISITA_PLANEJADA]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[QTD_VISITA_REALIZADA]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DATA_CARGA]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPOCONTATO]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "GSK"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
