@@ -1,0 +1,49 @@
+{
+	"name": "Source_Universo_Medico",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageSynapse",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
+				"container": "gsksynapsestorage"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "KEY_CRM_EMAIL",
+				"type": "UTF8"
+			},
+			{
+				"name": "CRM_PAINEL",
+				"type": "UTF8"
+			},
+			{
+				"name": "DATA_VEEVA",
+				"type": "UTF8"
+			},
+			{
+				"name": "EMAIL_VEEVA",
+				"type": "UTF8"
+			},
+			{
+				"name": "CONSENT_VEEVA_1_1",
+				"type": "UTF8"
+			},
+			{
+				"name": "CONSENT_VEEVA_1_MASS",
+				"type": "UTF8"
+			},
+			{
+				"name": "ROW_ID_CONTATO_VEEVA",
+				"type": "UTF8"
+			}
+		]
+	}
+}

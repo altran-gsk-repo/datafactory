@@ -1,0 +1,117 @@
+{
+	"name": "UNIV_MEDICO_ETL",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Source_Universo_Medico",
+						"type": "DatasetReference"
+					},
+					"name": "dForcaVendas"
+				},
+				{
+					"dataset": {
+						"referenceName": "Source_Universo_Medico",
+						"type": "DatasetReference"
+					},
+					"name": "dPainelMedico"
+				},
+				{
+					"dataset": {
+						"referenceName": "Source_Universo_Medico",
+						"type": "DatasetReference"
+					},
+					"name": "dQuadranteMedico"
+				},
+				{
+					"dataset": {
+						"referenceName": "Source_Universo_Medico",
+						"type": "DatasetReference"
+					},
+					"name": "dQuadranteMedicoGP"
+				},
+				{
+					"dataset": {
+						"referenceName": "Source_Universo_Medico",
+						"type": "DatasetReference"
+					},
+					"name": "dUniversoMedico"
+				},
+				{
+					"dataset": {
+						"referenceName": "Source_Universo_Medico",
+						"type": "DatasetReference"
+					},
+					"name": "dConsentHistory"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Sink_Universo_Medico",
+						"type": "DatasetReference"
+					},
+					"name": "ForcaVendas"
+				},
+				{
+					"dataset": {
+						"referenceName": "Sink_Universo_Medico",
+						"type": "DatasetReference"
+					},
+					"name": "PainelMedico"
+				},
+				{
+					"dataset": {
+						"referenceName": "Sink_Universo_Medico",
+						"type": "DatasetReference"
+					},
+					"name": "QuadranteMedico"
+				},
+				{
+					"dataset": {
+						"referenceName": "Sink_Universo_Medico",
+						"type": "DatasetReference"
+					},
+					"name": "QuadranteMedicoGP"
+				},
+				{
+					"dataset": {
+						"referenceName": "Sink_Universo_Medico",
+						"type": "DatasetReference"
+					},
+					"name": "UniversoMedico"
+				},
+				{
+					"dataset": {
+						"referenceName": "Sink_Universo_Medico",
+						"type": "DatasetReference"
+					},
+					"name": "ConsentHistory"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SelecConsentHistory"
+				},
+				{
+					"name": "NExisteEmailConsent"
+				},
+				{
+					"name": "UnionUniversoMedico"
+				},
+				{
+					"name": "Filter2anos"
+				},
+				{
+					"name": "FilterCiclo"
+				},
+				{
+					"name": "FilterCiclo2"
+				}
+			],
+			"script": "source(output(\n\t\tKEY_TERRITORIO_CICLO as string,\n\t\tBU as string,\n\t\tDIVISAO as string,\n\t\tNOME_GD as string,\n\t\tNOME_GR as string,\n\t\tNOME_REPRESENTANTE as string,\n\t\tMUDID as string,\n\t\tTERRITORIO as string,\n\t\tTERRITORIO_GD as string,\n\t\tTERRITORIO_GR as string,\n\t\tEMAIL_REP as string,\n\t\tCICLO as string,\n\t\tROW_ID_TERRITORIO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico/dim_forca_vendas.parquet']) ~> dForcaVendas\nsource(output(\n\t\tKEY_TERRITORIO_CICLO as string,\n\t\tKEY_TERRITORIO_CONTATO_CICLO as string,\n\t\tKEY_CRM as string,\n\t\tGRUPOPROMOCIONAL as string,\n\t\tQTD_VISITA_PLANEJADA as string,\n\t\tQTD_VISITA_REALIZADA as string,\n\t\tDATA_CARGA as string,\n\t\tTIPO as string,\n\t\tTIPOCONTATO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico/dim_painel_medico.parquet']) ~> dPainelMedico\nsource(output(\n\t\tKEY_CRM as string,\n\t\tMERCADO_UNIV as string,\n\t\tCATEGORIA_UNIV as string,\n\t\tQUADRANTE_UNIV as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico/dim_quadrante_medico.parquet']) ~> dQuadranteMedico\nsource(output(\n\t\tKEY_CONTATO_TERRITORIO_CICLO as string,\n\t\tMERCADO_GP as string,\n\t\tCATEGORIA_GP as string,\n\t\tQUADRANTE_GP as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico/dim_quadrante_medico_gp.parquet']) ~> dQuadranteMedicoGP\nsource(output(\n\t\tKEY_CRM as string,\n\t\tCICLO as string,\n\t\tKEY_CRM_EMAIL as string,\n\t\tUF as string,\n\t\tCRM as string,\n\t\tCRM2 as string,\n\t\tEMAIL_PRINCIPAL as string,\n\t\tEMAIL_SECUNDARIO as string,\n\t\tNOME as string,\n\t\tESPECIALIDADE as string,\n\t\tESPECIALIDADE2 as string,\n\t\tESPECIALIDADE3 as string,\n\t\tVISITADO as string,\n\t\tNETWORK_ID as string,\n\t\tVEEVA_ID as string,\n\t\tRX_GIGYA_ID as string,\n\t\tTELEFONE as string,\n\t\tCELULAR as string,\n\t\tEMAIL as string,\n\t\tEMAIL_ORIGEM as string,\n\t\tONE_MASS as string,\n\t\tONE_ONE as string,\n\t\tVISITADO_GSK as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico/dim_universo_medico.parquet']) ~> dUniversoMedico\nsource(output(\n\t\tKEY_CRM_EMAIL as string,\n\t\tCRM_PAINEL as string,\n\t\tDATA_VEEVA as string,\n\t\tEMAIL_VEEVA as string,\n\t\tCONSENT_VEEVA_1_1 as string,\n\t\tCONSENT_VEEVA_1_MASS as string,\n\t\tROW_ID_CONTATO_VEEVA as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico/dim_consent_history.parquet']) ~> dConsentHistory\nFilterCiclo select(mapColumn(\n\t\tEMAIL_VEEVA = EMAIL_PRINCIPAL,\n\t\tDATA_VEEVA = CICLO\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecConsentHistory\nSelecConsentHistory, dConsentHistory exists(SelecConsentHistory@EMAIL_VEEVA == dConsentHistory@EMAIL_VEEVA,\n\tnegate:true,\n\tbroadcast: 'auto')~> NExisteEmailConsent\ndConsentHistory, NExisteEmailConsent union(byName: true)~> UnionUniversoMedico\nUnionUniversoMedico filter(toDate(concat(left(DATA_VEEVA,4),'-',right(DATA_VEEVA,2),'-01')) >= subMonths(currentDate(),24)) ~> Filter2anos\ndUniversoMedico filter(length(CICLO) == 6) ~> FilterCiclo\ndUniversoMedico filter(length(CICLO) == 6) ~> FilterCiclo2\ndForcaVendas sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_forca_vendas.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ForcaVendas\ndPainelMedico sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_painel_medico.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> PainelMedico\ndQuadranteMedico sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_quadrante_medico_p_[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> QuadranteMedico\ndQuadranteMedicoGP sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_quadrante_medico_gp_[1].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> QuadranteMedicoGP\nFilterCiclo2 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_universo_medico_[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UniversoMedico\nFilter2anos sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_consent_history_[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ConsentHistory"
+		}
+	}
+}

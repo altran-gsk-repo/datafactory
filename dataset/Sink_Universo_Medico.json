@@ -1,0 +1,20 @@
+{
+	"name": "Sink_Universo_Medico",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageSynapse",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "Universo Medico",
+				"container": "gskoutputfiles"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
