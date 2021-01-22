@@ -3401,6 +3401,377 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/4 - Transform  - Universo Medico')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lista_Arquivos",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Listar_Arquivos_Txt_4",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "Filtra_Arquivos_ZIP",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "Lista_Arquivos",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lista_Arquivos').output.childitems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@contains(item().name,'.zip')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Para_Cada_ZIP",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Filtra_Arquivos_ZIP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Filtra_Arquivos_ZIP').output.Value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Transforma_ZIP_to_TXT",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
+												"wildcardFileName": {
+													"value": "@{item().name}",
+													"type": "Expression"
+												}
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings",
+												"compressionProperties": {
+													"type": "ZipDeflateReadSettings"
+												}
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"enableSkipIncompatibleRow": true,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ListarArquivosComprimidos_4",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "arquivo_txt_s_comprimir",
+											"type": "DatasetReference",
+											"parameters": {
+												"nome_arquivo": {
+													"value": "@{replace(item().name,'.zip','.txt')}",
+													"type": "Expression"
+												},
+												"pasta": "dash.universo_medico"
+											}
+										}
+									]
+								},
+								{
+									"name": "Transforma_TXT_toParquet",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Transforma_ZIP_to_TXT",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
+												"wildcardFileName": {
+													"value": "@{replace(item().name,'.zip','.txt')}",
+													"type": "Expression"
+												},
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"enableSkipIncompatibleRow": true,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "Listar_Arquivos_Txt_4",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "Arquivos_Em_Parquet_4",
+											"type": "DatasetReference",
+											"parameters": {
+												"nome_arquivo": "@{replace(item().name,'.zip','.parquet')}"
+											}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Deletar_Arquivos_ZIP",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Para_Cada_ZIP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Listar_Arquivos_Txt_4",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"wildcardFileName": "*.zip"
+							}
+						}
+					},
+					{
+						"name": "Deletar_Arquivos_TXT",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Para_Cada_ZIP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Listar_Arquivos_Txt_4",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"wildcardFileName": "*.txt",
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "UNIV_MEDICO_ETL",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Deletar_Arquivos_ZIP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Deletar_Arquivos_TXT",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "UNIV_MEDICO_ETL",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"dForcaVendas": {},
+									"dPainelMedico": {},
+									"dQuadranteMedico": {},
+									"dQuadranteMedicoGP": {},
+									"dUniversoMedico": {},
+									"dConsentHistory": {},
+									"ForcaVendas": {},
+									"PainelMedico": {},
+									"QuadranteMedico": {},
+									"QuadranteMedicoGP": {},
+									"UniversoMedico": {},
+									"ConsentHistory": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"variables": {
+					"ValorVerdadeiro": {
+						"type": "Array"
+					},
+					"ValorFalso": {
+						"type": "Array"
+					}
+				},
+				"folder": {
+					"name": "Transform"
+				},
+				"annotations": [],
+				"lastPublishTime": "2020-12-17T02:42:58Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Listar_Arquivos_Txt_4')]",
+				"[concat(variables('workspaceId'), '/dataflows/UNIV_MEDICO_ETL')]",
+				"[concat(variables('workspaceId'), '/datasets/ListarArquivosComprimidos_4')]",
+				"[concat(variables('workspaceId'), '/datasets/arquivo_txt_s_comprimir')]",
+				"[concat(variables('workspaceId'), '/datasets/Arquivos_Em_Parquet_4')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Carga-Diaria')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -9973,89 +10344,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/CopyPipeline_uhq')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy_uhq",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Source",
-								"value": "EMAIL 1-1/FILES/dim_audit_end.txt"
-							},
-							{
-								"name": "Destination",
-								"value": "gsksynapsestorage/synapse/workspaces/gsk-synapse/warehouse/dash.email1to1/dim_audit_end.parquet"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "FileServerReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings",
-									"skipLineCount": 0
-								}
-							},
-							"sink": {
-								"type": "ParquetSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "ParquetWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"validateDataConsistency": false
-						},
-						"inputs": [
-							{
-								"referenceName": "SourceDataset_uhq",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DestinationDataset_uhq",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": [],
-				"lastPublishTime": "2020-12-16T21:57:23Z"
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/SourceDataset_uhq')]",
-				"[concat(variables('workspaceId'), '/datasets/DestinationDataset_uhq')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/temp')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"activities": [
 					{
-						"name": "GSO_ETL",
+						"name": "UNIV_MEDICO_ETL",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -10068,24 +10363,22 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "GSO_ETL",
+								"referenceName": "UNIV_MEDICO_ETL",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"fGsoCallSummarySource": {},
-									"fGsoResponseSource": {},
-									"dSalesForceTeradata": {},
-									"dSalesForceFuncionario": {},
-									"dSalesForceSqlServer": {},
-									"dSalesForceRegiao": {},
-									"dSurveyQuestion": {},
-									"dVisits": {},
-									"dGCO": {},
-									"FatoGsoDestino": {},
-									"SalesForceDestino": {},
-									"SinkDimSurveyQuestion": {},
-									"SinkDimVisits": {},
-									"SinkGCO": {}
+									"dForcaVendas": {},
+									"dPainelMedico": {},
+									"dQuadranteMedico": {},
+									"dQuadranteMedicoGP": {},
+									"dUniversoMedico": {},
+									"dConsentHistory": {},
+									"ForcaVendas": {},
+									"PainelMedico": {},
+									"QuadranteMedico": {},
+									"QuadranteMedicoGP": {},
+									"UniversoMedico": {},
+									"ConsentHistory": {}
 								}
 							},
 							"staging": {},
@@ -10103,7 +10396,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/GSO_ETL')]"
+				"[concat(variables('workspaceId'), '/dataflows/UNIV_MEDICO_ETL')]"
 			]
 		},
 		{
@@ -10347,158 +10640,32 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/DelimitedText1')]",
+			"name": "[concat(parameters('workspaceName'), '/Arquivos_Em_Parquet_4')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
+					"referenceName": "Arquivos_Em_Parquet_3",
 					"type": "LinkedServiceReference"
 				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "GSK_Pulmonar_PF_Datasus.txt.bz2",
-						"folderPath": "dev",
-						"fileSystem": "gsksynapsestorage"
-					},
-					"columnDelimiter": ";",
-					"compressionCodec": "bzip2",
-					"compressionLevel": "Fastest",
-					"encodingName": "ISO-8859-1",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "PRODUTO_DESC",
-						"type": "String"
-					},
-					{
-						"name": "MUNICIPIO",
-						"type": "String"
-					},
-					{
-						"name": "UF",
-						"type": "String"
-					},
-					{
-						"name": "FANTASIA",
-						"type": "String"
-					},
-					{
-						"name": "NR_CNPJ",
-						"type": "String"
-					},
-					{
-						"name": "CNES",
-						"type": "String"
-					},
-					{
-						"name": "CID",
-						"type": "String"
-					},
-					{
-						"name": "QTDE_INICIAL_PACIENTES",
-						"type": "String"
-					},
-					{
-						"name": "MS_INICIAL_PACIENTES",
-						"type": "String"
-					},
-					{
-						"name": "QTDE_PACIENTES_NOVOS",
-						"type": "String"
-					},
-					{
-						"name": "QTDE_PACIENTES_RETORNO_MESMA",
-						"type": "String"
-					},
-					{
-						"name": "QTDE_PACIENTES_RETORNO_OUTRA",
-						"type": "String"
-					},
-					{
-						"name": "QTDE_PACIENTES_VIERAM",
-						"type": "String"
-					},
-					{
-						"name": "QTDE_PACIENTES_FORAM",
-						"type": "String"
-					},
-					{
-						"name": "QTDE_PACIENTES_DELTA",
-						"type": "String"
-					},
-					{
-						"name": "QTDE_PACIENTES_SAIRAM",
-						"type": "String"
-					},
-					{
-						"name": "QTDE_MOVIMENTACAO",
-						"type": "String"
-					},
-					{
-						"name": "QTDE_FINAL_PACIENTES",
-						"type": "String"
-					},
-					{
-						"name": "MS_FINAL_PACIENTES",
-						"type": "String"
-					},
-					{
-						"name": "PP",
-						"type": "String"
-					},
-					{
-						"name": "DT_PERIODO_INICIAL",
-						"type": "String"
-					},
-					{
-						"name": "DT_PERIODO_FINAL",
-						"type": "String"
-					},
-					{
-						"name": "QTDE_PACIENTES_CONTINUAM",
-						"type": "String"
-					},
-					{
-						"name": "MERCADO",
-						"type": "String"
-					},
-					{
-						"name": "TERRITORIO",
-						"type": "String"
-					},
-					{
-						"name": "GD",
-						"type": "String"
+				"parameters": {
+					"nome_arquivo": {
+						"type": "string"
 					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/AzureDataLakeStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/DestinationDataset_uhq')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorageSynapse",
-					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "2 - KPI Visitacao"
 				},
 				"annotations": [],
 				"type": "Parquet",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "dim_audit_end.parquet",
-						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.email1to1",
+						"fileName": {
+							"value": "@dataset().nome_arquivo",
+							"type": "Expression"
+						},
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
 						"container": "gsksynapsestorage"
 					},
 					"compressionCodec": "snappy"
@@ -10506,7 +10673,7 @@
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/AzureBlobStorageSynapse')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Arquivos_Em_Parquet_3')]"
 			]
 		},
 		{
@@ -11196,6 +11363,39 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/ListarArquivosComprimidos_4')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "1 - Email 1-1"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
+						"fileSystem": "gsksynapsestorage"
+					},
+					"columnDelimiter": "<",
+					"compressionCodec": "ZipDeflate",
+					"compressionLevel": "Fastest",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Listar_Arquivos_Txt_1')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -11290,77 +11490,34 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Parquet1')]",
+			"name": "[concat(parameters('workspaceName'), '/Listar_Arquivos_Txt_4')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
+					"referenceName": "Listar_Arquivos_Txt_3",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "2 - KPI Visitacao"
+				},
 				"annotations": [],
-				"type": "Parquet",
+				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "dev/gsk_pulmonar",
-						"fileSystem": "gsksynapsestorage"
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
+						"container": "gsksynapsestorage"
 					},
-					"compressionCodec": "snappy"
+					"columnDelimiter": "<",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
 				},
-				"schema": [
-					{
-						"name": "ID",
-						"type": "UTF8"
-					},
-					{
-						"name": "CRM_UNIV",
-						"type": "UTF8"
-					},
-					{
-						"name": "MEDICO_UNIV",
-						"type": "UTF8"
-					},
-					{
-						"name": "ESPECIALIDADE_UNIV",
-						"type": "UTF8"
-					},
-					{
-						"name": "LOGRADOURO_UNIV",
-						"type": "UTF8"
-					},
-					{
-						"name": "BAIRRO_UNIV",
-						"type": "UTF8"
-					},
-					{
-						"name": "CIDADE_UNIV",
-						"type": "UTF8"
-					},
-					{
-						"name": "CEP_UNIV",
-						"type": "UTF8"
-					},
-					{
-						"name": "ORIGEM_UNIV",
-						"type": "UTF8"
-					},
-					{
-						"name": "UF_UNIV",
-						"type": "UTF8"
-					},
-					{
-						"name": "BRICK_UNIV",
-						"type": "UTF8"
-					},
-					{
-						"name": "TELEFONE_UNIV",
-						"type": "UTF8"
-					}
-				]
+				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/AzureDataLakeStorage1')]"
+				"[concat(variables('workspaceId'), '/linkedServices/Listar_Arquivos_Txt_3')]"
 			]
 		},
 		{
@@ -11742,81 +11899,31 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/SourceDataset_uhq')]",
+			"name": "[concat(parameters('workspaceName'), '/Sink_Universo_Medico')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "FileServerGSK",
+					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "4 - Universo Medico"
+				},
 				"annotations": [],
-				"type": "DelimitedText",
+				"type": "Parquet",
 				"typeProperties": {
 					"location": {
-						"type": "FileServerLocation",
-						"fileName": "dim_audit_end.txt",
-						"folderPath": "EMAIL 1-1/FILES"
+						"type": "AzureBlobFSLocation",
+						"folderPath": "Universo Medico",
+						"fileSystem": "gskoutputfiles"
 					},
-					"columnDelimiter": "~",
-					"encodingName": "ISO-8859-1",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
+					"compressionCodec": "snappy"
 				},
-				"schema": [
-					{
-						"name": "ID",
-						"type": "String"
-					},
-					{
-						"name": "CRM_UNIV",
-						"type": "String"
-					},
-					{
-						"name": "MEDICO_UNIV",
-						"type": "String"
-					},
-					{
-						"name": "ESPECIALIDADE_UNIV",
-						"type": "String"
-					},
-					{
-						"name": "LOGRADOURO_UNIV",
-						"type": "String"
-					},
-					{
-						"name": "BAIRRO_UNIV",
-						"type": "String"
-					},
-					{
-						"name": "CIDADE_UNIV",
-						"type": "String"
-					},
-					{
-						"name": "CEP_UNIV",
-						"type": "String"
-					},
-					{
-						"name": "ORIGEM_UNIV",
-						"type": "String"
-					},
-					{
-						"name": "UF_UNIV",
-						"type": "String"
-					},
-					{
-						"name": "BRICK_UNIV",
-						"type": "String"
-					},
-					{
-						"name": "TELEFONE_UNIV",
-						"type": "String"
-					}
-				]
+				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/FileServerGSK')]"
+				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
 			]
 		},
 		{
@@ -11842,6 +11949,63 @@
 					"compressionCodec": "snappy"
 				},
 				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureBlobStorageSynapse')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Source_Universo_Medico')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageSynapse",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "4 - Universo Medico"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
+						"container": "gsksynapsestorage"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "KEY_CRM_EMAIL",
+						"type": "UTF8"
+					},
+					{
+						"name": "CRM_PAINEL",
+						"type": "UTF8"
+					},
+					{
+						"name": "DATA_VEEVA",
+						"type": "UTF8"
+					},
+					{
+						"name": "EMAIL_VEEVA",
+						"type": "UTF8"
+					},
+					{
+						"name": "CONSENT_VEEVA_1_1",
+						"type": "UTF8"
+					},
+					{
+						"name": "CONSENT_VEEVA_1_MASS",
+						"type": "UTF8"
+					},
+					{
+						"name": "ROW_ID_CONTATO_VEEVA",
+						"type": "UTF8"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/AzureBlobStorageSynapse')]"
@@ -12141,31 +12305,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Staging_Area')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/staging_area",
-						"fileSystem": "gsksynapsestorage"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/Staging_Area_txt')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -12178,6 +12317,9 @@
 					"nome_arquivo": {
 						"type": "string"
 					}
+				},
+				"folder": {
+					"name": "0_Habilitado"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -12735,40 +12877,6 @@
 				"typeProperties": {}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Dataflow1')]",
-			"type": "Microsoft.Synapse/workspaces/dataflows",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "DelimitedText1",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "Parquet1",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [],
-					"script": "source(output(\n\t\tPRODUTO_DESC as string,\n\t\tMUNICIPIO as string,\n\t\tUF as string,\n\t\tFANTASIA as string,\n\t\tNR_CNPJ as string,\n\t\tCNES as integer,\n\t\tCID as string,\n\t\tQTDE_INICIAL_PACIENTES as integer,\n\t\tMS_INICIAL_PACIENTES as decimal(10,0),\n\t\tQTDE_PACIENTES_NOVOS as integer,\n\t\tQTDE_PACIENTES_RETORNO_MESMA as integer,\n\t\tQTDE_PACIENTES_RETORNO_OUTRA as integer,\n\t\tQTDE_PACIENTES_VIERAM as integer,\n\t\tQTDE_PACIENTES_FORAM as integer,\n\t\tQTDE_PACIENTES_DELTA as integer,\n\t\tQTDE_PACIENTES_SAIRAM as integer,\n\t\tQTDE_MOVIMENTACAO as integer,\n\t\tQTDE_FINAL_PACIENTES as integer,\n\t\tMS_FINAL_PACIENTES as decimal(10,0),\n\t\tPP as string,\n\t\tDT_PERIODO_INICIAL as string,\n\t\tDT_PERIODO_FINAL as string,\n\t\tQTDE_PACIENTES_CONTINUAM as integer,\n\t\tMERCADO as string,\n\t\tTERRITORIO as string,\n\t\tGD as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tignoreNoFilesFound: false,\n\tinferDriftedColumnTypes: true,\n\tdateFormats: ['yyyy-MM-dd'],\n\ttimestampFormats: ['yyyy.MM.dd HH:mm:ss'],\n\tpreferredIntegralType: 'integer',\n\tpreferredFractionalType: 'decimal',\n\tpartitionBy('key',\n\t\t0,\n\t\tPRODUTO_DESC\n\t)) ~> source1\nsource1 sink(input(\n\t\tID as string,\n\t\tCRM_UNIV as string,\n\t\tMEDICO_UNIV as string,\n\t\tESPECIALIDADE_UNIV as string,\n\t\tLOGRADOURO_UNIV as string,\n\t\tBAIRRO_UNIV as string,\n\t\tCIDADE_UNIV as string,\n\t\tCEP_UNIV as string,\n\t\tORIGEM_UNIV as string,\n\t\tUF_UNIV as string,\n\t\tBRICK_UNIV as string,\n\t\tTELEFONE_UNIV as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'gsk_pulmonar[n]',\n\ttruncate: true,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/DelimitedText1')]",
-				"[concat(variables('workspaceId'), '/datasets/Parquet1')]"
-			]
 		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/EMAIL_ETL')]",
@@ -13353,6 +13461,132 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/UNIV_MEDICO_ETL')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "UNIVERSO MEDICO"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Source_Universo_Medico",
+								"type": "DatasetReference"
+							},
+							"name": "dForcaVendas"
+						},
+						{
+							"dataset": {
+								"referenceName": "Source_Universo_Medico",
+								"type": "DatasetReference"
+							},
+							"name": "dPainelMedico"
+						},
+						{
+							"dataset": {
+								"referenceName": "Source_Universo_Medico",
+								"type": "DatasetReference"
+							},
+							"name": "dQuadranteMedico"
+						},
+						{
+							"dataset": {
+								"referenceName": "Source_Universo_Medico",
+								"type": "DatasetReference"
+							},
+							"name": "dQuadranteMedicoGP"
+						},
+						{
+							"dataset": {
+								"referenceName": "Source_Universo_Medico",
+								"type": "DatasetReference"
+							},
+							"name": "dUniversoMedico"
+						},
+						{
+							"dataset": {
+								"referenceName": "Source_Universo_Medico",
+								"type": "DatasetReference"
+							},
+							"name": "dConsentHistory"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Sink_Universo_Medico",
+								"type": "DatasetReference"
+							},
+							"name": "ForcaVendas"
+						},
+						{
+							"dataset": {
+								"referenceName": "Sink_Universo_Medico",
+								"type": "DatasetReference"
+							},
+							"name": "PainelMedico"
+						},
+						{
+							"dataset": {
+								"referenceName": "Sink_Universo_Medico",
+								"type": "DatasetReference"
+							},
+							"name": "QuadranteMedico"
+						},
+						{
+							"dataset": {
+								"referenceName": "Sink_Universo_Medico",
+								"type": "DatasetReference"
+							},
+							"name": "QuadranteMedicoGP"
+						},
+						{
+							"dataset": {
+								"referenceName": "Sink_Universo_Medico",
+								"type": "DatasetReference"
+							},
+							"name": "UniversoMedico"
+						},
+						{
+							"dataset": {
+								"referenceName": "Sink_Universo_Medico",
+								"type": "DatasetReference"
+							},
+							"name": "ConsentHistory"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SelecConsentHistory"
+						},
+						{
+							"name": "NExisteEmailConsent"
+						},
+						{
+							"name": "UnionUniversoMedico"
+						},
+						{
+							"name": "Filter2anos"
+						},
+						{
+							"name": "FilterCiclo"
+						},
+						{
+							"name": "FilterCiclo2"
+						}
+					],
+					"script": "source(output(\n\t\tKEY_TERRITORIO_CICLO as string,\n\t\tBU as string,\n\t\tDIVISAO as string,\n\t\tNOME_GD as string,\n\t\tNOME_GR as string,\n\t\tNOME_REPRESENTANTE as string,\n\t\tMUDID as string,\n\t\tTERRITORIO as string,\n\t\tTERRITORIO_GD as string,\n\t\tTERRITORIO_GR as string,\n\t\tEMAIL_REP as string,\n\t\tCICLO as string,\n\t\tROW_ID_TERRITORIO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico/dim_forca_vendas.parquet']) ~> dForcaVendas\nsource(output(\n\t\tKEY_TERRITORIO_CICLO as string,\n\t\tKEY_TERRITORIO_CONTATO_CICLO as string,\n\t\tKEY_CRM as string,\n\t\tGRUPOPROMOCIONAL as string,\n\t\tQTD_VISITA_PLANEJADA as string,\n\t\tQTD_VISITA_REALIZADA as string,\n\t\tDATA_CARGA as string,\n\t\tTIPO as string,\n\t\tTIPOCONTATO as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico/dim_painel_medico.parquet']) ~> dPainelMedico\nsource(output(\n\t\tKEY_CRM as string,\n\t\tMERCADO_UNIV as string,\n\t\tCATEGORIA_UNIV as string,\n\t\tQUADRANTE_UNIV as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico/dim_quadrante_medico.parquet']) ~> dQuadranteMedico\nsource(output(\n\t\tKEY_CONTATO_TERRITORIO_CICLO as string,\n\t\tMERCADO_GP as string,\n\t\tCATEGORIA_GP as string,\n\t\tQUADRANTE_GP as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico/dim_quadrante_medico_gp.parquet']) ~> dQuadranteMedicoGP\nsource(output(\n\t\tKEY_CRM as string,\n\t\tCICLO as string,\n\t\tKEY_CRM_EMAIL as string,\n\t\tUF as string,\n\t\tCRM as string,\n\t\tCRM2 as string,\n\t\tEMAIL_PRINCIPAL as string,\n\t\tEMAIL_SECUNDARIO as string,\n\t\tNOME as string,\n\t\tESPECIALIDADE as string,\n\t\tESPECIALIDADE2 as string,\n\t\tESPECIALIDADE3 as string,\n\t\tVISITADO as string,\n\t\tNETWORK_ID as string,\n\t\tVEEVA_ID as string,\n\t\tRX_GIGYA_ID as string,\n\t\tTELEFONE as string,\n\t\tCELULAR as string,\n\t\tEMAIL as string,\n\t\tEMAIL_ORIGEM as string,\n\t\tONE_MASS as string,\n\t\tONE_ONE as string,\n\t\tVISITADO_GSK as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico/dim_universo_medico.parquet']) ~> dUniversoMedico\nsource(output(\n\t\tKEY_CRM_EMAIL as string,\n\t\tCRM_PAINEL as string,\n\t\tDATA_VEEVA as string,\n\t\tEMAIL_VEEVA as string,\n\t\tCONSENT_VEEVA_1_1 as string,\n\t\tCONSENT_VEEVA_1_MASS as string,\n\t\tROW_ID_CONTATO_VEEVA as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet',\n\twildcardPaths:['synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico/dim_consent_history.parquet']) ~> dConsentHistory\nFilterCiclo select(mapColumn(\n\t\tEMAIL_VEEVA = EMAIL_PRINCIPAL,\n\t\tDATA_VEEVA = CICLO\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelecConsentHistory\nSelecConsentHistory, dConsentHistory exists(SelecConsentHistory@EMAIL_VEEVA == dConsentHistory@EMAIL_VEEVA,\n\tnegate:true,\n\tbroadcast: 'auto')~> NExisteEmailConsent\ndConsentHistory, NExisteEmailConsent union(byName: true)~> UnionUniversoMedico\nUnionUniversoMedico filter(toDate(concat(left(DATA_VEEVA,4),'-',right(DATA_VEEVA,2),'-01')) >= subMonths(currentDate(),24)) ~> Filter2anos\ndUniversoMedico filter(length(CICLO) == 6) ~> FilterCiclo\ndUniversoMedico filter(length(CICLO) == 6) ~> FilterCiclo2\ndForcaVendas sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_forca_vendas.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ForcaVendas\ndPainelMedico sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_painel_medico.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> PainelMedico\ndQuadranteMedico sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_quadrante_medico_p_[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> QuadranteMedico\ndQuadranteMedicoGP sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_quadrante_medico_gp_[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> QuadranteMedicoGP\nFilterCiclo2 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tfilePattern:'dimensao_universo_medico_[n].parquet',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UniversoMedico\nFilter2anos sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['dimensao_consent_history.parquet'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ConsentHistory"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Source_Universo_Medico')]",
+				"[concat(variables('workspaceId'), '/datasets/Sink_Universo_Medico')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
 			"type": "Microsoft.Synapse/workspaces/credentials",
 			"apiVersion": "2019-06-01-preview",
@@ -13913,31 +14147,12 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 1')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"name": "master",
-						"type": "SqlOnDemand"
-					}
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/SYS_VERIFICAR_COLLATE')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "SYSTEM_TOOLS"
+					"name": "Z_SYSTEM_TOOLS"
 				},
 				"content": {
 					"query": "SELECT\n\tcol.name, col.collation_name\nfrom\n\tsys.columns col\nwhere\n\tobject_id = OBJECT_ID('nome_tabela')\n",
@@ -13959,7 +14174,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "SYSTEM_TOOLS"
+					"name": "Z_SYSTEM_TOOLS"
 				},
 				"content": {
 					"query": "select \n\tc.name as 'Column Name',\n\tt.name as 'Data Type',\n\tc.max_length as 'Max Length',\n\tc.precision,\n\tc.scale,\n\tc.is_nullable,\n\tISNULL(i.is_primary_key,0)\tas 'Primary Key'\nfrom \n\tsys.columns c\nINNER JOIN\n\tsys.types t on c.user_type_id = t.user_type_id\nLEFT OUTER JOIN\n\tsys.index_columns ic ON ic.object_id = c.object_id and ic.column_id = c.column_id\nLEFT OUTER JOIN\n\tsys.indexes i ON ic.object_id = i.object_id and ic.index_id = i.index_id\nwhere\n\tc.object_id = OBJECT_ID('kpivis.dim_visitas_realizadas_detail')",
@@ -13976,422 +14191,136 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/4 - Transform  - Universo Medico')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"name": "[concat(parameters('workspaceName'), '/UNIV_MEDICO_CREATE_VIEW_DIM_CONSENT_HISTORY')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"activities": [
-					{
-						"name": "Lista_Arquivos",
-						"type": "GetMetadata",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "Listar_Arquivos_Txt_4",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"fieldList": [
-								"childItems"
-							],
-							"storeSettings": {
-								"type": "AzureBlobStorageReadSettings",
-								"recursive": true
-							},
-							"formatSettings": {
-								"type": "DelimitedTextReadSettings"
-							}
-						}
+				"folder": {
+					"name": "UNIVERSO MEDICO"
+				},
+				"content": {
+					"query": "-- ALTER VIEW univmed.dim_consent_history\n-- AS\nSELECT\n [KEY_CRM_EMAIL]\n,[CRM_PAINEL]\n,[DATA_VEEVA]\n,[EMAIL_VEEVA]\n,[CONSENT_VEEVA_1_1]\n,[CONSENT_VEEVA_1_MASS]\n,[ROW_ID_CONTATO_VEEVA]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_consent_history.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n [KEY_CRM_EMAIL]         VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[CRM_PAINEL]\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DATA_VEEVA]\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_VEEVA]\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CONSENT_VEEVA_1_1]\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CONSENT_VEEVA_1_MASS]\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_CONTATO_VEEVA]\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
+					"metadata": {
+						"language": "sql"
 					},
-					{
-						"name": "Filtra_Arquivos_ZIP",
-						"type": "Filter",
-						"dependsOn": [
-							{
-								"activity": "Lista_Arquivos",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Lista_Arquivos').output.childitems",
-								"type": "Expression"
-							},
-							"condition": {
-								"value": "@contains(item().name,'.zip')",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Para_Cada_ZIP",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Filtra_Arquivos_ZIP",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Filtra_Arquivos_ZIP').output.Value",
-								"type": "Expression"
-							},
-							"isSequential": true,
-							"activities": [
-								{
-									"name": "Transforma_ZIP_to_TXT",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "DelimitedTextSource",
-											"storeSettings": {
-												"type": "AzureBlobFSReadSettings",
-												"recursive": true,
-												"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
-												"wildcardFileName": {
-													"value": "@{item().name}",
-													"type": "Expression"
-												}
-											},
-											"formatSettings": {
-												"type": "DelimitedTextReadSettings",
-												"compressionProperties": {
-													"type": "ZipDeflateReadSettings"
-												}
-											}
-										},
-										"sink": {
-											"type": "DelimitedTextSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "DelimitedTextWriteSettings",
-												"quoteAllText": true,
-												"fileExtension": ".txt"
-											}
-										},
-										"enableStaging": false,
-										"enableSkipIncompatibleRow": true,
-										"translator": {
-											"type": "TabularTranslator",
-											"typeConversion": true,
-											"typeConversionSettings": {
-												"allowDataTruncation": true,
-												"treatBooleanAsNumber": false
-											}
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "ListarArquivosComprimidos_4",
-											"type": "DatasetReference",
-											"parameters": {}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "arquivo_txt_s_comprimir",
-											"type": "DatasetReference",
-											"parameters": {
-												"nome_arquivo": {
-													"value": "@{replace(item().name,'.zip','.txt')}",
-													"type": "Expression"
-												},
-												"pasta": "dash.universo_medico"
-											}
-										}
-									]
-								},
-								{
-									"name": "Transforma_TXT_toParquet",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "Transforma_ZIP_to_TXT",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "DelimitedTextSource",
-											"storeSettings": {
-												"type": "AzureBlobStorageReadSettings",
-												"recursive": true,
-												"wildcardFolderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
-												"wildcardFileName": {
-													"value": "@{replace(item().name,'.zip','.txt')}",
-													"type": "Expression"
-												},
-												"enablePartitionDiscovery": false
-											},
-											"formatSettings": {
-												"type": "DelimitedTextReadSettings"
-											}
-										},
-										"sink": {
-											"type": "ParquetSink",
-											"storeSettings": {
-												"type": "AzureBlobStorageWriteSettings"
-											},
-											"formatSettings": {
-												"type": "ParquetWriteSettings"
-											}
-										},
-										"enableStaging": false,
-										"enableSkipIncompatibleRow": true,
-										"translator": {
-											"type": "TabularTranslator",
-											"typeConversion": true,
-											"typeConversionSettings": {
-												"allowDataTruncation": true,
-												"treatBooleanAsNumber": false
-											}
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "Listar_Arquivos_Txt_4",
-											"type": "DatasetReference",
-											"parameters": {}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "Arquivos_Em_Parquet_4",
-											"type": "DatasetReference",
-											"parameters": {
-												"nome_arquivo": "@{replace(item().name,'.zip','.parquet')}"
-											}
-										}
-									]
-								}
-							]
-						}
-					},
-					{
-						"name": "Deletar_Arquivos_ZIP",
-						"type": "Delete",
-						"dependsOn": [
-							{
-								"activity": "Para_Cada_ZIP",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "Listar_Arquivos_Txt_4",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"enableLogging": false,
-							"storeSettings": {
-								"type": "AzureBlobStorageReadSettings",
-								"recursive": true,
-								"wildcardFileName": "*.zip"
-							}
-						}
-					},
-					{
-						"name": "Deletar_Arquivos_TXT",
-						"type": "Delete",
-						"dependsOn": [
-							{
-								"activity": "Para_Cada_ZIP",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "Listar_Arquivos_Txt_4",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"enableLogging": false,
-							"storeSettings": {
-								"type": "AzureBlobStorageReadSettings",
-								"recursive": true,
-								"wildcardFileName": "*.txt",
-								"enablePartitionDiscovery": false
-							}
-						}
-					}
-				],
-				"variables": {
-					"ValorVerdadeiro": {
-						"type": "Array"
-					},
-					"ValorFalso": {
-						"type": "Array"
+					"currentConnection": {
+						"poolName": "Built-in",
+						"databaseName": "GSK"
 					}
 				},
-				"folder": {
-					"name": "Transform"
-				},
-				"annotations": [],
-				"lastPublishTime": "2020-12-17T02:42:58Z"
+				"type": "SqlQuery"
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/Listar_Arquivos_Txt_4')]",
-				"[concat(variables('workspaceId'), '/datasets/ListarArquivosComprimidos_4')]",
-				"[concat(variables('workspaceId'), '/datasets/arquivo_txt_s_comprimir')]",
-				"[concat(variables('workspaceId'), '/datasets/Arquivos_Em_Parquet_4')]"
-			]
+			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Listar_Arquivos_Txt_4')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
+			"name": "[concat(parameters('workspaceName'), '/UNIV_MEDICO_CREATE_VIEW_DIM_FORCA_VENDAS')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Listar_Arquivos_Txt_3",
-					"type": "LinkedServiceReference"
-				},
 				"folder": {
-					"name": "2 - KPI Visitacao"
+					"name": "UNIVERSO MEDICO"
 				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
-						"container": "gsksynapsestorage"
+				"content": {
+					"query": "-- ALTER VIEW univmed.dim_forca_vendas\n-- as\nSELECT\n[KEY_TERRITORIO_CICLO]\n,[BU]\n,[DIVISAO]\n,[NOME_GD]\n,[NOME_GR]\n,[NOME_REPRESENTANTE]\n,[MUDID]\n,[TERRITORIO]\n,[TERRITORIO_GD]\n,[TERRITORIO_GR]\n,[EMAIL_REP]\n,[CICLO]\n,[ROW_ID_TERRITORIO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_forca_vendas.parquet',\n        FORMAT='PARQUET'\n    ) with (\n[KEY_TERRITORIO_CICLO]     VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BU]\t\t\t\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DIVISAO]\t\t\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_GD]\t\t\t\t   VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_GR]\t\t\t\t   VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_REPRESENTANTE]\t   VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[MUDID]\t\t\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO]\t\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_GD]\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_GR]\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_REP]\t\t\t   VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO]\t\t\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_TERRITORIO]\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) as ROW\n",
+					"metadata": {
+						"language": "sql"
 					},
-					"columnDelimiter": "<",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Listar_Arquivos_Txt_3')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/ListarArquivosComprimidos_4')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "1 - Email 1-1"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
-						"fileSystem": "gsksynapsestorage"
-					},
-					"columnDelimiter": "<",
-					"compressionCodec": "ZipDeflate",
-					"compressionLevel": "Fastest",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/gsk-synapse-WorkspaceDefaultStorage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Arquivos_Em_Parquet_4')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Arquivos_Em_Parquet_3",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"nome_arquivo": {
-						"type": "string"
+					"currentConnection": {
+						"poolName": "Built-in",
+						"databaseName": "GSK"
 					}
 				},
-				"folder": {
-					"name": "2 - KPI Visitacao"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@dataset().nome_arquivo",
-							"type": "Expression"
-						},
-						"folderPath": "synapse/workspaces/gsk-synapse/warehouse/dash.universo_medico",
-						"container": "gsksynapsestorage"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
+				"type": "SqlQuery"
 			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/Arquivos_Em_Parquet_3')]"
-			]
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/UNIV_MEDICO_CREATE_VIEW_DIM_PAINEL_MEDICO')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "UNIVERSO MEDICO"
+				},
+				"content": {
+					"query": "-- ALTER VIEW univmed.dim_painel_medico\n-- AS\nSELECT\n[KEY_TERRITORIO_CICLO]\n,[KEY_TERRITORIO_CONTATO_CICLO]\n,[KEY_CRM]\n,[GRUPOPROMOCIONAL]\n,[QTD_VISITA_PLANEJADA]\n,[QTD_VISITA_REALIZADA]\n,[DATA_CARGA]\n,[TIPO]\n,[TIPOCONTATO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_painel_medico.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[KEY_TERRITORIO_CICLO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[KEY_TERRITORIO_CONTATO_CICLO]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[KEY_CRM]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[GRUPOPROMOCIONAL]\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[QTD_VISITA_PLANEJADA]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[QTD_VISITA_REALIZADA]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DATA_CARGA]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPOCONTATO]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"poolName": "Built-in",
+						"databaseName": "GSK"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/UNIV_MEDICO_CREATE_VIEW_DIM_QUADRANTE_MEDICO')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "UNIVERSO MEDICO"
+				},
+				"content": {
+					"query": "ALTER VIEW univmed.dim_quadrante_medico\nAS\nSELECT\n[KEY_CRM]\n,[MERCADO_UNIV]\n,[CATEGORIA_UNIV]\n,[QUADRANTE_UNIV]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_quadrante_medico_p_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[KEY_CRM]           VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MERCADO_UNIV]\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CATEGORIA_UNIV]\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[QUADRANTE_UNIV]\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8  \n    ) as ROW\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"poolName": "Built-in",
+						"databaseName": "GSK"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/UNIV_MEDICO_CREATE_VIEW_DIM_QUADRANTE_MEDICO_GP')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "UNIVERSO MEDICO"
+				},
+				"content": {
+					"query": "-- CREATE VIEW univmed.dim_quadrante_medico_gp\n-- AS\nSELECT\n[KEY_CONTATO_TERRITORIO_CICLO]\n,[MERCADO_GP]\n,[CATEGORIA_GP]\n,[QUADRANTE_GP]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_quadrante_medico_gp_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[KEY_CONTATO_TERRITORIO_CICLO]   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MERCADO_GP]\t\t\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CATEGORIA_GP]\t\t\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[QUADRANTE_GP]\t\t\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"poolName": "Built-in",
+						"databaseName": "GSK"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/UNIV_MEDICO_CREATE_VIEW_FATO_UNIVERSO_MEDICO')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "UNIVERSO MEDICO"
+				},
+				"content": {
+					"query": "-- ALTER VIEW univmed.fato_universo_medico\n-- AS\nSELECT\n[KEY_CRM]\n,[CICLO]\n,[KEY_CRM_EMAIL]\n,[UF]\n,[CRM]\n,[CRM2]\n,[EMAIL_PRINCIPAL]\n,[EMAIL_SECUNDARIO]\n,[NOME]\n,[ESPECIALIDADE]\n,[ESPECIALIDADE2]\n,[ESPECIALIDADE3]\n,[VISITADO]\n,[NETWORK_ID]\n,[VEEVA_ID]\n,[RX_GIGYA_ID]\n,[TELEFONE]\n,[CELULAR]\n,[EMAIL]\n,[EMAIL_ORIGEM]\n,[ONE_MASS]\n,[ONE_ONE]\n,[VISITADO_GSK]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_universo_medico_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[KEY_CRM]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[KEY_CRM_EMAIL]\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[UF]\t\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CRM]\t\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CRM2]\t\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_PRINCIPAL]\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_SECUNDARIO]\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME]\t\t\t\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE2]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE3]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VISITADO]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NETWORK_ID]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VEEVA_ID]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[RX_GIGYA_ID]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TELEFONE]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CELULAR]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL]\t\t\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_ORIGEM]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ONE_MASS]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ONE_ONE]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VISITADO_GSK]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW \n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"poolName": "Built-in",
+						"databaseName": "GSK"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
 		}
 	]
 }
