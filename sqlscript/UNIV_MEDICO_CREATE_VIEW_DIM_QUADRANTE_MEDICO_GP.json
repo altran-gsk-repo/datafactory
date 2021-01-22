@@ -5,7 +5,7 @@
 			"name": "UNIVERSO MEDICO"
 		},
 		"content": {
-			"query": "-- ALTER VIEW univmed.quadrante_medico_gp\n-- AS\nSELECT\n[KEY_CONTATO_TERRITORIO_CICLO]\n,[MERCADO_GP]\n,[CATEGORIA_GP]\n,[QUADRANTE_GP]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_quadrante_medico_gp_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[KEY_CONTATO_TERRITORIO_CICLO]   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MERCADO_GP]\t\t\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CATEGORIA_GP]\t\t\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[QUADRANTE_GP]\t\t\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
+			"query": "-- CREATE VIEW univmed.dim_quadrante_medico_gp\n-- AS\nSELECT\n[KEY_CONTATO_TERRITORIO_CICLO]\n,[MERCADO_GP]\n,[CATEGORIA_GP]\n,[QUADRANTE_GP]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_quadrante_medico_gp_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[KEY_CONTATO_TERRITORIO_CICLO]   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MERCADO_GP]\t\t\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CATEGORIA_GP]\t\t\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[QUADRANTE_GP]\t\t\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
 			"metadata": {
 				"language": "sql"
 			},
