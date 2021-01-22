@@ -1,0 +1,19 @@
+{
+	"name": "UNIV_MEDICO_CREATE_VIEW_FATO_UNIVERSO_MEDICO",
+	"properties": {
+		"folder": {
+			"name": "UNIVERSO MEDICO"
+		},
+		"content": {
+			"query": "-- ALTER VIEW univmed.fato_universo_medico\n-- AS\nSELECT\n[KEY_CRM]\n,[CICLO]\n,[KEY_CRM_EMAIL]\n,[UF]\n,[CRM]\n,[CRM2]\n,[EMAIL_PRINCIPAL]\n,[EMAIL_SECUNDARIO]\n,[NOME]\n,[ESPECIALIDADE]\n,[ESPECIALIDADE2]\n,[ESPECIALIDADE3]\n,[VISITADO]\n,[NETWORK_ID]\n,[VEEVA_ID]\n,[RX_GIGYA_ID]\n,[TELEFONE]\n,[CELULAR]\n,[EMAIL]\n,[EMAIL_ORIGEM]\n,[ONE_MASS]\n,[ONE_ONE]\n,[VISITADO_GSK]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_universo_medico_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[KEY_CRM]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[KEY_CRM_EMAIL]\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[UF]\t\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CRM]\t\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CRM2]\t\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_PRINCIPAL]\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_SECUNDARIO]\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME]\t\t\t\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE2]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE3]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VISITADO]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NETWORK_ID]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VEEVA_ID]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[RX_GIGYA_ID]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TELEFONE]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CELULAR]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL]\t\t\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_ORIGEM]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ONE_MASS]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ONE_ONE]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VISITADO_GSK]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW \n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "GSK"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
