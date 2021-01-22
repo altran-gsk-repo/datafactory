@@ -1,0 +1,19 @@
+{
+	"name": "UNIV_MEDICO_CREATE_VIEW_DIM_CONSENT_HISTORY",
+	"properties": {
+		"folder": {
+			"name": "UNIVERSO MEDICO"
+		},
+		"content": {
+			"query": "-- ALTER VIEW univmed.dim_consent_history\n-- AS\nSELECT\n [KEY_CRM_EMAIL]\n,[CRM_PAINEL]\n,[DATA_VEEVA]\n,[EMAIL_VEEVA]\n,[CONSENT_VEEVA_1_1]\n,[CONSENT_VEEVA_1_MASS]\n,[ROW_ID_CONTATO_VEEVA]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_consent_history.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n [KEY_CRM_EMAIL]         VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[CRM_PAINEL]\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DATA_VEEVA]\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_VEEVA]\t\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CONSENT_VEEVA_1_1]\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CONSENT_VEEVA_1_MASS]\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_CONTATO_VEEVA]\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "GSK"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
