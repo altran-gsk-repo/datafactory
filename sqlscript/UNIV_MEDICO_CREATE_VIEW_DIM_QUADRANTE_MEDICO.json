@@ -1,0 +1,19 @@
+{
+	"name": "UNIV_MEDICO_CREATE_VIEW_DIM_QUADRANTE_MEDICO",
+	"properties": {
+		"folder": {
+			"name": "UNIVERSO MEDICO"
+		},
+		"content": {
+			"query": "ALTER VIEW univmed.dim_quadrante_medico\nAS\nSELECT\n[KEY_CRM]\n,[MERCADO_UNIV]\n,[CATEGORIA_UNIV]\n,[QUADRANTE_UNIV]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_quadrante_medico_p_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[KEY_CRM]           VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MERCADO_UNIV]\t\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CATEGORIA_UNIV]\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[QUADRANTE_UNIV]\t VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8  \n    ) as ROW\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "GSK"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
