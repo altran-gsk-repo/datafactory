@@ -1,0 +1,19 @@
+{
+	"name": "UNIV_MEDICO_CREATE_VIEW_DIM_FORCA_VENDAS",
+	"properties": {
+		"folder": {
+			"name": "UNIVERSO MEDICO"
+		},
+		"content": {
+			"query": "-- ALTER VIEW univmed.dim_forca_vendas\n-- as\nSELECT\n[KEY_TERRITORIO_CICLO]\n,[BU]\n,[DIVISAO]\n,[NOME_GD]\n,[NOME_GR]\n,[NOME_REPRESENTANTE]\n,[MUDID]\n,[TERRITORIO]\n,[TERRITORIO_GD]\n,[TERRITORIO_GR]\n,[EMAIL_REP]\n,[CICLO]\n,[ROW_ID_TERRITORIO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_forca_vendas.parquet',\n        FORMAT='PARQUET'\n    ) with (\n[KEY_TERRITORIO_CICLO]     VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BU]\t\t\t\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DIVISAO]\t\t\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_GD]\t\t\t\t   VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_GR]\t\t\t\t   VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_REPRESENTANTE]\t   VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[MUDID]\t\t\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO]\t\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_GD]\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_GR]\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_REP]\t\t\t   VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO]\t\t\t\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_TERRITORIO]\t   VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) as ROW\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "GSK"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
