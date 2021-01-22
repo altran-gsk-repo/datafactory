@@ -5,6 +5,9 @@
 			"referenceName": "gsk-synapse-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "4 - Universo Medico"
+		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {
