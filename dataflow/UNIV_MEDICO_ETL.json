@@ -1,6 +1,9 @@
 {
 	"name": "UNIV_MEDICO_ETL",
 	"properties": {
+		"folder": {
+			"name": "UNIVERSO MEDICO"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
