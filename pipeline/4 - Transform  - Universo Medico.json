@@ -287,9 +287,22 @@
 				}
 			},
 			{
-				"name": "Dataflow2",
+				"name": "UNIV_MEDICO_ETL",
 				"type": "ExecuteDataFlow",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Deletar_Arquivos_ZIP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Deletar_Arquivos_TXT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
