@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "GSO_ETL",
+				"name": "UNIV_MEDICO_ETL",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "GSO_ETL",
+						"referenceName": "UNIV_MEDICO_ETL",
 						"type": "DataFlowReference"
 					},
 					"compute": {
