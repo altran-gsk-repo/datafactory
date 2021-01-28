@@ -1,5 +1,5 @@
 {
-	"name": "Notebook 3",
+	"name": "Criar Tabelas - KPI EMAIL",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -12,11 +12,11 @@
 			"driverCores": 4,
 			"executorMemory": "28g",
 			"executorCores": 4,
-			"numExecutors": 2,
+			"numExecutors": 4,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
-				"spark.dynamicAllocation.minExecutors": "2",
-				"spark.dynamicAllocation.maxExecutors": "2"
+				"spark.dynamicAllocation.minExecutors": "4",
+				"spark.dynamicAllocation.maxExecutors": "4"
 			}
 		},
 		"metadata": {
@@ -34,9 +34,9 @@
 					"authResource": "https://dev.azuresynapse.net"
 				},
 				"sparkVersion": "2.4",
-				"nodeCount": 3,
-				"cores": 4,
-				"memory": 28,
+				"nodeCount": 10,
+				"cores": 8,
+				"memory": 56,
 				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
@@ -70,10 +70,38 @@
 				},
 				"source": [
 					"%%pyspark\n",
-					"df = spark.read.option(\"encoding\", \"ANSI\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/GSO/dimensao_gco.parquet', format='parquet')\n",
-					"df.createOrReplaceTempView(\"dimensao_gco\")"
+					"df_dim_audit_end = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_audit_end.parquet', format='parquet')\n",
+					"df_dim_audit_end.createOrReplaceTempView(\"kpiemail_dim_audit_end\")\n",
+					"\n",
+					"df_dim_coaching = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_coaching.parquet', format='parquet')\n",
+					"df_dim_coaching.createOrReplaceTempView(\"kpiemail_dim_coaching\")\n",
+					"\n",
+					"df_dim_forca_vendas = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_forca_vendas.parquet', format='parquet')\n",
+					"df_dim_forca_vendas.createOrReplaceTempView(\"kpiemail_dim_forca_vendas\")\n",
+					"\n",
+					"df_dim_historico_zonas = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_historico_zonas.parquet', format='parquet')\n",
+					"df_dim_historico_zonas.createOrReplaceTempView(\"kpiemail_dim_historico_zonas\")\n",
+					"\n",
+					"df_dim_kpi_territorio = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_kpi_territorio.parquet', format='parquet')\n",
+					"df_dim_kpi_territorio.createOrReplaceTempView(\"kpiemail_dim_kpi_territorio\")\n",
+					"\n",
+					"df_dim_coaching = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_coaching.parquet', format='parquet')\n",
+					"df_dim_coaching.createOrReplaceTempView(\"kpiemail_dim_coaching\")\n",
+					"\n",
+					"df_dim_coaching = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_coaching.parquet', format='parquet')\n",
+					"df_dim_coaching.createOrReplaceTempView(\"kpiemail_dim_coaching\")\n",
+					"\n",
+					"df_dim_coaching = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_coaching.parquet', format='parquet')\n",
+					"df_dim_coaching.createOrReplaceTempView(\"kpiemail_dim_coaching\")\n",
+					"\n",
+					"df_dim_coaching = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_coaching.parquet', format='parquet')\n",
+					"df_dim_coaching.createOrReplaceTempView(\"kpiemail_dim_coaching\")\n",
+					"\n",
+					"df_dim_coaching = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_coaching.parquet', format='parquet')\n",
+					"df_dim_coaching.createOrReplaceTempView(\"kpiemail_dim_coaching\")\n",
+					""
 				],
-				"execution_count": 20
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -83,17 +111,17 @@
 						"chartConfig": {
 							"category": "bar",
 							"keys": [
-								"REGION"
+								"CICLO"
 							],
 							"values": [
-								"NUMBER_OF_GSO"
+								"CICLO"
 							],
-							"yLabel": "NUMBER_OF_GSO",
-							"xLabel": "REGION",
-							"aggregation": "SUM",
+							"yLabel": "CICLO",
+							"xLabel": "CICLO",
+							"aggregation": "COUNT",
 							"aggByBackend": false
 						},
-						"aggData": "{\"NUMBER_OF_GSO\":{\"Direct Emerging Market\":18}}",
+						"aggData": "{\"CICLO\":{\"201901\":10}}",
 						"isSummary": false,
 						"previewData": {
 							"filter": null
@@ -104,68 +132,12 @@
 				"source": [
 					"%%sql\n",
 					"SELECT \n",
-					"gco.REGION\n",
-					",gco.CLUSTER\n",
-					",gco.COUNTRY\n",
-					",gco.SLSL\n",
-					",gco.FLSL\n",
-					",gco.CITY\n",
-					",gco.BUSINESS_UNIT\n",
-					",gco.FIELD_VISIT_COACHING_DATE\n",
-					",gco.BRAND\n",
-					",gco.TOTAL_NUMBER_CALLS_OBSERVED\n",
-					",gco.NUMBER_OF_GSO\n",
-					",gco.FLSL_MOTIVATIONAL_INSPIRATIONAL_ENVIRONMENT\n",
-					",gco.FLSL_SALES_REP_AGREE_GOAL\n",
-					",gco.COACHING_GOAL_SEQUENTIAL_PREVIOUS_ACTION\n",
-					",gco.FLSL_SALES_REP_MENTION_CURRENT_PERFORMANCE\n",
-					",gco.POTENTIAL_IMPACT_CURRENT_PERFORMANCE\n",
-					",gco.FLSL_SALES_REP_BLOCK_CURRENT_PERFORMANCE\n",
-					",gco.SALES_REP_SOLUTIONS_UNBLOCK_BARRIERS\n",
-					",gco.FLSL_SALES_REP_SOLUTIONS_UNBLOCK_BARRIERS_IMPACT\n",
-					",gco.FLSL_OFFERS_ALTERNATIVE_SOLUTIONS\n",
-					",gco.EXPLORE_SALES_REP_NEXT_STEPS\n",
-					",gco.MANAGER_ASKS_SALES_REP_SUPPORT_NEEDS\n",
-					",gco.BUILDS_PLAN_SUCCESS_MEASURES\n",
-					",gco.IMPORTANT_ACTION_IMPROVE_CAPABILITY_MAPS_TOP_SKILL\n",
-					",gco.DETERMINES_COACHING_STYLE_FLEXES_COACHING_STYLE\n",
-					",gco.QUESTIONS_ACTIVE_LISTENING_FEEDBACK_SBI\n",
-					",gco.ACTION_PLANS\n",
+					"*\n",
 					"FROM\n",
-					"    dimensao_gco gco\n",
-					"LIMIT 10\n",
-					""
+					"    kpiemail_dim_coaching\n",
+					"limit 10"
 				],
-				"execution_count": 26
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"diagram": {
-						"activateDiagramType": 1,
-						"chartConfig": {
-							"category": "bar",
-							"keys": [],
-							"values": [],
-							"yLabel": "",
-							"xLabel": "",
-							"aggregation": "SUM",
-							"aggByBackend": false
-						},
-						"aggData": "{}",
-						"isSummary": false,
-						"previewData": {
-							"filter": null
-						},
-						"isSql": true
-					}
-				},
-				"source": [
-					"%%sql\n",
-					"CREATE TEMPORARY VIEW  teste_gco \n",
-					"    AS SELECT * from dimensao_gco"
-				],
-				"execution_count": 29
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -195,11 +167,6 @@
 					"    AS SELECT * FROM dimensao_gco"
 				],
 				"execution_count": 31
-			},
-			{
-				"cell_type": "code",
-				"source": [],
-				"execution_count": null
 			}
 		]
 	}
