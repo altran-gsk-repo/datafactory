@@ -12806,7 +12806,7 @@
 				"typeProperties": {
 					"frequency": "Hour",
 					"interval": 240,
-					"startTime": "2020-12-11T00:37:00.000Z",
+					"startTime": "2020-12-11T00:37:00Z",
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
@@ -12828,7 +12828,7 @@
 				"typeProperties": {
 					"frequency": "Hour",
 					"interval": 240,
-					"startTime": "2020-12-11T01:11:00.000Z",
+					"startTime": "2020-12-11T01:11:00Z",
 					"delay": "00:00:00",
 					"maxConcurrency": 50,
 					"retryPolicy": {
@@ -13957,7 +13957,7 @@
 					"name": "KPI VISITACAO"
 				},
 				"content": {
-					"query": "-- CREATE VIEW kpivis.dim_painel_medico\n-- as\nSELECT\n[CICLO_TERRITORIO_CONTATO]\n,[PAINEL_CICLO]\n,[PAINEL_CICLO_ATUAL]\n,[PAINEL_ROW_ID_TERRITORIO]\n,CONCAT([PAINEL_CICLO],'-',[PAINEL_ROW_ID_TERRITORIO]) as 'SALES_FORCE_KEY'\n,[CICLO_TERRITORIO_DIVISAO]\n,[DOCUMENTO]\n,[BRICK]\n,[MEDICO]\n,[DOC_NAME]\n,[GRUPOPROMOCIONAL]\n,[ESPECIALIDADE]\n,[TIPOCONTATO]\n,[COMPLEMENTO]\n,[CEP]\n,[LOGRADOURO]\n,[BAIRRO]\n,[CIDADE]\n,[UF]\n,[EMAIL_1_1]\n,[EMAIL_MASS]\n,[TELEFONEMEDICO]\n,[CELULARMEDICO]\n,[ULTALTCONTATO]\n,[UFDOCUMENTO]\n,[NUMERODOCUMENTO]\n,[PAINEL_ROW_ID_CONTATO]\n,[PAINEL_ROW_ID_GRUPOPROMOCIONAL]\n,[PAINEL_ROW_ID_DIVISAO]\n,[PAINEL_ROW_ID_FUNCIONARIO]\n,[PAINEL_DIVISAO]\n,[PERSON_UID]\n,[ORIGEM_DADOS]\n,[DATA_CARGA]\n,[PAINEL_STATUS]\n,[TIPO]\n,[BRICK_NOME]\n,[SITUACAO]\n,[FLG_OFICIAL_GOVERNO]\n,[ESPECIALIDADE_02]\n,[ESPECIALIDADE_03]\n,[ROW_ID_ENDERECO]\n,[CPF]\n,[ORIGEM_END]\n,[NETWORKID]\n,[DOCUMENTO_VEEVA]\n,[FLG_MEDICO_AUDIT]\n,[ESPEC_CYCLE_PLAN]\n,[STATUS_MEDICO]\n,[EMAIL_1_1_CONSENT]\n,[EMAIL_MASS_CONSENT]\n,[COMENTARIO]\n,[TOP_IND_FLAG]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_painel_medico_p_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH(\n        [CICLO_TERRITORIO_CONTATO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_CICLO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_CICLO_ATUAL]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_TERRITORIO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO_TERRITORIO_DIVISAO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DOCUMENTO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BRICK]\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MEDICO]\t\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[DOC_NAME]\t\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[GRUPOPROMOCIONAL]\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPOCONTATO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COMPLEMENTO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CEP]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[LOGRADOURO]\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[BAIRRO]\t\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[CIDADE]\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[UF]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_1_1]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_MASS]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TELEFONEMEDICO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CELULARMEDICO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ULTALTCONTATO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[UFDOCUMENTO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NUMERODOCUMENTO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_CONTATO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_GRUPOPROMOCIONAL]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_DIVISAO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_FUNCIONARIO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_DIVISAO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PERSON_UID]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ORIGEM_DADOS]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DATA_CARGA]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_STATUS]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPO]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BRICK_NOME]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[SITUACAO]\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[FLG_OFICIAL_GOVERNO]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE_02]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE_03]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_ENDERECO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CPF]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ORIGEM_END]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NETWORKID]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DOCUMENTO_VEEVA]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[FLG_MEDICO_AUDIT]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPEC_CYCLE_PLAN]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[STATUS_MEDICO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_1_1_CONSENT]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_MASS_CONSENT]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COMENTARIO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TOP_IND_FLAG]                             VARCHAR(10) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
+					"query": "--ALTER VIEW kpivis.dim_painel_medico\n--as\nSELECT\n[CICLO_TERRITORIO_CONTATO]\n,[PAINEL_CICLO]\n,[PAINEL_CICLO_ATUAL]\n,[PAINEL_ROW_ID_TERRITORIO]\n,CONCAT([PAINEL_CICLO],'-',[PAINEL_ROW_ID_TERRITORIO]) as 'SALES_FORCE_KEY'\n,CONCAT([PAINEL_ROW_ID_TERRITORIO],[PAINEL_CICLO]) as 'KEY_TERR_CICLO'\n,[CICLO_TERRITORIO_DIVISAO]\n,[DOCUMENTO]\n,[BRICK]\n,[MEDICO]\n,[DOC_NAME]\n,[GRUPOPROMOCIONAL]\n,[ESPECIALIDADE]\n,[TIPOCONTATO]\n,[COMPLEMENTO]\n,[CEP]\n,[LOGRADOURO]\n,[BAIRRO]\n,[CIDADE]\n,[UF]\n,[EMAIL_1_1]\n,[EMAIL_MASS]\n,[TELEFONEMEDICO]\n,[CELULARMEDICO]\n,[ULTALTCONTATO]\n,[UFDOCUMENTO]\n,[NUMERODOCUMENTO]\n,[PAINEL_ROW_ID_CONTATO]\n,[PAINEL_ROW_ID_GRUPOPROMOCIONAL]\n,[PAINEL_ROW_ID_DIVISAO]\n,[PAINEL_ROW_ID_FUNCIONARIO]\n,[PAINEL_DIVISAO]\n,[PERSON_UID]\n,[ORIGEM_DADOS]\n,[DATA_CARGA]\n,[PAINEL_STATUS]\n,[TIPO]\n,[BRICK_NOME]\n,[SITUACAO]\n,[FLG_OFICIAL_GOVERNO]\n,[ESPECIALIDADE_02]\n,[ESPECIALIDADE_03]\n,[ROW_ID_ENDERECO]\n,[CPF]\n,[ORIGEM_END]\n,[NETWORKID]\n,[DOCUMENTO_VEEVA]\n,[FLG_MEDICO_AUDIT]\n,[ESPEC_CYCLE_PLAN]\n,[STATUS_MEDICO]\n,[EMAIL_1_1_CONSENT]\n,[EMAIL_MASS_CONSENT]\n,[COMENTARIO]\n,[TOP_IND_FLAG]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_painel_medico_p_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH(\n        [CICLO_TERRITORIO_CONTATO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_CICLO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_CICLO_ATUAL]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_TERRITORIO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO_TERRITORIO_DIVISAO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DOCUMENTO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BRICK]\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MEDICO]\t\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[DOC_NAME]\t\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[GRUPOPROMOCIONAL]\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPOCONTATO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COMPLEMENTO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CEP]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[LOGRADOURO]\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[BAIRRO]\t\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[CIDADE]\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[UF]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_1_1]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_MASS]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TELEFONEMEDICO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CELULARMEDICO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ULTALTCONTATO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[UFDOCUMENTO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NUMERODOCUMENTO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_CONTATO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_GRUPOPROMOCIONAL]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_DIVISAO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_FUNCIONARIO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_DIVISAO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PERSON_UID]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ORIGEM_DADOS]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DATA_CARGA]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_STATUS]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPO]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BRICK_NOME]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[SITUACAO]\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[FLG_OFICIAL_GOVERNO]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE_02]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE_03]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_ENDERECO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CPF]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ORIGEM_END]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NETWORKID]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DOCUMENTO_VEEVA]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[FLG_MEDICO_AUDIT]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPEC_CYCLE_PLAN]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[STATUS_MEDICO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_1_1_CONSENT]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_MASS_CONSENT]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COMENTARIO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TOP_IND_FLAG]                             VARCHAR(10) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
 					"metadata": {
 						"language": "sql"
 					},
@@ -13979,13 +13979,13 @@
 					"name": "KPI VISITACAO"
 				},
 				"content": {
-					"query": "-- ALTER VIEW kpivis.dim_painel_medico_comercial\n-- AS\nSELECT\n[CICLO_TERRITORIO_CONTATO]\n,[PAINEL_CICLO]\n,[PAINEL_CICLO_ATUAL]\n,[PAINEL_ROW_ID_TERRITORIO]\n,[CICLO_TERRITORIO_DIVISAO]\n,[DOCUMENTO]\n,[BRICK]\n,[MEDICO]\n,[DOC_NAME]\n,[GRUPOPROMOCIONAL]\n,[ESPECIALIDADE]\n,[TIPOCONTATO]\n,[COMPLEMENTO]\n,[CEP]\n,[LOGRADOURO]\n,[BAIRRO]\n,[CIDADE]\n,[UF]\n,[EMAIL_1_1]\n,[EMAIL_MASS]\n,[TELEFONEMEDICO]\n,[CELULARMEDICO]\n,[ULTALTCONTATO]\n,[UFDOCUMENTO]\n,[NUMERODOCUMENTO]\n,[PAINEL_ROW_ID_CONTATO]\n,[PAINEL_ROW_ID_GRUPOPROMOCIONAL]\n,[PAINEL_ROW_ID_DIVISAO]\n,[PAINEL_ROW_ID_FUNCIONARIO]\n,[PAINEL_DIVISAO]\n,[PERSON_UID]\n,[ORIGEM_DADOS]\n,[DATA_CARGA]\n,[PAINEL_STATUS]\n,[TIPO]\n,[BRICK_NOME]\n,[SITUACAO]\n,[FLG_OFICIAL_GOVERNO]\n,[ESPECIALIDADE_02]\n,[ESPECIALIDADE_03]\n,[ROW_ID_ENDERECO]\n,[CPF]\n,[ORIGEM_END]\n,[NETWORKID]\n,[DOCUMENTO_VEEVA]\n,[FLG_MEDICO_AUDIT]\n,[ESPEC_CYCLE_PLAN]\n,[STATUS_MEDICO]\n,[EMAIL_1_1_CONSENT]\n,[EMAIL_MASS_CONSENT]\n,[COMENTARIO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_painel_medico_comercial.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n        [CICLO_TERRITORIO_CONTATO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_CICLO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_CICLO_ATUAL]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_TERRITORIO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO_TERRITORIO_DIVISAO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DOCUMENTO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BRICK]\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MEDICO]\t\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[DOC_NAME]\t\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[GRUPOPROMOCIONAL]\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPOCONTATO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COMPLEMENTO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CEP]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[LOGRADOURO]\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[BAIRRO]\t\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[CIDADE]\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[UF]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_1_1]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_MASS]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TELEFONEMEDICO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CELULARMEDICO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ULTALTCONTATO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[UFDOCUMENTO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NUMERODOCUMENTO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_CONTATO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_GRUPOPROMOCIONAL]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_DIVISAO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_FUNCIONARIO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_DIVISAO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PERSON_UID]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ORIGEM_DADOS]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DATA_CARGA]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_STATUS]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPO]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BRICK_NOME]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[SITUACAO]\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[FLG_OFICIAL_GOVERNO]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE_02]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE_03]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_ENDERECO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CPF]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ORIGEM_END]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NETWORKID]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DOCUMENTO_VEEVA]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[FLG_MEDICO_AUDIT]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPEC_CYCLE_PLAN]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[STATUS_MEDICO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_1_1_CONSENT]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_MASS_CONSENT]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COMENTARIO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) as ROW\n",
+					"query": "ALTER VIEW kpivis.dim_painel_medico_comercial\nAS\nSELECT\n[CICLO_TERRITORIO_CONTATO]\n,[PAINEL_CICLO]\n,[PAINEL_CICLO_ATUAL]\n,[PAINEL_ROW_ID_TERRITORIO]\n,CONCAT([PAINEL_ROW_ID_TERRITORIO],[PAINEL_CICLO]) as 'KEY_TERR_CICLO'\n,[CICLO_TERRITORIO_DIVISAO]\n,[DOCUMENTO]\n,[BRICK]\n,[MEDICO]\n,[DOC_NAME]\n,[GRUPOPROMOCIONAL]\n,[ESPECIALIDADE]\n,[TIPOCONTATO]\n,[COMPLEMENTO]\n,[CEP]\n,[LOGRADOURO]\n,[BAIRRO]\n,[CIDADE]\n,[UF]\n,[EMAIL_1_1]\n,[EMAIL_MASS]\n,[TELEFONEMEDICO]\n,[CELULARMEDICO]\n,[ULTALTCONTATO]\n,[UFDOCUMENTO]\n,[NUMERODOCUMENTO]\n,[PAINEL_ROW_ID_CONTATO]\n,[PAINEL_ROW_ID_GRUPOPROMOCIONAL]\n,[PAINEL_ROW_ID_DIVISAO]\n,[PAINEL_ROW_ID_FUNCIONARIO]\n,[PAINEL_DIVISAO]\n,[PERSON_UID]\n,[ORIGEM_DADOS]\n,[DATA_CARGA]\n,[PAINEL_STATUS]\n,[TIPO]\n,[BRICK_NOME]\n,[SITUACAO]\n,[FLG_OFICIAL_GOVERNO]\n,[ESPECIALIDADE_02]\n,[ESPECIALIDADE_03]\n,[ROW_ID_ENDERECO]\n,[CPF]\n,[ORIGEM_END]\n,[NETWORKID]\n,[DOCUMENTO_VEEVA]\n,[FLG_MEDICO_AUDIT]\n,[ESPEC_CYCLE_PLAN]\n,[STATUS_MEDICO]\n,[EMAIL_1_1_CONSENT]\n,[EMAIL_MASS_CONSENT]\n,[COMENTARIO]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_painel_medico_comercial.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n        [CICLO_TERRITORIO_CONTATO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_CICLO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_CICLO_ATUAL]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_TERRITORIO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO_TERRITORIO_DIVISAO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DOCUMENTO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BRICK]\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MEDICO]\t\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[DOC_NAME]\t\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[GRUPOPROMOCIONAL]\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPOCONTATO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COMPLEMENTO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CEP]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[LOGRADOURO]\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[BAIRRO]\t\t\t\t\t\t\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[CIDADE]\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[UF]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_1_1]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_MASS]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TELEFONEMEDICO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CELULARMEDICO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ULTALTCONTATO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[UFDOCUMENTO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NUMERODOCUMENTO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_CONTATO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_GRUPOPROMOCIONAL]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_DIVISAO]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_ROW_ID_FUNCIONARIO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_DIVISAO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PERSON_UID]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ORIGEM_DADOS]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DATA_CARGA]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[PAINEL_STATUS]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TIPO]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BRICK_NOME]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[SITUACAO]\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[FLG_OFICIAL_GOVERNO]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE_02]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE_03]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_ENDERECO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CPF]\t\t\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ORIGEM_END]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NETWORKID]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DOCUMENTO_VEEVA]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[FLG_MEDICO_AUDIT]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPEC_CYCLE_PLAN]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[STATUS_MEDICO]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_1_1_CONSENT]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_MASS_CONSENT]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[COMENTARIO]\t\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) as ROW\n",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"name": "GSK",
-						"type": "SqlOnDemand"
+						"poolName": "Built-in",
+						"databaseName": "GSK"
 					}
 				},
 				"type": "SqlQuery"
@@ -14023,13 +14023,13 @@
 					"name": "KPI VISITACAO"
 				},
 				"content": {
-					"query": "-- ALTER VIEW kpivis.dim_sales_force\n-- AS\nSELECT\n    [SF_ROW_ID_TERRITORIO]\n,[CICLO_TERRITORIO_DIVISAO]\n,[BU]\n,[DIVISAO]\n,[TERRITORIO_CICLO]\n,[CICLO_TERRITORIO]\n,[MATRICULA_GD]\n,[MATRICULA_GR]\n,[TERR]\n,[TERRITORIO_REP]\n,[NOME_GRI/KAM]\n,[NOME_GRI/KAM_COACH]\n,[NOME_GN]\n,[NOME_REP]\n,[ROW_ID_FUNCIONARIO]\n,[TERRITORIO_NOME_REP]\n,[TERRITORIO_GRI/KAM]\n,[TERRITORIO_NOME_GRI/KAM]\n,[TERRITORIO_GN]\n,[TERRITORIO_NOME_GN]\n,[STATUS]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_sales_force.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[SF_ROW_ID_TERRITORIO]          VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO_TERRITORIO_DIVISAO]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BU]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DIVISAO]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_CICLO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO_TERRITORIO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MATRICULA_GD]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MATRICULA_GR]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERR]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_REP]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_GRI/KAM]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_GRI/KAM_COACH]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_GN]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_REP]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_FUNCIONARIO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_NOME_REP]\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_GRI/KAM]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_NOME_GRI/KAM]\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_GN]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_NOME_GN]\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[STATUS]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
+					"query": "-- ALTER VIEW kpivis.dim_sales_force\n-- AS\nSELECT\n    [SF_ROW_ID_TERRITORIO]\n,[CICLO_TERRITORIO_DIVISAO]\n,concat(SF_ROW_ID_TERRITORIO,TERRITORIO_CICLO) as \"KEY_TERR_CICLO\"\n,[BU]\n,[DIVISAO]\n,[TERRITORIO_CICLO]\n,[CICLO_TERRITORIO]\n,[MATRICULA_GD]\n,[MATRICULA_GR]\n,[TERR]\n,[TERRITORIO_REP]\n,[NOME_GRI/KAM]\n,[NOME_GRI/KAM_COACH]\n,[NOME_GN]\n,[NOME_REP]\n,[ROW_ID_FUNCIONARIO]\n,[TERRITORIO_NOME_REP]\n,[TERRITORIO_GRI/KAM]\n,[TERRITORIO_NOME_GRI/KAM]\n,[TERRITORIO_GN]\n,[TERRITORIO_NOME_GN]\n,[STATUS]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/KPI Visitacao/dimensao_sales_force.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[SF_ROW_ID_TERRITORIO]          VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO_TERRITORIO_DIVISAO]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BU]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[DIVISAO]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_CICLO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO_TERRITORIO]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MATRICULA_GD]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MATRICULA_GR]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERR]\t\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_REP]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_GRI/KAM]\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_GRI/KAM_COACH]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_GN]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME_REP]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ROW_ID_FUNCIONARIO]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_NOME_REP]\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_GRI/KAM]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_NOME_GRI/KAM]\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_GN]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TERRITORIO_NOME_GN]\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[STATUS]\t\t\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"name": "GSK",
-						"type": "SqlOnDemand"
+						"poolName": "Built-in",
+						"databaseName": "GSK"
 					}
 				},
 				"type": "SqlQuery"
@@ -14140,6 +14140,25 @@
 					"currentConnection": {
 						"poolName": "Built-in",
 						"databaseName": "GSK"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 1')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT TOP (100) [REGION]\n,[CLUSTER]\n,[COUNTRY]\n,[SLSL]\n,[FLSL]\n,[CITY]\n,[BUSINESS_UNIT]\n,[FIELD_VISIT_COACHING_DATE]\n,[BRAND]\n,[TOTAL_NUMBER_CALLS_OBSERVED]\n,[NUMBER_OF_GSO]\n,[FLSL_MOTIVATIONAL_INSPIRATIONAL_ENVIRONMENT]\n,[FLSL_SALES_REP_AGREE_GOAL]\n,[COACHING_GOAL_SEQUENTIAL_PREVIOUS_ACTION]\n,[FLSL_SALES_REP_MENTION_CURRENT_PERFORMANCE]\n,[POTENTIAL_IMPACT_CURRENT_PERFORMANCE]\n,[FLSL_SALES_REP_BLOCK_CURRENT_PERFORMANCE]\n,[SALES_REP_SOLUTIONS_UNBLOCK_BARRIERS]\n,[FLSL_SALES_REP_SOLUTIONS_UNBLOCK_BARRIERS_IMPACT]\n,[FLSL_OFFERS_ALTERNATIVE_SOLUTIONS]\n,[EXPLORE_SALES_REP_NEXT_STEPS]\n,[MANAGER_ASKS_SALES_REP_SUPPORT_NEEDS]\n,[BUILDS_PLAN_SUCCESS_MEASURES]\n,[IMPORTANT_ACTION_IMPROVE_CAPABILITY_MAPS_TOP_SKILL]\n,[DETERMINES_COACHING_STYLE_FLEXES_COACHING_STYLE]\n,[QUESTIONS_ACTIVE_LISTENING_FEEDBACK_SBI]\n,[ACTION_PLANS]\n FROM [default].[dbo].[gco_table_teste]",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"poolName": "Built-in",
+						"databaseName": "default"
 					}
 				},
 				"type": "SqlQuery"
@@ -14319,6 +14338,280 @@
 					}
 				},
 				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Notebook 3')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "gsksynapsespark",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/df51b5c6-c171-41ea-9693-6bc7c1c46d28/resourceGroups/actgsk-rg/providers/Microsoft.Synapse/workspaces/gsk-synapse/bigDataPools/gsksynapsespark",
+						"name": "gsksynapsespark",
+						"type": "Spark",
+						"endpoint": "https://gsk-synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/gsksynapsespark",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
+					}
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [
+										"REGION"
+									],
+									"values": [
+										"TOTAL_NUMBER_CALLS_OBSERVED"
+									],
+									"yLabel": "TOTAL_NUMBER_CALLS_OBSERVED",
+									"xLabel": "REGION",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{\"TOTAL_NUMBER_CALLS_OBSERVED\":{\"Direct Emerging Market\":57}}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": false
+							}
+						},
+						"source": [
+							"%%pyspark\n",
+							"df = spark.read.option(\"encoding\", \"ANSI\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/GSO/dimensao_gco.parquet', format='parquet')\n",
+							"df.createOrReplaceTempView(\"dimensao_gco\")"
+						],
+						"outputs": [],
+						"execution_count": 20
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [
+										"REGION"
+									],
+									"values": [
+										"NUMBER_OF_GSO"
+									],
+									"yLabel": "NUMBER_OF_GSO",
+									"xLabel": "REGION",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{\"NUMBER_OF_GSO\":{\"Direct Emerging Market\":18}}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": true
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"SELECT \n",
+							"gco.REGION\n",
+							",gco.CLUSTER\n",
+							",gco.COUNTRY\n",
+							",gco.SLSL\n",
+							",gco.FLSL\n",
+							",gco.CITY\n",
+							",gco.BUSINESS_UNIT\n",
+							",gco.FIELD_VISIT_COACHING_DATE\n",
+							",gco.BRAND\n",
+							",gco.TOTAL_NUMBER_CALLS_OBSERVED\n",
+							",gco.NUMBER_OF_GSO\n",
+							",gco.FLSL_MOTIVATIONAL_INSPIRATIONAL_ENVIRONMENT\n",
+							",gco.FLSL_SALES_REP_AGREE_GOAL\n",
+							",gco.COACHING_GOAL_SEQUENTIAL_PREVIOUS_ACTION\n",
+							",gco.FLSL_SALES_REP_MENTION_CURRENT_PERFORMANCE\n",
+							",gco.POTENTIAL_IMPACT_CURRENT_PERFORMANCE\n",
+							",gco.FLSL_SALES_REP_BLOCK_CURRENT_PERFORMANCE\n",
+							",gco.SALES_REP_SOLUTIONS_UNBLOCK_BARRIERS\n",
+							",gco.FLSL_SALES_REP_SOLUTIONS_UNBLOCK_BARRIERS_IMPACT\n",
+							",gco.FLSL_OFFERS_ALTERNATIVE_SOLUTIONS\n",
+							",gco.EXPLORE_SALES_REP_NEXT_STEPS\n",
+							",gco.MANAGER_ASKS_SALES_REP_SUPPORT_NEEDS\n",
+							",gco.BUILDS_PLAN_SUCCESS_MEASURES\n",
+							",gco.IMPORTANT_ACTION_IMPROVE_CAPABILITY_MAPS_TOP_SKILL\n",
+							",gco.DETERMINES_COACHING_STYLE_FLEXES_COACHING_STYLE\n",
+							",gco.QUESTIONS_ACTIVE_LISTENING_FEEDBACK_SBI\n",
+							",gco.ACTION_PLANS\n",
+							"FROM\n",
+							"    dimensao_gco gco\n",
+							"LIMIT 10\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 26
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [],
+									"values": [],
+									"yLabel": "",
+									"xLabel": "",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": true
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"CREATE TEMPORARY VIEW  teste_gco \n",
+							"    AS SELECT * from dimensao_gco"
+						],
+						"outputs": [],
+						"execution_count": 29
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [],
+									"values": [],
+									"yLabel": "",
+									"xLabel": "",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": true
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"CREATE TABLE gco_table_teste USING PARQUET\n",
+							"    AS SELECT * FROM dimensao_gco"
+						],
+						"outputs": [],
+						"execution_count": 31
+					},
+					{
+						"cell_type": "code",
+						"source": [],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Notebook 4')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "gsksynapsespark",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/df51b5c6-c171-41ea-9693-6bc7c1c46d28/resourceGroups/actgsk-rg/providers/Microsoft.Synapse/workspaces/gsk-synapse/bigDataPools/gsksynapsespark",
+						"name": "gsksynapsespark",
+						"type": "Spark",
+						"endpoint": "https://gsk-synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/gsksynapsespark",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "2.4",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"extraHeader": {},
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"%%pyspark\n",
+							"df = spark.sql(\"SELECT * FROM default.gco_table_teste\")\n",
+							"# df.show(10)"
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
 			},
 			"dependsOn": []
 		}
