@@ -1,0 +1,206 @@
+{
+	"name": "Notebook 3",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "gsksynapsespark",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/df51b5c6-c171-41ea-9693-6bc7c1c46d28/resourceGroups/actgsk-rg/providers/Microsoft.Synapse/workspaces/gsk-synapse/bigDataPools/gsksynapsespark",
+				"name": "gsksynapsespark",
+				"type": "Spark",
+				"endpoint": "https://gsk-synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/gsksynapsespark",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"REGION"
+							],
+							"values": [
+								"TOTAL_NUMBER_CALLS_OBSERVED"
+							],
+							"yLabel": "TOTAL_NUMBER_CALLS_OBSERVED",
+							"xLabel": "REGION",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"TOTAL_NUMBER_CALLS_OBSERVED\":{\"Direct Emerging Market\":57}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"%%pyspark\n",
+					"df = spark.read.option(\"encoding\", \"ANSI\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/GSO/dimensao_gco.parquet', format='parquet')\n",
+					"df.createOrReplaceTempView(\"dimensao_gco\")"
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"REGION"
+							],
+							"values": [
+								"NUMBER_OF_GSO"
+							],
+							"yLabel": "NUMBER_OF_GSO",
+							"xLabel": "REGION",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"NUMBER_OF_GSO\":{\"Direct Emerging Market\":18}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"SELECT \n",
+					"gco.REGION\n",
+					",gco.CLUSTER\n",
+					",gco.COUNTRY\n",
+					",gco.SLSL\n",
+					",gco.FLSL\n",
+					",gco.CITY\n",
+					",gco.BUSINESS_UNIT\n",
+					",gco.FIELD_VISIT_COACHING_DATE\n",
+					",gco.BRAND\n",
+					",gco.TOTAL_NUMBER_CALLS_OBSERVED\n",
+					",gco.NUMBER_OF_GSO\n",
+					",gco.FLSL_MOTIVATIONAL_INSPIRATIONAL_ENVIRONMENT\n",
+					",gco.FLSL_SALES_REP_AGREE_GOAL\n",
+					",gco.COACHING_GOAL_SEQUENTIAL_PREVIOUS_ACTION\n",
+					",gco.FLSL_SALES_REP_MENTION_CURRENT_PERFORMANCE\n",
+					",gco.POTENTIAL_IMPACT_CURRENT_PERFORMANCE\n",
+					",gco.FLSL_SALES_REP_BLOCK_CURRENT_PERFORMANCE\n",
+					",gco.SALES_REP_SOLUTIONS_UNBLOCK_BARRIERS\n",
+					",gco.FLSL_SALES_REP_SOLUTIONS_UNBLOCK_BARRIERS_IMPACT\n",
+					",gco.FLSL_OFFERS_ALTERNATIVE_SOLUTIONS\n",
+					",gco.EXPLORE_SALES_REP_NEXT_STEPS\n",
+					",gco.MANAGER_ASKS_SALES_REP_SUPPORT_NEEDS\n",
+					",gco.BUILDS_PLAN_SUCCESS_MEASURES\n",
+					",gco.IMPORTANT_ACTION_IMPROVE_CAPABILITY_MAPS_TOP_SKILL\n",
+					",gco.DETERMINES_COACHING_STYLE_FLEXES_COACHING_STYLE\n",
+					",gco.QUESTIONS_ACTIVE_LISTENING_FEEDBACK_SBI\n",
+					",gco.ACTION_PLANS\n",
+					"FROM\n",
+					"    dimensao_gco gco\n",
+					"LIMIT 10\n",
+					""
+				],
+				"execution_count": 26
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"CREATE TEMPORARY VIEW  teste_gco \n",
+					"    AS SELECT * from dimensao_gco"
+				],
+				"execution_count": 29
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"CREATE TABLE gco_table_teste USING PARQUET\n",
+					"    AS SELECT * FROM dimensao_gco"
+				],
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"source": [],
+				"execution_count": null
+			}
+		]
+	}
+}

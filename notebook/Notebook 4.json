@@ -1,0 +1,56 @@
+{
+	"name": "Notebook 4",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "gsksynapsespark",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/df51b5c6-c171-41ea-9693-6bc7c1c46d28/resourceGroups/actgsk-rg/providers/Microsoft.Synapse/workspaces/gsk-synapse/bigDataPools/gsksynapsespark",
+				"name": "gsksynapsespark",
+				"type": "Spark",
+				"endpoint": "https://gsk-synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/gsksynapsespark",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"%%pyspark\n",
+					"df = spark.sql(\"SELECT * FROM default.gco_table_teste\")\n",
+					"# df.show(10)"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
