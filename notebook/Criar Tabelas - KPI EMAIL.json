@@ -103,7 +103,7 @@
 					"df_fato_interacoes = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/fato_interacoes_*.parquet', format='parquet')\n",
 					"df_fato_interacoes.createOrReplaceTempView(\"fato_interacoes\")"
 				],
-				"execution_count": 9
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -139,7 +139,7 @@
 					"    kpiemail_fato_interacoes\n",
 					"limit 10"
 				],
-				"execution_count": 10
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -166,39 +166,242 @@
 				"source": [
 					"%%sql\n",
 					"CREATE TABLE kpiemail_dim_audit_end USING PARQUET\n",
-					"    AS SELECT * FROM dim_audit_end;\n",
-					"\n",
+					"    AS SELECT * FROM dim_audit_end\n",
+					"     "
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
 					"CREATE TABLE kpiemail_dim_coaching USING PARQUET\n",
-					"    AS SELECT * FROM dim_coaching;\n",
+					"    AS SELECT * FROM dim_coaching\n",
 					"\n",
+					""
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
 					"CREATE TABLE kpiemail_dim_forca_vendas USING PARQUET\n",
-					"    AS SELECT * FROM dim_forca_vendas;\n",
-					"\n",
+					"    AS SELECT * FROM dim_forca_vendas"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
 					"CREATE TABLE kpiemail_dim_historico_zonas USING PARQUET\n",
-					"    AS SELECT * FROM dim_historico_zonas;\n",
-					"\n",
+					"    AS SELECT * FROM dim_historico_zonas"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
 					"CREATE TABLE kpiemail_dim_kpi_territorio USING PARQUET\n",
-					"    AS SELECT * FROM dim_kpi_territorio;\n",
-					"\n",
-					"CREATE TABLE kpiemail_dim_msl_division USING PARQUET\n",
-					"    AS SELECT * FROM dim_msl_division;\n",
-					"\n",
-					"CREATE TABLE kpiemail_dim_painel_medico USING PARQUET\n",
-					"    AS SELECT * FROM dim_painel_medico;\n",
-					"\n",
-					"CREATE TABLE kpiemail_dim_quadrante_medico_gp USING PARQUET\n",
-					"    AS SELECT * FROM dim_quadrante_medico_gp;\n",
-					"\n",
-					"CREATE TABLE kpiemail_dim_quadrante_medico USING PARQUET\n",
-					"    AS SELECT * FROM dim_quadrante_medico;\n",
-					"\n",
-					"CREATE TABLE kpiemail_dim_target_sro USING PARQUET\n",
-					"    AS SELECT * FROM dim_target_sro;\n",
-					"\n",
-					"CREATE TABLE kpiemail_fato_interacoes USING PARQUET\n",
-					"    AS SELECT * FROM fato_interacoes;     "
+					"    AS SELECT * FROM dim_kpi_territorio"
 				],
 				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"CREATE TABLE kpiemail_dim_msl_division USING PARQUET\n",
+					"    AS SELECT * FROM dim_msl_division"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"CREATE TABLE kpiemail_dim_painel_medico USING PARQUET\n",
+					"    AS SELECT * FROM dim_painel_medico"
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"CREATE TABLE kpiemail_dim_quadrante_medico_gp USING PARQUET\n",
+					"    AS SELECT * FROM dim_quadrante_medico_gp"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%sql\n",
+					"CREATE TABLE kpiemail_dim_quadrante_medico USING PARQUET\n",
+					"    AS SELECT * FROM dim_quadrante_medico"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%sql\n",
+					"CREATE TABLE kpiemail_dim_target_sro USING PARQUET\n",
+					"    AS SELECT * FROM dim_target_sro "
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%sql\n",
+					"CREATE TABLE kpiemail_fato_interacoes USING PARQUET\n",
+					"    AS SELECT * FROM fato_interacoes"
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
