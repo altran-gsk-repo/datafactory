@@ -32,6 +32,9 @@
 		"Listar_Arquivos_Txt_3_connectionString": {
 			"value": ""
 		},
+		"Sftp1_password": {
+			"value": ""
+		},
 		"SqlServerConfigCarga_connectionString": {
 			"value": ""
 		},
@@ -73,6 +76,12 @@
 		},
 		"FileServerGSK_properties_typeProperties_userId": {
 			"value": "WMSERVICE\\dqa99106"
+		},
+		"Sftp1_properties_typeProperties_host": {
+			"value": "sftp01.close-upinternational.com.br"
+		},
+		"Sftp1_properties_typeProperties_userName": {
+			"value": "bra_gsk"
 		},
 		"gsk-synapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://gsksynapseaccount.dfs.core.windows.net"

@@ -4,68 +4,72 @@
 	"parameters": {
 		"workspaceName": {
 			"type": "string",
-			"metadata": "Workspace name",
+			"metadata": "Nome do Workspace",
 			"defaultValue": "gsk-synapse"
 		},
 		"Arquivos_Em_Parquet_3_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Arquivos_Em_Parquet_3'"
+			"metadata": "Cadeia de caracteres segura para 'connectionString' de 'Arquivos_Em_Parquet_3'"
 		},
 		"AzureBlobStorageSynapse_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageSynapse'"
+			"metadata": "Cadeia de caracteres segura para 'connectionString' de 'AzureBlobStorageSynapse'"
 		},
 		"AzureDataLakeStorage1_accountKey": {
 			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+			"metadata": "Cadeia de caracteres segura para 'accountKey' de 'AzureDataLakeStorage1'"
 		},
 		"AzureDataLakeStorageBlobSynapse_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureDataLakeStorageBlobSynapse'"
+			"metadata": "Cadeia de caracteres segura para 'connectionString' de 'AzureDataLakeStorageBlobSynapse'"
 		},
 		"CompressArquivoSave_accountKey": {
 			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'CompressArquivoSave'"
+			"metadata": "Cadeia de caracteres segura para 'accountKey' de 'CompressArquivoSave'"
 		},
 		"FileServerDouglas_password": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'FileServerDouglas'"
+			"metadata": "Cadeia de caracteres segura para 'password' de 'FileServerDouglas'"
 		},
 		"FileServerDouglasNew_password": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'FileServerDouglasNew'"
+			"metadata": "Cadeia de caracteres segura para 'password' de 'FileServerDouglasNew'"
 		},
 		"FileServerGSK_password": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'FileServerGSK'"
+			"metadata": "Cadeia de caracteres segura para 'password' de 'FileServerGSK'"
 		},
 		"Listar_Arquivos_Txt_3_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Listar_Arquivos_Txt_3'"
+			"metadata": "Cadeia de caracteres segura para 'connectionString' de 'Listar_Arquivos_Txt_3'"
+		},
+		"Sftp1_password": {
+			"type": "secureString",
+			"metadata": "Cadeia de caracteres segura para 'password' de 'Sftp1'"
 		},
 		"SqlServerConfigCarga_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SqlServerConfigCarga'"
+			"metadata": "Cadeia de caracteres segura para 'connectionString' de 'SqlServerConfigCarga'"
 		},
 		"SqlServerGSK_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SqlServerGSK'"
+			"metadata": "Cadeia de caracteres segura para 'connectionString' de 'SqlServerGSK'"
 		},
 		"SqlServerLocalDouglasDB_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SqlServerLocalDouglasDB'"
+			"metadata": "Cadeia de caracteres segura para 'connectionString' de 'SqlServerLocalDouglasDB'"
 		},
 		"SqlServerLocalDouglasDev_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SqlServerLocalDouglasDev'"
+			"metadata": "Cadeia de caracteres segura para 'connectionString' de 'SqlServerLocalDouglasDev'"
 		},
 		"TeradataVeevaGSK_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'TeradataVeevaGSK'"
+			"metadata": "Cadeia de caracteres segura para 'connectionString' de 'TeradataVeevaGSK'"
 		},
 		"gsk-synapse-WorkspaceDefaultSqlServer_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'gsk-synapse-WorkspaceDefaultSqlServer'"
+			"metadata": "Cadeia de caracteres segura para 'connectionString' de 'gsk-synapse-WorkspaceDefaultSqlServer'"
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
@@ -98,6 +102,14 @@
 		"FileServerGSK_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "WMSERVICE\\dqa99106"
+		},
+		"Sftp1_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "sftp01.close-upinternational.com.br"
+		},
+		"Sftp1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "bra_gsk"
 		},
 		"gsk-synapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
@@ -12620,6 +12632,33 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Sftp1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "Sftp",
+				"typeProperties": {
+					"host": "[parameters('Sftp1_properties_typeProperties_host')]",
+					"port": 22,
+					"skipHostKeyValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('Sftp1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('Sftp1_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/SqlServerConfigCarga')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -12763,7 +12802,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
@@ -14147,25 +14186,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/SQL script 1')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "SELECT TOP (100) [REGION]\n,[CLUSTER]\n,[COUNTRY]\n,[SLSL]\n,[FLSL]\n,[CITY]\n,[BUSINESS_UNIT]\n,[FIELD_VISIT_COACHING_DATE]\n,[BRAND]\n,[TOTAL_NUMBER_CALLS_OBSERVED]\n,[NUMBER_OF_GSO]\n,[FLSL_MOTIVATIONAL_INSPIRATIONAL_ENVIRONMENT]\n,[FLSL_SALES_REP_AGREE_GOAL]\n,[COACHING_GOAL_SEQUENTIAL_PREVIOUS_ACTION]\n,[FLSL_SALES_REP_MENTION_CURRENT_PERFORMANCE]\n,[POTENTIAL_IMPACT_CURRENT_PERFORMANCE]\n,[FLSL_SALES_REP_BLOCK_CURRENT_PERFORMANCE]\n,[SALES_REP_SOLUTIONS_UNBLOCK_BARRIERS]\n,[FLSL_SALES_REP_SOLUTIONS_UNBLOCK_BARRIERS_IMPACT]\n,[FLSL_OFFERS_ALTERNATIVE_SOLUTIONS]\n,[EXPLORE_SALES_REP_NEXT_STEPS]\n,[MANAGER_ASKS_SALES_REP_SUPPORT_NEEDS]\n,[BUILDS_PLAN_SUCCESS_MEASURES]\n,[IMPORTANT_ACTION_IMPROVE_CAPABILITY_MAPS_TOP_SKILL]\n,[DETERMINES_COACHING_STYLE_FLEXES_COACHING_STYLE]\n,[QUESTIONS_ACTIVE_LISTENING_FEEDBACK_SBI]\n,[ACTION_PLANS]\n FROM [default].[dbo].[gco_table_teste]",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"poolName": "Built-in",
-						"databaseName": "default"
-					}
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/SYS_VERIFICAR_COLLATE')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
@@ -14203,6 +14223,28 @@
 					"currentConnection": {
 						"poolName": "Built-in",
 						"databaseName": "GSK"
+					}
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/UNIV_MEDICO_CREATE_VIEW_DIM_AUDIT_END')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "UNIVERSO MEDICO"
+				},
+				"content": {
+					"query": "CREATE VIEW univmed.dim_audit_end\nAS\nSELECT\n    [CRM_UNIV]\n,[MEDICO_UNIV]\n,[ESPECIALIDADE_UNIV]\n,[LOGRADOURO_UNIV]\n,[BAIRRO_UNIV]\n,[CIDADE_UNIV]\n,[CEP_UNIV]\n,[ORIGEM_UNIV]\n,[UF_UNIV]\n,[BRICK_UNIV]\n,[TELEFONE_UNIV]\n,[KEY_CRM_UNIV]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Email & KPI Visitacao/dimensao_audit_end.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n [CRM_UNIV]      VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[MEDICO_UNIV]\t\t\tVARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE_UNIV]\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[LOGRADOURO_UNIV]\t\tVARCHAR(100) COLLATE Latin1_General_100_BIN2_UTF8\n,[BAIRRO_UNIV]\t\t\tVARCHAR(100) COLLATE Latin1_General_100_BIN2_UTF8\n,[CIDADE_UNIV]\t\t\tVARCHAR(100) COLLATE Latin1_General_100_BIN2_UTF8\n,[CEP_UNIV]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ORIGEM_UNIV]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[UF_UNIV]\t\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[BRICK_UNIV]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TELEFONE_UNIV]\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[KEY_CRM_UNIV]\t\t\tVARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW\n\n-- SELECT collation_name\n-- FROM sys.databases\n-- WHERE database_id = DB_ID()\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"poolName": "Built-in",
+						"databaseName": "master"
 					}
 				},
 				"type": "SqlQuery"
@@ -14328,7 +14370,7 @@
 					"name": "UNIVERSO MEDICO"
 				},
 				"content": {
-					"query": "-- ALTER VIEW univmed.fato_universo_medico\n-- AS\nSELECT\n[KEY_CRM]\n,[CICLO]\n,[KEY_CRM_EMAIL]\n,[UF]\n,[CRM]\n,[CRM2]\n,[EMAIL_PRINCIPAL]\n,[EMAIL_SECUNDARIO]\n,[NOME]\n,[ESPECIALIDADE]\n,[ESPECIALIDADE2]\n,[ESPECIALIDADE3]\n,[VISITADO]\n,[NETWORK_ID]\n,[VEEVA_ID]\n,[RX_GIGYA_ID]\n,[TELEFONE]\n,[CELULAR]\n,[EMAIL]\n,[EMAIL_ORIGEM]\n,[ONE_MASS]\n,[ONE_ONE]\n,[VISITADO_GSK]\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_universo_medico_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[KEY_CRM]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[KEY_CRM_EMAIL]\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[UF]\t\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CRM]\t\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CRM2]\t\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_PRINCIPAL]\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_SECUNDARIO]\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME]\t\t\t\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE2]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE3]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VISITADO]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NETWORK_ID]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VEEVA_ID]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[RX_GIGYA_ID]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TELEFONE]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CELULAR]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL]\t\t\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_ORIGEM]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ONE_MASS]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ONE_ONE]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VISITADO_GSK]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW \n",
+					"query": "-- ALTER VIEW univmed.fato_universo_medico\n-- AS\nSELECT DISTINCT \n\n    NULLIF (REPLACE(UPPER(TRIM(KEY_CRM)), 'NO INFO.', ''), '') AS KEY_CRM\n    , NULLIF (REPLACE(UPPER(TRIM(CICLO)), 'NO INFO.', ''), '') AS CICLO\n    , NULLIF (REPLACE(UPPER(TRIM(KEY_CRM_EMAIL)), 'NO INFO.', ''), '') AS KEY_CRM_EMAIL\n    , NULLIF (REPLACE(UPPER(TRIM(UF)),'NO INFO.', ''), '') AS UF\n    , NULLIF (REPLACE(UPPER(TRIM(CRM)), 'NO INFO.', ''), '') AS CRM\n    , NULLIF (REPLACE(UPPER(TRIM(CRM2)), 'NO INFO.', ''), '') AS CRM2\n    , NULLIF (REPLACE(UPPER(TRIM(EMAIL_PRINCIPAL)), 'NO INFO.', ''), '') AS EMAIL_PRINCIPAL\n    , NULLIF (REPLACE(UPPER(TRIM(EMAIL_SECUNDARIO)), 'NO INFO.', ''), '') AS EMAIL_SECUNDARIO\n    , NULLIF (REPLACE(UPPER(TRIM(NOME)), 'NO INFO.', ''), '') AS NOME\n    , NULLIF (REPLACE(UPPER(TRIM(ESPECIALIDADE)), 'NO INFO.', ''), '') AS ESPECIALIDADE\n    , NULLIF (REPLACE(UPPER(TRIM(ESPECIALIDADE2)), 'NO INFO.', ''), '') AS ESPECIALIDADE2\n    , NULLIF (REPLACE(UPPER(TRIM(ESPECIALIDADE3)), 'NO INFO.', ''), '') AS ESPECIALIDADE3\n    , ISNULL (NULLIF(REPLACE(REPLACE(REPLACE(UPPER(TRIM(VISITADO)),'NO INFO.',''),'N',''),'S','SIM'),''),'NÃO') AS VISITADO\n    , NULLIF (REPLACE(UPPER(TRIM(NETWORK_ID)), 'NO INFO.', ''), '') AS NETWORK_ID\n    , NULLIF (REPLACE(UPPER(TRIM(VEEVA_ID)), 'NO INFO.', ''), '') AS VEEVA_ID\n    , NULLIF (REPLACE(UPPER(TRIM(RX_GIGYA_ID)), 'NO INFO.', ''), '') AS RX_GIGYA_ID\n    , NULLIF (REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(UPPER(TRIM(TELEFONE)),'Ã','A'),'É','E'),'ROSANACOSENTINO@BOL.COM.BR',''),'ZINABERTELI@YAHOO.COM.BR',''),'AMANDA.REGIO@BOL.COM.BR',''),'REGINABERTELI@GMAIL.COM',''),'CAABRUNO@GMAIL.COM',''),'NAO FORNECE',''),'NAO INFORMA',''),'NO INFO.',''),'CANCELE',''),'CELULAR',''),'THALYTA',''),'ERRADO',''),'MEDICO',''),'NULL',''),'TEL',''),'NA',''),'NI',''),'-',''),' ',''),'(',''),')',''),',',''),'.',''),'.',''),'/',''),':',''),'M',''),'N',''),'+55','')\n        , '') AS TELEFONE\n    , NULLIF (REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(UPPER(TRIM(TELEFONE)),'Ã','A'),'É','E'),'ROSANACOSENTINO@BOL.COM.BR',''),'ZINABERTELI@YAHOO.COM.BR',''),'AMANDA.REGIO@BOL.COM.BR',''),'REGINABERTELI@GMAIL.COM',''),'CAABRUNO@GMAIL.COM',''),'NAO FORNECE',''),'NAO INFORMA',''),'NO INFO.',''),'CANCELE',''),'CELULAR',''),'THALYTA',''),'ERRADO',''),'MEDICO',''),'NULL',''),'TEL',''),'NA',''),'NI',''),'-',''),' ',''),'(',''),')',''),',',''),'.',''),'.',''),'/',''),':',''),'M',''),'N',''),'+55','')\n        , '') AS CELULAR\n    , NULLIF (REPLACE(UPPER(TRIM(EMAIL)), 'NO INFO.', ''), '') AS EMAIL\n    , NULLIF (REPLACE(UPPER(TRIM(EMAIL_ORIGEM)), 'NO INFO.', ''), '') AS EMAIL_ORIGEM\n    , ISNULL (NULLIF(REPLACE(REPLACE(REPLACE(UPPER(TRIM(ONE_MASS)),'NO INFO.',''),'N',''),'S','SIM'),''),'NÃO') AS ONE_MASS\n    , ISNULL (NULLIF(REPLACE(REPLACE(REPLACE(UPPER(TRIM(ONE_ONE)),'NO INFO.',''),'N',''),'S','SIM'),''),'NÃO') AS ONE_ONE\n    , ISNULL (NULLIF(REPLACE(REPLACE(REPLACE(UPPER(TRIM(VISITADO_GSK)),'NO INFO.',''),'N',''),'S','SIM'),''),'NÃO') AS VISITADO_GSK\nFROM\n    OPENROWSET(\n        BULK 'https://gsksynapseaccount.dfs.core.windows.net/gskoutputfiles/Universo Medico/dimensao_universo_medico_*.parquet',\n        FORMAT='PARQUET'\n    ) WITH (\n[KEY_CRM]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CICLO]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[KEY_CRM_EMAIL]\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[UF]\t\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CRM]\t\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CRM2]\t\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_PRINCIPAL]\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_SECUNDARIO]\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[NOME]\t\t\t\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE2]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ESPECIALIDADE3]\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VISITADO]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[NETWORK_ID]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VEEVA_ID]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[RX_GIGYA_ID]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[TELEFONE]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[CELULAR]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL]\t\t\t\t  VARCHAR(150) COLLATE Latin1_General_100_BIN2_UTF8\n,[EMAIL_ORIGEM]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ONE_MASS]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[ONE_ONE]\t\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n,[VISITADO_GSK]\t\t\t  VARCHAR(50) COLLATE Latin1_General_100_BIN2_UTF8\n    ) AS ROW \n",
 					"metadata": {
 						"language": "sql"
 					},
@@ -14342,7 +14384,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Notebook 3')]",
+			"name": "[concat(parameters('workspaceName'), '/Criar Tabelas - KPI EMAIL')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -14357,11 +14399,11 @@
 					"driverCores": 4,
 					"executorMemory": "28g",
 					"executorCores": 4,
-					"numExecutors": 2,
+					"numExecutors": 4,
 					"conf": {
 						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "2",
-						"spark.dynamicAllocation.maxExecutors": "2"
+						"spark.dynamicAllocation.minExecutors": "4",
+						"spark.dynamicAllocation.maxExecutors": "4"
 					}
 				},
 				"metadata": {
@@ -14379,9 +14421,9 @@
 							"authResource": "https://dev.azuresynapse.net"
 						},
 						"sparkVersion": "2.4",
-						"nodeCount": 3,
-						"cores": 4,
-						"memory": 28
+						"nodeCount": 10,
+						"cores": 8,
+						"memory": 56
 					}
 				},
 				"cells": [
@@ -14413,11 +14455,41 @@
 						},
 						"source": [
 							"%%pyspark\n",
-							"df = spark.read.option(\"encoding\", \"ANSI\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/GSO/dimensao_gco.parquet', format='parquet')\n",
-							"df.createOrReplaceTempView(\"dimensao_gco\")"
+							"df_dim_audit_end = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_audit_end.parquet', format='parquet')\n",
+							"df_dim_audit_end.createOrReplaceTempView(\"dim_audit_end\")\n",
+							"\n",
+							"df_dim_coaching = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_coaching.parquet', format='parquet')\n",
+							"df_dim_coaching.createOrReplaceTempView(\"dim_coaching\")\n",
+							"\n",
+							"df_dim_forca_vendas = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_forca_vendas.parquet', format='parquet')\n",
+							"df_dim_forca_vendas.createOrReplaceTempView(\"dim_forca_vendas\")\n",
+							"\n",
+							"df_dim_historico_zonas = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_historico_zonas.parquet', format='parquet')\n",
+							"df_dim_historico_zonas.createOrReplaceTempView(\"dim_historico_zonas\")\n",
+							"\n",
+							"df_dim_kpi_territorio = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_kpi_territorio.parquet', format='parquet')\n",
+							"df_dim_kpi_territorio.createOrReplaceTempView(\"dim_kpi_territorio\")\n",
+							"\n",
+							"df_dim_msl_division = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_msl_division.parquet', format='parquet')\n",
+							"df_dim_msl_division.createOrReplaceTempView(\"dim_msl_division\")\n",
+							"\n",
+							"df_dim_painel_medico = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_painel_medico_*.parquet', format='parquet')\n",
+							"df_dim_painel_medico.createOrReplaceTempView(\"dim_painel_medico\")\n",
+							"\n",
+							"df_dim_quadrante_medico_gp = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_quadrante_medico_gp_*.parquet', format='parquet')\n",
+							"df_dim_quadrante_medico_gp.createOrReplaceTempView(\"dim_quadrante_medico_gp\")\n",
+							"\n",
+							"df_dim_quadrante_medico = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_quadrante_medico_p_*.parquet', format='parquet')\n",
+							"df_dim_quadrante_medico.createOrReplaceTempView(\"dim_quadrante_medico\")\n",
+							"\n",
+							"df_dim_target_sro = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/dimensao_target_sro.parquet', format='parquet')\n",
+							"df_dim_target_sro.createOrReplaceTempView(\"dim_target_sro\")\n",
+							"\n",
+							"df_fato_interacoes = spark.read.option(\"encoding\", \"utf8\").load('abfss://gskoutputfiles@gsksynapseaccount.dfs.core.windows.net/Email & KPI Visitacao/fato_interacoes_*.parquet', format='parquet')\n",
+							"df_fato_interacoes.createOrReplaceTempView(\"fato_interacoes\")"
 						],
 						"outputs": [],
-						"execution_count": 20
+						"execution_count": 1
 					},
 					{
 						"cell_type": "code",
@@ -14427,17 +14499,17 @@
 								"chartConfig": {
 									"category": "bar",
 									"keys": [
-										"REGION"
+										"CICLO"
 									],
 									"values": [
-										"NUMBER_OF_GSO"
+										"CICLO"
 									],
-									"yLabel": "NUMBER_OF_GSO",
-									"xLabel": "REGION",
-									"aggregation": "SUM",
+									"yLabel": "CICLO",
+									"xLabel": "CICLO",
+									"aggregation": "COUNT",
 									"aggByBackend": false
 								},
-								"aggData": "{\"NUMBER_OF_GSO\":{\"Direct Emerging Market\":18}}",
+								"aggData": "{\"CICLO\":{\"202007\":10}}",
 								"isSummary": false,
 								"previewData": {
 									"filter": null
@@ -14448,40 +14520,76 @@
 						"source": [
 							"%%sql\n",
 							"SELECT \n",
-							"gco.REGION\n",
-							",gco.CLUSTER\n",
-							",gco.COUNTRY\n",
-							",gco.SLSL\n",
-							",gco.FLSL\n",
-							",gco.CITY\n",
-							",gco.BUSINESS_UNIT\n",
-							",gco.FIELD_VISIT_COACHING_DATE\n",
-							",gco.BRAND\n",
-							",gco.TOTAL_NUMBER_CALLS_OBSERVED\n",
-							",gco.NUMBER_OF_GSO\n",
-							",gco.FLSL_MOTIVATIONAL_INSPIRATIONAL_ENVIRONMENT\n",
-							",gco.FLSL_SALES_REP_AGREE_GOAL\n",
-							",gco.COACHING_GOAL_SEQUENTIAL_PREVIOUS_ACTION\n",
-							",gco.FLSL_SALES_REP_MENTION_CURRENT_PERFORMANCE\n",
-							",gco.POTENTIAL_IMPACT_CURRENT_PERFORMANCE\n",
-							",gco.FLSL_SALES_REP_BLOCK_CURRENT_PERFORMANCE\n",
-							",gco.SALES_REP_SOLUTIONS_UNBLOCK_BARRIERS\n",
-							",gco.FLSL_SALES_REP_SOLUTIONS_UNBLOCK_BARRIERS_IMPACT\n",
-							",gco.FLSL_OFFERS_ALTERNATIVE_SOLUTIONS\n",
-							",gco.EXPLORE_SALES_REP_NEXT_STEPS\n",
-							",gco.MANAGER_ASKS_SALES_REP_SUPPORT_NEEDS\n",
-							",gco.BUILDS_PLAN_SUCCESS_MEASURES\n",
-							",gco.IMPORTANT_ACTION_IMPROVE_CAPABILITY_MAPS_TOP_SKILL\n",
-							",gco.DETERMINES_COACHING_STYLE_FLEXES_COACHING_STYLE\n",
-							",gco.QUESTIONS_ACTIVE_LISTENING_FEEDBACK_SBI\n",
-							",gco.ACTION_PLANS\n",
+							"*\n",
 							"FROM\n",
-							"    dimensao_gco gco\n",
-							"LIMIT 10\n",
+							"    kpiemail_fato_interacoes\n",
+							"limit 10"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [],
+									"values": [],
+									"yLabel": "",
+									"xLabel": "",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": true
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"CREATE TABLE kpiemail_dim_audit_end USING PARQUET\n",
+							"    AS SELECT * FROM dim_audit_end\n",
+							"     "
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [],
+									"values": [],
+									"yLabel": "",
+									"xLabel": "",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": true
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"CREATE TABLE kpiemail_dim_coaching USING PARQUET\n",
+							"    AS SELECT * FROM dim_coaching\n",
+							"\n",
 							""
 						],
 						"outputs": [],
-						"execution_count": 26
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -14507,11 +14615,11 @@
 						},
 						"source": [
 							"%%sql\n",
-							"CREATE TEMPORARY VIEW  teste_gco \n",
-							"    AS SELECT * from dimensao_gco"
+							"CREATE TABLE kpiemail_dim_forca_vendas USING PARQUET\n",
+							"    AS SELECT * FROM dim_forca_vendas"
 						],
 						"outputs": [],
-						"execution_count": 29
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
@@ -14537,11 +14645,221 @@
 						},
 						"source": [
 							"%%sql\n",
-							"CREATE TABLE gco_table_teste USING PARQUET\n",
-							"    AS SELECT * FROM dimensao_gco"
+							"CREATE TABLE kpiemail_dim_historico_zonas USING PARQUET\n",
+							"    AS SELECT * FROM dim_historico_zonas"
 						],
 						"outputs": [],
-						"execution_count": 31
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [],
+									"values": [],
+									"yLabel": "",
+									"xLabel": "",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": true
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"CREATE TABLE kpiemail_dim_kpi_territorio USING PARQUET\n",
+							"    AS SELECT * FROM dim_kpi_territorio"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [],
+									"values": [],
+									"yLabel": "",
+									"xLabel": "",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": true
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"CREATE TABLE kpiemail_dim_msl_division USING PARQUET\n",
+							"    AS SELECT * FROM dim_msl_division"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [],
+									"values": [],
+									"yLabel": "",
+									"xLabel": "",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": true
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"CREATE TABLE kpiemail_dim_painel_medico USING PARQUET\n",
+							"    AS SELECT * FROM dim_painel_medico"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [],
+									"values": [],
+									"yLabel": "",
+									"xLabel": "",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": true
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"CREATE TABLE kpiemail_dim_quadrante_medico_gp USING PARQUET\n",
+							"    AS SELECT * FROM dim_quadrante_medico_gp"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [],
+									"values": [],
+									"yLabel": "",
+									"xLabel": "",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": true
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"CREATE TABLE kpiemail_dim_quadrante_medico USING PARQUET\n",
+							"    AS SELECT * FROM dim_quadrante_medico"
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [],
+									"values": [],
+									"yLabel": "",
+									"xLabel": "",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": true
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"CREATE TABLE kpiemail_dim_target_sro USING PARQUET\n",
+							"    AS SELECT * FROM dim_target_sro "
+						],
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"diagram": {
+								"activateDiagramType": 1,
+								"chartConfig": {
+									"category": "bar",
+									"keys": [],
+									"values": [],
+									"yLabel": "",
+									"xLabel": "",
+									"aggregation": "SUM",
+									"aggByBackend": false
+								},
+								"aggData": "{}",
+								"isSummary": false,
+								"previewData": {
+									"filter": null
+								},
+								"isSql": true
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"CREATE TABLE kpiemail_fato_interacoes USING PARQUET\n",
+							"    AS SELECT * FROM fato_interacoes"
+						],
+						"outputs": [],
+						"execution_count": 14
 					},
 					{
 						"cell_type": "code",
@@ -14593,16 +14911,12 @@
 						"sparkVersion": "2.4",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"extraHeader": {},
-						"automaticScaleJobs": false
-					},
-					"sessionKeepAliveTimeout": 30
+						"memory": 28
+					}
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"%%pyspark\n",
 							"df = spark.sql(\"SELECT * FROM default.gco_table_teste\")\n",
